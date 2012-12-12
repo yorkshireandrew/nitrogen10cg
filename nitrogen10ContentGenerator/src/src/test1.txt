@@ -1,0 +1,166 @@
+8.66
+1000
+1000
+1000
+1000
+20
+0
+0
+6
+6
+1000
+1
+front
+/res/helloworld.PNG
+5
+topleft
+1
+1
+1
+topright
+100
+1
+1
+bottomright
+100
+100
+1
+bottomleft
+1
+100
+1
+null
+0
+0
+0
+6
+
+0 2 3 1
+topleft
+topright
+bottomright
+bottomleft
+0
+str
+front
+0
+no
+no
+
+3 5 4 1
+null
+null
+null
+null
+1
+0XFF0000
+sscr
+null
+1
+no
+no
+
+5 7 6 4
+null
+null
+null
+null
+1
+0X00FF00
+sscr
+null
+2
+no
+no
+
+
+7 2 0 6
+null
+null
+null
+null
+1
+0X000000
+sscr
+null
+3
+no
+no
+
+1 4 6 0
+null
+null
+null
+null
+1
+0x888888
+sscr
+null
+4
+no
+no
+
+7 5 3 2
+null
+null
+null
+null
+1
+0XFFFF00
+sscr
+null
+5
+no
+no
+
+6
+
+0 0 5
+0 0 1
+no
+
+5 0 0
+1 0 0
+no
+
+0 0 -5
+0 0 -1
+no
+
+-5 0 0
+-1 0 0
+no
+
+0 5 0
+0 1 0
+no
+
+0 -5 0
+0 -1 0
+no
+
+8
+
+-5 5 5
+5 5 5
+-5 -5 5
+5 -5 5
+
+5 5 -5
+5 -5 -5
+-5 5 -5
+-5 -5 -5
+
+0
+
+
+
+
+
+
+
+
+
+
+
+
