@@ -33,7 +33,7 @@ public class RendererHelper {
 		rendererTriplets.put(name, new RendererTriplet(r1,r2,r3));
 	}
 	
-	final static void addRendererTriplet(String name, RendererTriplet rt) throws Exception
+	public final static void addRendererTriplet(String name, RendererTriplet rt) throws Exception
 	{
 		if(rt == null) throw new Exception("RendererTriplet null when adding " + name);
 		rendererTriplets.put(name, rt);

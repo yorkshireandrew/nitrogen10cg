@@ -9,7 +9,7 @@ public class RendererTriplet implements Serializable{
 	static final int NEAR_RENDERER = 0;
 	static final int MID_RENDERER = 1;
 	static final int FAR_RENDERER = 2;
-	static Renderer pickingRenderer;
+	public static Renderer pickingRenderer;
 	
 	Renderer nearRenderer;
 	Renderer midRenderer;
@@ -23,7 +23,7 @@ public class RendererTriplet implements Serializable{
 	}
 	
 	/** Simple constructor that sets near-mid-far renderers all to be the passed in one */
-	RendererTriplet(Renderer theRenderer)
+	public RendererTriplet(Renderer theRenderer)
 	{
 		this.nearRenderer = theRenderer;
 		this.midRenderer = theRenderer;

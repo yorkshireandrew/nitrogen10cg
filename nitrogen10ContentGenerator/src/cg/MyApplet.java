@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package nitrogen1;
+package cg;
 
 // 
 
@@ -14,6 +14,21 @@ package nitrogen1;
 
 import javax.swing.*;
 import javax.swing.event.*;
+
+import nitrogen1.Item;
+import nitrogen1.ItemFactory_Caching;
+import nitrogen1.ItemFactory_Default;
+import nitrogen1.NitrogenContext;
+import nitrogen1.NitrogenCreationException;
+import nitrogen1.Renderer;
+import nitrogen1.RendererHelper;
+import nitrogen1.RendererTriplet;
+import nitrogen1.Renderer_Picking;
+import nitrogen1.Renderer_SimpleSingleColour;
+import nitrogen1.Renderer_SimpleTexture;
+import nitrogen1.SharedImmutableSubItem;
+import nitrogen1.Transform;
+
 import java.awt.*;  // needed for Dimension class
 import java.awt.event.*;  // needed for ActionListener
 import java.io.FileInputStream;
@@ -31,14 +46,49 @@ final public class MyApplet extends JApplet{
 	private static final long serialVersionUID = 1799576836511527595L;
 	static final int APP_WIDTH = 501;
     static final int APP_HEIGHT =501;
-    static final Renderer simpleTextureRenderer = new Renderer_SimpleTexture();
+//    static final Renderer simpleTextureRenderer = new Renderer_SimpleTexture();
 
-    Transform t4_class;
-    Transform t3_class;
-    NitrogenContext cnc;
-    float rot = 0.0f;	// linked to t4
-    float climb = 0.0f;	// linked to t3
+//    Transform t4_class;
+//    Transform t3_class;
+//    NitrogenContext cnc;
+//    float rot = 0.0f;	// linked to t4
+//    float climb = 0.0f;	// linked to t3
     
+    public void init()
+	{    
+        Box box_views = Box.createHorizontalBox();
+        Box box_renderWhat = Box.createHorizontalBox();
+        Box box_doWhat = Box.createHorizontalBox();
+        
+        JButton front_view = new JButton(new ImageIcon("//res//frontViewButton.PNG"));
+        box_views.add(front_view);
+        
+        getContentPane().setLayout(new BorderLayout());
+
+        getContentPane().add(box_views);
+        getContentPane().validate();
+        getContentPane().setVisible(true);
+        
+	}
+    
+    
+    
+    
+    //***************************************************************
+    //***************************************************************    
+    //***************************************************************
+    //****************** END OF INIT ********************************
+    //***************************************************************
+    //***************************************************************
+
+    //***************************************************************
+    //***************************************************************    
+    //***************************************************************
+    //****************** START OF OLD INIT ********************************
+    //***************************************************************
+    //***************************************************************
+
+    /*
     public void init()
 	{       
             // Create nitrogen context and transforms
@@ -195,7 +245,7 @@ final public class MyApplet extends JApplet{
             System.out.println("initial recycling " + (time3-time2));
             System.out.println("re- creation " + (time4-time3));
             
-            */
+            
             
  //           Item test = new Item(newsisi,t4); // shouldn't do this, we can because we are in package
             
@@ -287,15 +337,7 @@ final public class MyApplet extends JApplet{
             cnc.cls(0xFF0000FF);        
             t1.render(cnc);
             cnc.repaint();
-                  
-            debug.addActionListener(
-            		new ActionListener(){
-
-						@Override
-						public void actionPerformed(ActionEvent arg0) {
-							cnc.debug = true;
-						}}
-            		);  
+  
             
             // ********* OK Add stuff for picking *****
             i.setName("box1");
@@ -328,11 +370,12 @@ final public class MyApplet extends JApplet{
             cnc.addMouseListener( new MyMouseListener());
 
 	}
+	*/
     
     //***************************************************************
     //***************************************************************    
     //***************************************************************
-    //****************** END OF INIT ********************************
+    //****************** END OF OLD INIT ********************************
     //***************************************************************
     //***************************************************************
 
@@ -358,6 +401,7 @@ final public class MyApplet extends JApplet{
         return new Dimension(APP_WIDTH,APP_HEIGHT);
     }
     
+    /*
     public void outputPerformanceData(NitrogenContext nc)
     {
     	System.out.println("items rendered ............" + nc.itemsRendered);
@@ -366,6 +410,7 @@ final public class MyApplet extends JApplet{
     	System.out.println("polygonRendererCalls ......" + nc.polygonRendererCalls);
     	System.out.println("linesRendered ............." + nc.linesRendered);
     }
+    */
     
     void addTranslationControls(final NitrogenContext nc, final Transform t, final Transform root, Box controlBox, final float step)
     {
@@ -392,7 +437,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         );         
         x_minus.addActionListener(
@@ -404,7 +449,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         );  
         
@@ -417,7 +462,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         );         
         y_minus.addActionListener(
@@ -429,7 +474,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         );          
         z_plus.addActionListener(
@@ -444,7 +489,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         );         
         z_minus.addActionListener(
@@ -459,13 +504,13 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         );
     }
   	
     
-    
+    /*
     void addTurnControls(final NitrogenContext nc, final Transform t, final Transform root, Box controlBox, final float step)
     {
         JButton turn_plus = new JButton("turn+");
@@ -485,7 +530,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         		);
         
@@ -500,7 +545,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         		);
     } 
@@ -527,7 +572,7 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         		);
         
@@ -542,9 +587,10 @@ final public class MyApplet extends JApplet{
 						nc.cls(0xFF0000FF);
 						root.render(nc);
 						nc.repaint();
-						outputPerformanceData(nc);
+						// outputPerformanceData(nc);
 					}}
         		);
     }     
+    */
     
 }// end of MyApplet

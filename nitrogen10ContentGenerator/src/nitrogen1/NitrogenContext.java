@@ -73,12 +73,12 @@ public class NitrogenContext extends JButton{
     boolean transparencyPass = false;
     
     /** Stuff added for picking */
-    boolean isPicking = false;
-    boolean pickDetected = false;
-    Item pickedItem = null;
+    public boolean isPicking = false;
+    public boolean pickDetected = false;
+    public Item pickedItem = null;
     Item currentItem = null;
-    int pickX;
-    int pickY;
+    public int pickX;
+    public int pickY;
     
     /** Stuff added for performance evaluation */
     int itemsRendered = 0;
@@ -96,7 +96,7 @@ public class NitrogenContext extends JButton{
      * @param nearClip The distance between the viewer and the near Clip plane
      * @param farClip  The distance between the viewer and the far Clip plane
      */
-    NitrogenContext(int width, int height, float xClip, float yClip, float nearClip, float farClip)
+    public NitrogenContext(int width, int height, float xClip, float yClip, float nearClip, float farClip)
     {
     	this.xClip = xClip;
     	this.yClip = yClip;

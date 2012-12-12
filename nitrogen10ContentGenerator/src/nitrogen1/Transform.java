@@ -19,9 +19,9 @@ public class Transform implements Serializable{
 	private static boolean isSerializingRoot = true;
 	
 	/** The actual values of this transform */
-	float 			a11,a12,a13,a14;
-	float 			a21,a22,a23,a24;
-	float 			a31,a32,a33,a34;
+	public float 			a11,a12,a13,a14;
+	public float 			a21,a22,a23,a24;
+	public float 			a31,a32,a33,a34;
 	
 	/** Calculated view space transform  */
 	transient float c11,c12,c13,c14;

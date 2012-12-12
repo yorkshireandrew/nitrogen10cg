@@ -87,7 +87,7 @@ public class SharedImmutableSubItem implements Serializable{
 	 * Constructs a SharedImmutableSubItem from a text file
 	 * @param filename The name of text file used to initialise the SharedImmutableSubItem
 	 * @param renderMap	A Map that contains instances of all the available Renderer classes mapped to a name String */
-	SharedImmutableSubItem(final String filename) throws NitrogenCreationException{
+	public SharedImmutableSubItem(final String filename) throws NitrogenCreationException{
 		
         System.out.println("loading SISI from " + filename);
         Scanner in = null;
