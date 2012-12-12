@@ -46,6 +46,18 @@ final public class MyApplet extends JApplet{
 	private static final long serialVersionUID = 1799576836511527595L;
 	static final int APP_WIDTH = 501;
     static final int APP_HEIGHT =501;
+    
+    // 
+    JButton frontViewButton;
+    JButton rhsViewButton;
+    JButton backViewButton;
+    JButton lhsViewButton;
+    JButton topViewButton;
+    JButton bottomViewButton;
+    JButton threeDViewButton;
+    JButton texViewButton;
+    
+    
 //    static final Renderer simpleTextureRenderer = new Renderer_SimpleTexture();
 
 //    Transform t4_class;
@@ -56,16 +68,12 @@ final public class MyApplet extends JApplet{
     
     public void init()
 	{    
-        Box box_views = Box.createHorizontalBox();
-        Box box_renderWhat = Box.createHorizontalBox();
-        Box box_doWhat = Box.createHorizontalBox();
-        
-        JButton front_view = new JButton(new ImageIcon("//res//frontViewButton.PNG"));
-        box_views.add(front_view);
+        Box boxViews = Box.createHorizontalBox();
+        createViewsButtons(boxViews);
         
         getContentPane().setLayout(new BorderLayout());
 
-        getContentPane().add(box_views);
+        getContentPane().add(boxViews);
         getContentPane().validate();
         getContentPane().setVisible(true);
         
@@ -592,5 +600,25 @@ final public class MyApplet extends JApplet{
         		);
     }     
     */
+    
+    void createViewsButtons(Box b)
+    {
+        frontViewButton = new FixedSizeButton("/res/frontViewButton.PNG");
+        lhsViewButton = new FixedSizeButton("/res/lhsViewButton.PNG");
+        backViewButton = new FixedSizeButton("/res/backViewButton.PNG");
+       // rhsViewButton = new FixedSizeButton("/res/rhsViewButton.PNG");
+        //topViewButton = new FixedSizeButton("/res/topViewButton.PNG");
+        //bottomViewButton = new FixedSizeButton("/res/bottomViewButton.PNG");
+        //threeDViewButton = new FixedSizeButton("/res/threeDViewButton.PNG");
+        // texViewButton = new FixedSizeButton("/res/texViewButton.PNG");
+        b.add(frontViewButton);
+        b.add(lhsViewButton);
+        b.add(backViewButton);
+    //    b.add(rhsViewButton);
+      //  b.add(topViewButton);
+      //  b.add(bottomViewButton);
+      //  b.add(threeDViewButton);
+      //  b.add(texViewButton);
+                  }
     
 }// end of MyApplet
