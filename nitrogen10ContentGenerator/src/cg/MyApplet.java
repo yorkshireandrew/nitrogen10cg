@@ -604,7 +604,7 @@ final public class MyApplet extends JApplet{
     void createViewsButtons(Box b)
     {
         frontViewButton = new FixedSizeButton("/res/frontViewButton.PNG");
-        lhsViewButton = new FixedSizeButton("/res/lhsViewButton.PNG");
+        lhsViewButton = new FixedSizeButton("/res/leftViewButton.PNG");
         backViewButton = new FixedSizeButton("/res/backViewButton.PNG");
        // rhsViewButton = new FixedSizeButton("/res/rhsViewButton.PNG");
         //topViewButton = new FixedSizeButton("/res/topViewButton.PNG");
