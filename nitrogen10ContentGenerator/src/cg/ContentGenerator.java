@@ -22,21 +22,21 @@ public class ContentGenerator extends JFrame{
 	
 	
 	/** buttons for picking vertexes */
-	/*
-	final FixedSizeButton pickFrontVertexButton;
-	final FixedSizeButton pickBackVertexButton;
-	final FixedSizeButton pickXYZVertexButton;
-	final FixedSizeButton pickPolygonButton;
+	
+	FixedSizeButton pickFrontVertexButton;
+	FixedSizeButton pickBackVertexButton;
+	FixedSizeButton pickXYZVertexButton;
+	FixedSizeButton pickPolygonButton;
 	
 	/** buttons for selecting view type */
-	/* final FixedSizeButton vertexesOnlyButton;
-	final FixedSizeButton wireframeOnlyButton;
-	final FixedSizeButton fullRenderButton;
-	final FixedSizeButton showCollisionVertexesButton;
-	final FixedSizeButton perspectiveButton;
-	final FixedSizeButton textureButton;
-	final ButtonGroup viewTypeButtonGroup;
-	*/
+	FixedSizeIconToggleButton vertexesOnlyButton;
+	FixedSizeIconToggleButton wireframeOnlyButton;
+	FixedSizeIconToggleButton fullRenderButton;
+	FixedSizeIconToggleButton showCollisionVertexesButton;
+	FixedSizeIconToggleButton perspectiveButton;
+	FixedSizeIconToggleButton textureButton;
+	ButtonGroup viewTypeButtonGroup;
+	
 	
 	/** buttons for creating or editing */
 	/*
@@ -94,6 +94,7 @@ public class ContentGenerator extends JFrame{
 		testBox.add(test1);
 		testBox.add(test2);
 		createViewButtons(testBox);
+		createViewTypeButtons(testBox);
 		getContentPane().add(testBox);
 		getContentPane().validate();
 		
@@ -107,6 +108,7 @@ public class ContentGenerator extends JFrame{
 		myContentGenerator.setVisible(true);
 	}
 	
+	/** creates the view buttons in the container supplied */
 	void createViewButtons(Container container)
 	{
 		Box topBox = new Box(BoxLayout.X_AXIS);
@@ -150,8 +152,33 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(topBox);
 		outerBox.add(midBox);
 		outerBox.add(bottomBox);
-		container.add(outerBox);
+		container.add(outerBox);	
+	}
+	
+	void createViewTypeButtons(Container container)
+	{
+		Box outerBox = new Box(BoxLayout.X_AXIS);
 		
+		vertexesOnlyButton = new FixedSizeIconToggleButton(this,"/res/vertexesOnlyButton.PNG","/res/vertexesOnlySelectedButton.PNG");
+		outerBox.add(vertexesOnlyButton);
+		wireframeOnlyButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyButton.PNG","/res/wireframeOnlySelectedButton.PNG");
+		outerBox.add(wireframeOnlyButton);
+		fullRenderButton = new FixedSizeIconToggleButton(this,"/res/fullRenderButton.PNG","/res/fullRenderSelectedButton.PNG");
+		outerBox.add(fullRenderButton);
+		showCollisionVertexesButton = new FixedSizeIconToggleButton(this,"/res/showCollisionVertexesButton.PNG","/res/showCollisionVertexesSelectedButton.PNG");
+		outerBox.add(showCollisionVertexesButton);
+		perspectiveButton = new FixedSizeIconToggleButton(this,"/res/perspectiveButton.PNG","/res/perspectiveSelectedButton.PNG");
+		outerBox.add(perspectiveButton);
+		textureButton = new FixedSizeIconToggleButton(this,"/res/textureButton.PNG","/res/textureSelectedButton.PNG");
+		outerBox.add(textureButton);
+		
+		viewTypeButtonGroup = new ButtonGroup();
+		viewTypeButtonGroup.add(vertexesOnlyButton);
+		viewTypeButtonGroup.add(wireframeOnlyButton);
+		viewTypeButtonGroup.add(fullRenderButton);
+		vertexesOnlyButton.setSelected(true);
+		
+		container.add(outerBox);	
 	}
 
 }
