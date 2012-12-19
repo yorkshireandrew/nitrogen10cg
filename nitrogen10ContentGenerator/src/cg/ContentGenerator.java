@@ -10,8 +10,7 @@ import java.io.*;
 
 public class ContentGenerator extends JFrame{
 	
-	/** buttons for selecting the view */
-	
+	/** buttons for selecting the view */	
 	FixedSizeIconToggleButton frontViewButton;
 	FixedSizeIconToggleButton leftViewButton;
 	FixedSizeIconToggleButton backViewButton;
@@ -21,8 +20,7 @@ public class ContentGenerator extends JFrame{
 	ButtonGroup viewButtonGroup;
 	
 	
-	/** buttons for picking vertexes */
-	
+	/** buttons for picking vertexes */	
 	FixedSizeButton pickFrontVertexButton;
 	FixedSizeButton pickBackVertexButton;
 	FixedSizeButton pickXYZVertexButton;
@@ -38,14 +36,14 @@ public class ContentGenerator extends JFrame{
 	ButtonGroup viewTypeButtonGroup;
 	
 	
-	/** buttons for creating or editing */
-	/*
-	final FixedSizeButton moveVertexButton;
-	final FixedSizeButton newVertexDataButton;
-	final FixedSizeButton newPolygonDataButton;
-	final FixedSizeButton newTextureMapButton;
-	final FixedSizeButton newPolygonButton;
-	*/
+	/** buttons for creating or editing */	
+	FixedSizeButton moveVertexButton;
+	FixedSizeButton newVertexButton;
+	FixedSizeButton newVertexDataButton;
+	FixedSizeButton newPolygonDataButton;
+	FixedSizeButton newTextureMapButton;
+	FixedSizeButton newPolygonButton;
+	
 	
 	/** buttons for adding vertexes to working polygon */
 	/*
@@ -87,15 +85,20 @@ public class ContentGenerator extends JFrame{
 			);		
 //		JButton test3 = new JButton(new ImageIcon(getClass().getResource("/res/frontViewButton.PNG")));
 
-		
-		testButtonGroup.add(test1);
-		testButtonGroup.add(test2);
+	
 		Box testBox = new Box(BoxLayout.Y_AXIS);
-		testBox.add(test1);
-		testBox.add(test2);
 		createViewButtons(testBox);
+		createLeftAlignedLabel(testBox,"View");
 		createViewTypeButtons(testBox);
-		getContentPane().add(testBox);
+		createLeftAlignedLabel(testBox,"Picking");	
+		createPickingButtons(testBox);
+		createLeftAlignedLabel(testBox,"Creation");			
+		createNewItemComponentButtons(testBox);
+		testBox.add(Box.createVerticalGlue());
+		Box outerBox = new Box(BoxLayout.X_AXIS);
+		outerBox.add(new JButton("blah"));
+		outerBox.add(testBox);
+		getContentPane().add(outerBox);
 		getContentPane().validate();
 		
 	}
@@ -121,7 +124,7 @@ public class ContentGenerator extends JFrame{
 		topBox.add(topViewButton);
 		topBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
 		topBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
-
+		topBox.add(Box.createHorizontalGlue());
 		// create mid box
 		frontViewButton = new FixedSizeIconToggleButton(this,"/res/frontViewButton.PNG","/res/frontViewButtonSelected.PNG");
 		midBox.add(frontViewButton);
@@ -131,6 +134,7 @@ public class ContentGenerator extends JFrame{
 		midBox.add(backViewButton);
 		rightViewButton = new FixedSizeIconToggleButton(this,"/res/rightViewButton.PNG","/res/rightViewButtonSelected.PNG");
 		midBox.add(rightViewButton);
+		midBox.add(Box.createHorizontalGlue());		
 		
 		// create bottom box
 		bottomBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
@@ -138,6 +142,7 @@ public class ContentGenerator extends JFrame{
 		bottomBox.add(bottomViewButton);
 		bottomBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
 		bottomBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
+		bottomBox.add(Box.createHorizontalGlue());		
 		
 		viewButtonGroup = new ButtonGroup();
 		viewButtonGroup.add(topViewButton);
@@ -171,6 +176,7 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(perspectiveButton);
 		textureButton = new FixedSizeIconToggleButton(this,"/res/textureButton.PNG","/res/textureSelectedButton.PNG");
 		outerBox.add(textureButton);
+		outerBox.add(Box.createHorizontalGlue());
 		
 		viewTypeButtonGroup = new ButtonGroup();
 		viewTypeButtonGroup.add(vertexesOnlyButton);
@@ -179,6 +185,52 @@ public class ContentGenerator extends JFrame{
 		vertexesOnlyButton.setSelected(true);
 		
 		container.add(outerBox);	
+	}
+	
+	void createPickingButtons(Container container)
+	{
+		Box outerBox = new Box(BoxLayout.X_AXIS);
+		
+		pickFrontVertexButton = new FixedSizeButton("/res/pickFrontVertexButton.PNG");
+		outerBox.add(pickFrontVertexButton);
+		pickBackVertexButton = new FixedSizeButton("/res/pickBackVertexButton.PNG");
+		outerBox.add(pickBackVertexButton);
+		pickXYZVertexButton = new FixedSizeButton("/res/pickXYZVertexButton.PNG");
+		outerBox.add(pickXYZVertexButton);
+		pickPolygonButton = new FixedSizeButton("/res/pickPolygonButton.PNG");
+		outerBox.add(pickPolygonButton);
+		outerBox.add(Box.createHorizontalGlue());
+		container.add(outerBox);	
+	}
+	
+	void createNewItemComponentButtons(Container container)
+	{
+		Box outerBox = new Box(BoxLayout.X_AXIS);
+		
+		moveVertexButton = new FixedSizeButton("/res/moveVertexButton.PNG");
+		outerBox.add(moveVertexButton);
+		newVertexButton = new FixedSizeButton("/res/newVertexButton.PNG");
+		outerBox.add(newVertexButton);
+		newVertexDataButton = new FixedSizeButton("/res/newVertexDataButton.PNG");
+		outerBox.add(newVertexDataButton);
+		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
+		outerBox.add(newPolygonButton);
+		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
+		outerBox.add(newPolygonDataButton);
+		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
+		outerBox.add(newPolygonDataButton);
+		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
+		outerBox.add(newTextureMapButton);
+		outerBox.add(Box.createHorizontalGlue());
+		container.add(outerBox);	
+	}
+	
+	void createLeftAlignedLabel(Container container, String st)
+	{
+		Box retval = new Box(BoxLayout.X_AXIS);
+		retval.add(new JLabel(st));
+		retval.add(Box.createHorizontalGlue());
+		container.add(retval);	
 	}
 
 }
