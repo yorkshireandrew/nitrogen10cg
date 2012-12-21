@@ -37,4 +37,12 @@ public Dimension getMaximumSize()
     return new Dimension(w,h);
 }
 
+public void setIcon(String st)
+{
+	ImageIcon i = new ImageIcon(getClass().getResource(st));
+	h = i.getIconHeight();
+	w = i.getIconWidth();
+	this.setIcon(i);
+}
+
 }

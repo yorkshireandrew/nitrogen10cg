@@ -44,22 +44,37 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton newTextureMapButton;
 	FixedSizeButton newPolygonButton;
 	
+	/** TextBoxes containing xyz coordinates etc*/
+	// working cursor/vertex related
+	JTextField indexTextField;	
+	JTextField xTextField;	
+	JTextField yTextField;
+	JTextField zTextField;
 	
-	/** buttons for adding vertexes to working polygon */
-	/*
-	final FixedSizeButton addPolygonVertex1;
-	final FixedSizeButton addPolygonVertex2;
-	final FixedSizeButton addPolygonVertex3;
-	final FixedSizeButton addPolygonVertex4;
-	*/
+	// polygon vertex1
+	JTextField vertex1IndexTextField;	
+	JTextField vertex1xTextField;	
+	JTextField vertex1yTextField;
+	JTextField vertex1zTextField;
+
 	
-	/** buttons for moving working vertex to a polygon vertex */
-	/*
-	final FixedSizeButton moveToPolygonVertex1;
-	final FixedSizeButton moveToPolygonVertex2;
-	final FixedSizeButton moveToPolygonVertex3;
-	final FixedSizeButton moveToPolygonVertex4;	
-	*/
+	
+	
+	
+	
+	/** buttons for adding vertexes to working polygon */	
+	FixedSizeButton addPolygonVertex1;
+	FixedSizeButton addPolygonVertex2;
+	FixedSizeButton addPolygonVertex3;
+	FixedSizeButton addPolygonVertex4;
+	
+	
+	/** buttons for moving working vertex to a polygon vertex */	
+	FixedSizeButton moveToPolygonVertex1;
+	FixedSizeButton moveToPolygonVertex2;
+	FixedSizeButton moveToPolygonVertex3;
+	FixedSizeButton moveToPolygonVertex4;	
+	
 	
 	FixedSizeIconToggleButton test1;
 	FixedSizeIconToggleButton test2;
@@ -85,7 +100,6 @@ public class ContentGenerator extends JFrame{
 			);		
 //		JButton test3 = new JButton(new ImageIcon(getClass().getResource("/res/frontViewButton.PNG")));
 
-	
 		Box testBox = new Box(BoxLayout.Y_AXIS);
 		createViewButtons(testBox);
 		createLeftAlignedLabel(testBox,"View");
@@ -94,6 +108,7 @@ public class ContentGenerator extends JFrame{
 		createPickingButtons(testBox);
 		createLeftAlignedLabel(testBox,"Creation");			
 		createNewItemComponentButtons(testBox);
+		createNewPolygonVertexGUI(testBox);
 		testBox.add(Box.createVerticalGlue());
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		outerBox.add(new JButton("blah"));
@@ -222,6 +237,17 @@ public class ContentGenerator extends JFrame{
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
 		outerBox.add(newTextureMapButton);
 		outerBox.add(Box.createHorizontalGlue());
+		container.add(outerBox);	
+	}
+	
+	void createNewPolygonVertexGUI(Container container)
+	{
+		Box outerBox = new Box(BoxLayout.Y_AXIS);
+		for(int i = 0; i < 4; i++)
+		{
+			PolygonVertexGUI pvgui = new PolygonVertexGUI(this, i);
+			pvgui.createPolygonGUI(outerBox);
+		}
 		container.add(outerBox);	
 	}
 	
