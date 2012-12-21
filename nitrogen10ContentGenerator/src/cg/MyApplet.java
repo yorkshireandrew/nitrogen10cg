@@ -15,19 +15,19 @@ package cg;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import nitrogen1.Item;
-import nitrogen1.ItemFactory_Caching;
-import nitrogen1.ItemFactory_Default;
-import nitrogen1.NitrogenContext;
-import nitrogen1.NitrogenCreationException;
-import nitrogen1.Renderer;
-import nitrogen1.RendererHelper;
-import nitrogen1.RendererTriplet;
-import nitrogen1.Renderer_Picking;
-import nitrogen1.Renderer_SimpleSingleColour;
-import nitrogen1.Renderer_SimpleTexture;
-import nitrogen1.SharedImmutableSubItem;
-import nitrogen1.Transform;
+import modified_nitrogen1.Item;
+import modified_nitrogen1.ItemFactory_Caching;
+import modified_nitrogen1.ItemFactory_Default;
+import modified_nitrogen1.NitrogenContext;
+import modified_nitrogen1.NitrogenCreationException;
+import modified_nitrogen1.Renderer;
+import modified_nitrogen1.RendererHelper;
+import modified_nitrogen1.RendererTriplet;
+import modified_nitrogen1.Renderer_Picking;
+import modified_nitrogen1.Renderer_SimpleSingleColour;
+import modified_nitrogen1.Renderer_SimpleTexture;
+import modified_nitrogen1.SharedImmutableSubItem;
+import modified_nitrogen1.Transform;
 
 import java.awt.*;  // needed for Dimension class
 import java.awt.event.*;  // needed for ActionListener

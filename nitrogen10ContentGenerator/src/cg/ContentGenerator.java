@@ -8,7 +8,12 @@ import java.awt.event.*;
 import java.awt.image.*;
 import java.io.*;
 
+import modified_nitrogen1.*;
+
 public class ContentGenerator extends JFrame{
+	
+	/** the main screen */
+	NitrogenContext nc;
 	
 	/** buttons for selecting the view */	
 	FixedSizeIconToggleButton frontViewButton;
@@ -56,11 +61,6 @@ public class ContentGenerator extends JFrame{
 	JTextField vertex1xTextField;	
 	JTextField vertex1yTextField;
 	JTextField vertex1zTextField;
-
-	
-	
-	
-	
 	
 	/** buttons for adding vertexes to working polygon */	
 	FixedSizeButton addPolygonVertex1;
@@ -99,22 +99,35 @@ public class ContentGenerator extends JFrame{
 			new ImageIcon(getClass().getResource("/res/leftViewButtonSelected.PNG"))
 			);		
 //		JButton test3 = new JButton(new ImageIcon(getClass().getResource("/res/frontViewButton.PNG")));
-
+		
+		// create nitrogen context
+		//int width, int height, float xClip, float yClip, float nearClip, float farClip
+		nc = new NitrogenContext(740,600,1,1,1, 1000);
+        nc.cls(0xFF000000);        
+        nc.repaint();
+		
+		createMenu();
 		Box testBox = new Box(BoxLayout.Y_AXIS);
 		createViewButtons(testBox);
+		/*
 		createLeftAlignedLabel(testBox,"View");
 		createViewTypeButtons(testBox);
 		createLeftAlignedLabel(testBox,"Picking");	
 		createPickingButtons(testBox);
 		createLeftAlignedLabel(testBox,"Creation");			
 		createNewItemComponentButtons(testBox);
+		*/
 		createNewPolygonVertexGUI(testBox);
-		testBox.add(Box.createVerticalGlue());
+		testBox.add(Box.createHorizontalGlue());
 		Box outerBox = new Box(BoxLayout.X_AXIS);
-		outerBox.add(new JButton("blah"));
+		outerBox.add(nc);
+		outerBox.add(Box.createHorizontalGlue());
 		outerBox.add(testBox);
+//		getContentPane().setLayout(new FlowLayout());
 		getContentPane().add(outerBox);
 		getContentPane().validate();
+		
+		
 		
 	}
 	
@@ -242,13 +255,56 @@ public class ContentGenerator extends JFrame{
 	
 	void createNewPolygonVertexGUI(Container container)
 	{
+		Box outerouterbox = new Box(BoxLayout.X_AXIS);
 		Box outerBox = new Box(BoxLayout.Y_AXIS);
+//		outerBox.setSize(300, 100);
 		for(int i = 0; i < 4; i++)
 		{
 			PolygonVertexGUI pvgui = new PolygonVertexGUI(this, i);
-			pvgui.createPolygonGUI(outerBox);
+			pvgui.createPolygonGUI(outerBox);		
 		}
-		container.add(outerBox);	
+		outerBox.setBorder(BorderFactory.createLineBorder(Color.black));
+		outerouterbox.add(outerBox);
+		outerouterbox.add(Box.createHorizontalGlue());
+		container.add(outerouterbox);
+	}
+	
+	void createMenu()
+	{
+    // *** create menu ***
+    JMenuBar my_menu = new JMenuBar();
+    JMenu file = new JMenu("File");
+    JMenu edit = new JMenu("Edit");
+    JMenuItem item;
+    
+    //
+    file.add(item = new JMenuItem("Save..."));
+//  item.addActionListener(new mySourceFileListener());  
+    file.add(item = new JMenuItem("Save and clip..."));
+//  item.addActionListener(new mySourceFileListener());  
+    file.add(item = new JMenuItem("Load..."));
+//  item.addActionListener(new mySourceFileListener());  
+    file.add(item = new JMenuItem("Export..."));
+//  item.addActionListener(new mySourceFileListener());  
+    
+    edit.add(item = new JMenuItem("Template..."));
+    edit.add(item = new JMenuItem("Circle..."));
+    edit.add(item = new JMenuItem("Remove Polygon"));
+    edit.add(item = new JMenuItem("Collision Vertexes..."));
+    edit.add(item = new JMenuItem("Move Origin..."));
+    edit.add(item = new JMenuItem("Scale..."));
+    
+    my_menu.add(file); 
+    my_menu.add(edit);
+    my_menu.add(Box.createHorizontalGlue());
+    createViewTypeButtons(my_menu);
+    my_menu.add(Box.createHorizontalGlue());
+	createPickingButtons(my_menu);
+	my_menu.add(Box.createHorizontalGlue());
+	createNewItemComponentButtons(my_menu);
+	
+    
+    this.setJMenuBar(my_menu);
 	}
 	
 	void createLeftAlignedLabel(Container container, String st)
