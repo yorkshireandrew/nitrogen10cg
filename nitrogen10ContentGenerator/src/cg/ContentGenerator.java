@@ -12,6 +12,11 @@ import modified_nitrogen1.*;
 
 public class ContentGenerator extends JFrame{
 	
+	// constants
+	static final int EDIT_SCREEN_WIDTH 	= 1000;
+	static final int EDIT_SCREEN_HEIGHT = 600;
+	static final int EDIT_SCREEN_SIZE 	= EDIT_SCREEN_WIDTH * EDIT_SCREEN_HEIGHT;
+
 	/** the main screen */
 	NitrogenContext nc;
 	
@@ -88,7 +93,9 @@ public class ContentGenerator extends JFrame{
 	static final int TOP 	= 4;
 	static final int BOTTOM = 5;
 	
-	String[] templateFileName = new String[6];
+//	String[] templateFileName = new String[6];
+	TemplateModel[] templateModels = new TemplateModel[6];
+	
 
 	ContentGenerator()
 	{
@@ -115,27 +122,26 @@ public class ContentGenerator extends JFrame{
 		nc = new NitrogenContext(740,600,1,1,1, 1000);
         nc.cls(0xFF000000);        
         nc.repaint();
+        
+        // create templateModels for all six views
+        for(int i = 0 ; i < 6 ; i++)
+        {
+        	templateModels[i] =  new TemplateModel(this);
+        }
 		
 		createMenu();
 		Box testBox = new Box(BoxLayout.Y_AXIS);
 		createViewButtons(testBox);
-		/*
-		createLeftAlignedLabel(testBox,"View");
-		createViewTypeButtons(testBox);
-		createLeftAlignedLabel(testBox,"Picking");	
-		createPickingButtons(testBox);
-		createLeftAlignedLabel(testBox,"Creation");			
-		createNewItemComponentButtons(testBox);
-		*/
 		createNewPolygonVertexGUI(testBox);
 		testBox.add(Box.createHorizontalGlue());
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		outerBox.add(nc);
 		outerBox.add(Box.createHorizontalGlue());
 		outerBox.add(testBox);
-//		getContentPane().setLayout(new FlowLayout());
 		getContentPane().add(outerBox);
 		getContentPane().validate();
+		
+		
 		
 		
 		
@@ -335,13 +341,12 @@ class TemplateAction extends AbstractAction
 	ContentGenerator cg;
 	TemplateAction(ContentGenerator cg)
 	{
-		super();
-		this.putValue("ContextGenerator", cg);
+		this.cg = cg;
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		TemplateDialog td = new TemplateDialog((ContentGenerator)this.getValue("ContextGenerator"));
-
+		TemplateDialog td = new TemplateDialog(cg,cg.templateModels[cg.viewDirection]);
 		td.setVisible(true);
 	}
 	
