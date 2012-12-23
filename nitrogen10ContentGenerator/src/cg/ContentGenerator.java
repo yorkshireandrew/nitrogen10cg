@@ -79,6 +79,16 @@ public class ContentGenerator extends JFrame{
 	FixedSizeIconToggleButton test1;
 	FixedSizeIconToggleButton test2;
 	final ButtonGroup testButtonGroup;	
+	
+	int viewDirection;
+	static final int FRONT 	= 0;
+	static final int LEFT 	= 1;
+	static final int BACK 	= 2;
+	static final int RIGHT 	= 3;
+	static final int TOP 	= 4;
+	static final int BOTTOM = 5;
+	
+	String[] templateFileName = new String[6];
 
 	ContentGenerator()
 	{
@@ -180,6 +190,7 @@ public class ContentGenerator extends JFrame{
 		viewButtonGroup.add(rightViewButton);
 		viewButtonGroup.add(bottomViewButton);
 		frontViewButton.setSelected(true);
+		viewDirection = FRONT;
 		
 		Box outerBox = new Box(BoxLayout.Y_AXIS);
 		outerBox.add(topBox);
@@ -288,6 +299,7 @@ public class ContentGenerator extends JFrame{
 //  item.addActionListener(new mySourceFileListener());  
     
     edit.add(item = new JMenuItem("Template..."));
+    item.addActionListener(new TemplateAction(this));  
     edit.add(item = new JMenuItem("Circle..."));
     edit.add(item = new JMenuItem("Remove Polygon"));
     edit.add(item = new JMenuItem("Collision Vertexes..."));
@@ -315,4 +327,22 @@ public class ContentGenerator extends JFrame{
 		container.add(retval);	
 	}
 
+}
+
+class TemplateAction extends AbstractAction
+{
+
+	ContentGenerator cg;
+	TemplateAction(ContentGenerator cg)
+	{
+		super();
+		this.putValue("ContextGenerator", cg);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		TemplateDialog td = new TemplateDialog((ContentGenerator)this.getValue("ContextGenerator"));
+
+		td.setVisible(true);
+	}
+	
 }
