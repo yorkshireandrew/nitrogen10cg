@@ -11,13 +11,16 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 // import javax.swing.JFrame;
+import javax.swing.JSpinner;
+import javax.swing.event.ChangeListener;
 
-public class TemplateDialog extends JDialog
+public class TemplateDialog extends JDialog implements ChangeListener
 {
 	JTextField fileNameTextField;
-	JTextField leftRightOffsetTextField;
-	JTextField downUpOffsetTextField;
+	JSpinner leftRightSpinner;
+	JSpinner downUpSpinner;
 	JTextField scale;
 	TemplateDialog(final ContentGenerator cg, final TemplateModel tm)
 	{
@@ -40,7 +43,7 @@ public class TemplateDialog extends JDialog
 		// *** CLEANER FIX FOR JTextField (which also works) ***
 		fileNameTextField.setMaximumSize(fileNameTextField.getPreferredSize());
 
-		//
+		// initialise fileNameTextField from the TemplateModel
 		if (tm.templateFile != null)
 		{
 			fileNameTextField.setText(tm.templateFile.getName());
@@ -49,6 +52,14 @@ public class TemplateDialog extends JDialog
 		{
 			fileNameTextField.setText("none");
 		}
+		
+		// initialise the leftRightSpinner
+		leftRightSpinner = new JSpinner();
+		leftRightSpinner.setModel(new SpinnerNumberModel(tm.leftRightOffset,-500,500,1));
+		leftRightSpinner.addChangeListener(this);
+		
+				
+				
 		
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(
@@ -99,10 +110,13 @@ public class TemplateDialog extends JDialog
 		);
 		Box dialog = new Box(BoxLayout.Y_AXIS);	
 		//   dialog.add(tp);
-		dialog.add(fileNameTextField);
-		// fix forces JTextBox to not expand
-		// dialog.add(Box.createHorizontalGlue());
-		dialog.add(fileChooserButton);
+		
+		Box fileBox = new Box(BoxLayout.X_AXIS);
+		fileBox.add(fileNameTextField);
+		fileBox.add(fileChooserButton);		
+		dialog.add(fileBox);
+		
+		dialog.add(leftRightSpinner);
 		dialog.add(okButton);
 		this.add(dialog);
 		this.setSize(400,150);
@@ -112,4 +126,18 @@ public class TemplateDialog extends JDialog
         
 //        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
+	
+    public void stateChanged(javax.swing.event.ChangeEvent evt) {
+
+       if (evt.getSource() == leftRightSpinner) {
+            this.leftRightSpinnerStateChanged(evt);
+        }
+    }
+    
+    public void leftRightSpinnerStateChanged(javax.swing.event.ChangeEvent evt)
+    {
+    	System.out.println("TO DO - do something the spinner changed");
+    }
+    
+    
 }
