@@ -15,23 +15,39 @@ import javax.swing.JTextField;
 
 public class TemplateDialog extends JDialog
 {
-	JTextField t;
+	JTextField fileNameTextField;
+	JTextField leftRightOffsetTextField;
+	JTextField downUpOffsetTextField;
+	JTextField scale;
 	TemplateDialog(final ContentGenerator cg, final TemplateModel tm)
 	{
 
-		// initialise file text field
+		// create a (final) reference to this template dialog
+		// so it can be passed to the ActionListeners for OK button etc.
 		final TemplateDialog td = this;
-		t = new JTextField(null,10);
-		JPanel tp = new JPanel();
-		tp.add(t);
-		tp.add(Box.createHorizontalGlue());
+		
+		// create and initialise the fileNameText Field
+		fileNameTextField = new JTextField(null,10);
+		fileNameTextField.setEnabled(false);
+		
+		// *** FIX FOR JTextField (which works) ***
+		// place JTextField in a JPanel with flow layout
+		// to prevent it expanding
+		// add fileNameTextFieldPanel into TemplateDialog instead
+		//   JPanel fileNameTextFieldPanel = new JPanel();
+		//   fileNameTextFieldPanel.add(fileNameTextField);
+		
+		// *** CLEANER FIX FOR JTextField (which also works) ***
+		fileNameTextField.setMaximumSize(fileNameTextField.getPreferredSize());
+
+		//
 		if (tm.templateFile != null)
 		{
-			t.setText(tm.templateFile.getName());
+			fileNameTextField.setText(tm.templateFile.getName());
 		}
 		else
 		{
-			t.setText("none");
+			fileNameTextField.setText("none");
 		}
 		
 		JButton okButton = new JButton("OK");
@@ -69,8 +85,8 @@ public class TemplateDialog extends JDialog
 
 			        if (retval == JFileChooser.APPROVE_OPTION) {
 			            tm.templateFile = fileChooser.getSelectedFile();
-			            t.setText(tm.templateFile.getName());
-			            t.repaint();
+			            fileNameTextField.setText(tm.templateFile.getName());
+			            fileNameTextField.repaint();
 			            System.out.println("Opening: " + tm.templateFile.getName());
 			            // TO DO cause the model to update
 			            
@@ -82,8 +98,10 @@ public class TemplateDialog extends JDialog
 				}
 		);
 		Box dialog = new Box(BoxLayout.Y_AXIS);	
-		dialog.add(tp);
-		dialog.add(Box.createHorizontalGlue());
+		//   dialog.add(tp);
+		dialog.add(fileNameTextField);
+		// fix forces JTextBox to not expand
+		// dialog.add(Box.createHorizontalGlue());
 		dialog.add(fileChooserButton);
 		dialog.add(okButton);
 		this.add(dialog);
