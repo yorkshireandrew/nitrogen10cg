@@ -3,13 +3,16 @@ package cg;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 // import javax.swing.JFrame;
@@ -20,14 +23,37 @@ public class TemplateDialog extends JDialog implements ChangeListener
 {
 	JTextField fileNameTextField;
 	JSpinner leftRightSpinner;
+	String leftRightString;
 	JSpinner downUpSpinner;
-	JTextField scale;
+	String downUpString;
+	JSpinner scaleSpinner;
+	JSlider intensitySlider;
+	JSlider oppositeSideIntensitySlider;
+	
+	JLabel leftRightLabel 				= new JLabel("leftRightLabelNeedsSetting");
+	JLabel downUpLabel 					= new JLabel("downUpLabelNeedsSetting");
+	JLabel scaleLabel 					= new JLabel("Scale x1000   ");
+	JLabel intensityLabel 				= new JLabel("Intensity     ");
+	JLabel oppositeSideIntensityLabel 	= new JLabel("opposite side ");
+	
+	private TemplateModel tm;
+	
+	/** The state of the TemplateModel when this TemplateDialog was constructed */
+	TemplateModel initialState;
+	
 	TemplateDialog(final ContentGenerator cg, final TemplateModel tm)
 	{
 
 		// create a (final) reference to this template dialog
 		// so it can be passed to the ActionListeners for OK button etc.
 		final TemplateDialog td = this;
+		
+		// save state of passed in TemplateModel in case user hits cancel 
+		initialState = TemplateModel.copy(tm);
+		
+		// set tm field so handlers can use it
+		// and they do not have to be in this constructor
+		this.tm = tm;
 		
 		// create and initialise the fileNameText Field
 		fileNameTextField = new JTextField(null,10);
@@ -53,13 +79,39 @@ public class TemplateDialog extends JDialog implements ChangeListener
 			fileNameTextField.setText("none");
 		}
 		
+
+		
 		// initialise the leftRightSpinner
 		leftRightSpinner = new JSpinner();
 		leftRightSpinner.setModel(new SpinnerNumberModel(tm.leftRightOffset,-500,500,1));
 		leftRightSpinner.addChangeListener(this);
+		leftRightSpinner.setMaximumSize(leftRightSpinner.getPreferredSize());
+
+		// initialise the downUpSpinner
+		downUpSpinner = new JSpinner();
+		downUpSpinner.setModel(new SpinnerNumberModel(tm.downUpOffset,-500,500,1));
+		downUpSpinner.addChangeListener(this);
+		downUpSpinner.setMaximumSize(downUpSpinner.getPreferredSize());
 		
-				
-				
+		// initialise the scaleSpinner
+		scaleSpinner = new JSpinner();
+		scaleSpinner.setModel(new SpinnerNumberModel(tm.scale,0,10000,10));
+		scaleSpinner.addChangeListener(this);
+		scaleSpinner.setMaximumSize(scaleSpinner.getPreferredSize());
+		
+		// initialise the intensity slider
+		intensitySlider = new JSlider();
+		intensitySlider.setModel(new DefaultBoundedRangeModel(tm.intensity,1,0,100));
+		intensitySlider.setMinorTickSpacing(10);
+		intensitySlider.setPaintTicks(true);
+		intensitySlider.addChangeListener(this);
+		
+		// initialise the oppositeSideIntensity slider
+		oppositeSideIntensitySlider = new JSlider();
+		oppositeSideIntensitySlider.setModel(new DefaultBoundedRangeModel(tm.oppositeSideIntensity,1,0,100));
+		oppositeSideIntensitySlider.setMinorTickSpacing(10);
+		oppositeSideIntensitySlider.setPaintTicks(true);	
+		oppositeSideIntensitySlider.addChangeListener(this);
 		
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(
@@ -108,18 +160,60 @@ public class TemplateDialog extends JDialog implements ChangeListener
 					}	
 				}
 		);
-		Box dialog = new Box(BoxLayout.Y_AXIS);	
-		//   dialog.add(tp);
 		
+		// create and fill fileBox
 		Box fileBox = new Box(BoxLayout.X_AXIS);
 		fileBox.add(fileNameTextField);
-		fileBox.add(fileChooserButton);		
-		dialog.add(fileBox);
+		fileBox.add(fileChooserButton);
+		fileBox.add(Box.createHorizontalGlue());
 		
-		dialog.add(leftRightSpinner);
+		// create and fill leftRightBox
+		Box leftRightBox = new Box(BoxLayout.X_AXIS);
+		leftRightBox.add(leftRightLabel);		
+		leftRightBox.add(leftRightSpinner);
+		leftRightBox.add(Box.createHorizontalGlue());
+		
+		// create and fill downUpBox
+		Box downUpBox = new Box(BoxLayout.X_AXIS);
+		downUpBox.add(downUpLabel);		
+		downUpBox.add(downUpSpinner);
+		downUpBox.add(Box.createHorizontalGlue());
+		
+		// create and fill scaleBox
+		Box scaleBox = new Box(BoxLayout.X_AXIS);
+		scaleBox.add(scaleLabel);		
+		scaleBox.add(scaleSpinner);
+		scaleBox.add(Box.createHorizontalGlue());
+		
+		// create and fill intensityBox
+		Box intensityBox = new Box(BoxLayout.X_AXIS);
+		intensityBox.add(intensityLabel);		
+		intensityBox.add(intensitySlider);
+		intensityBox.add(Box.createHorizontalGlue());		
+
+		// create and fill oppositeSideIntensityBox
+		Box oppositeSideIntensityBox = new Box(BoxLayout.X_AXIS);
+		oppositeSideIntensityBox.add(oppositeSideIntensityLabel);		
+		oppositeSideIntensityBox.add(oppositeSideIntensitySlider);
+		oppositeSideIntensityBox.add(Box.createHorizontalGlue());
+		
+		// create a dialogBox and add everything to it
+		Box dialog = new Box(BoxLayout.Y_AXIS);	
+		dialog.add(fileBox);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(leftRightBox);
+		dialog.add(Box.createVerticalGlue());		
+		dialog.add(downUpBox);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(scaleBox);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(intensityBox);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(oppositeSideIntensityBox);
+		dialog.add(Box.createVerticalGlue());
 		dialog.add(okButton);
 		this.add(dialog);
-		this.setSize(400,150);
+		this.setSize(400,250);
 		this.setModal(true);
 		this.validate();
 		this.setLocationRelativeTo(cg);
@@ -128,15 +222,59 @@ public class TemplateDialog extends JDialog implements ChangeListener
 	}
 	
     public void stateChanged(javax.swing.event.ChangeEvent evt) {
-
+    	
+    	// handle leftRightSpinner
        if (evt.getSource() == leftRightSpinner) {
-            this.leftRightSpinnerStateChanged(evt);
-        }
+    	    tm.leftRightOffset = (Integer)leftRightSpinner.getModel().getValue();
+    	    System.out.println("leftRightSpinner = " + tm.leftRightOffset);
+       }
+       
+       // handle downUpSpinner
+       if (evt.getSource() == downUpSpinner) {
+   	    tm.downUpOffset = (Integer)downUpSpinner.getModel().getValue();
+   	    System.out.println("downUpSpinner = " + tm.downUpOffset);
+       }
+       
+      // handle scaleSpinner
+       if (evt.getSource() == scaleSpinner) {
+      	    tm.scale = (Integer)scaleSpinner.getModel().getValue();
+      	    System.out.println("scaleSpinner = " + tm.scale);
+       }
+       
+       // handle scaleSpinner
+       if (evt.getSource() == scaleSpinner) {
+      	    tm.scale = (Integer)scaleSpinner.getModel().getValue();
+      	    System.out.println("scaleSpinner = " + tm.scale);
+       }  
+       
+       // handle intensitySlider
+       if (evt.getSource() == intensitySlider) {
+    	    DefaultBoundedRangeModel dbrm = (DefaultBoundedRangeModel)intensitySlider.getModel();
+      	    if(!dbrm.getValueIsAdjusting())
+      	    {
+      	    	tm.intensity = dbrm.getValue();
+      	    	 System.out.println("intensitySlider = " + tm.intensity);
+      	    }
+       }
+       
+       // handle oppositeSideIntensitySlider
+       if (evt.getSource() == oppositeSideIntensitySlider) {
+    	    DefaultBoundedRangeModel dbrm = (DefaultBoundedRangeModel)oppositeSideIntensitySlider.getModel();
+      	    if(!dbrm.getValueIsAdjusting())
+      	    {
+      	    	tm.oppositeSideIntensity = dbrm.getValue();
+      	    	 System.out.println("oppositeSideIntensitySlider = " + tm.oppositeSideIntensity);
+      	    }
+       }      
     }
     
     public void leftRightSpinnerStateChanged(javax.swing.event.ChangeEvent evt)
     {
     	System.out.println("TO DO - do something the spinner changed");
+    	System.out.println("value now " + leftRightSpinner.getValue());
+        if (evt.getSource() == leftRightSpinner.getEditor()) {
+            System.out.println("it was an editor event");
+        }
     }
     
     
