@@ -13,7 +13,9 @@ import modified_nitrogen1.*;
 public class ContentGenerator extends JFrame{
 	
 	// constants
-	static final int EDIT_SCREEN_WIDTH 	= 1000;
+	static final int APP_WIDTH = 1000;
+	static final int APP_HEIGHT = 650;
+	static final int EDIT_SCREEN_WIDTH 	= 700;
 	static final int EDIT_SCREEN_HEIGHT = 600;
 	static final int EDIT_SCREEN_SIZE 	= EDIT_SCREEN_WIDTH * EDIT_SCREEN_HEIGHT;
 
@@ -100,7 +102,7 @@ public class ContentGenerator extends JFrame{
 	ContentGenerator()
 	{
         super("Content Generator");
-        setSize(1000,600);
+        setSize(APP_WIDTH,APP_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
 		testButtonGroup = new ButtonGroup();
@@ -119,7 +121,7 @@ public class ContentGenerator extends JFrame{
 		
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip
-		nc = new NitrogenContext(740,600,1,1,1, 1000);
+		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1,1,1, 1000);
         nc.cls(0xFF000000);        
         nc.repaint();
         
@@ -139,12 +141,7 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(Box.createHorizontalGlue());
 		outerBox.add(testBox);
 		getContentPane().add(outerBox);
-		getContentPane().validate();
-		
-		
-		
-		
-		
+		getContentPane().validate();	
 	}
 	
 	
@@ -331,6 +328,12 @@ public class ContentGenerator extends JFrame{
 		retval.add(new JLabel(st));
 		retval.add(Box.createHorizontalGlue());
 		container.add(retval);	
+	}
+	
+	void generatePixels()
+	{
+		nc.cls(templateModels[viewDirection].pixels);
+		nc.repaint();
 	}
 
 }

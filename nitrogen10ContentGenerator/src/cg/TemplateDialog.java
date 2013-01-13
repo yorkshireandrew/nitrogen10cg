@@ -36,6 +36,8 @@ public class TemplateDialog extends JDialog implements ChangeListener
 	
 	private TemplateModel tm;
 	
+	ContentGenerator contentGenerator;
+	
 	/** The state of the TemplateModel when this TemplateDialog was constructed */
 	TemplateModel initialState;
 	
@@ -45,6 +47,10 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		// create a (final) reference to this template dialog
 		// so it can be passed to the ActionListeners for OK button etc.
 		final TemplateDialog td = this;
+		
+		// copy the content generator so we can call methods to
+		// update it in response to events
+		contentGenerator = cg;
 		
 		// save state of passed in TemplateModel in case user hits cancel 
 		initialState = TemplateModel.copy(tm);
@@ -145,6 +151,9 @@ public class TemplateDialog extends JDialog implements ChangeListener
 			            System.out.println("Opening: " + tm.templateFile.getName());
 			            // TO DO cause the model to update
 			            
+			            tm.loadFile();
+			            tm.generatePixels();
+			            
 			        } else {
 			        	System.out.println("Open command cancelled by user.");
 			        }
@@ -211,26 +220,24 @@ public class TemplateDialog extends JDialog implements ChangeListener
     	// handle leftRightSpinner
        if (evt.getSource() == leftRightSpinner) {
     	    tm.leftRightOffset = (Integer)leftRightSpinner.getModel().getValue();
+    	    updateContentGenerator();
     	    System.out.println("leftRightSpinner = " + tm.leftRightOffset);
+    	    
        }
        
        // handle downUpSpinner
        if (evt.getSource() == downUpSpinner) {
    	    tm.downUpOffset = (Integer)downUpSpinner.getModel().getValue();
+   	    updateContentGenerator();
    	    System.out.println("downUpSpinner = " + tm.downUpOffset);
        }
        
       // handle scaleSpinner
        if (evt.getSource() == scaleSpinner) {
       	    tm.scale = (Integer)scaleSpinner.getModel().getValue();
+      	    updateContentGenerator();
       	    System.out.println("scaleSpinner = " + tm.scale);
-       }
-       
-       // handle scaleSpinner
-       if (evt.getSource() == scaleSpinner) {
-      	    tm.scale = (Integer)scaleSpinner.getModel().getValue();
-      	    System.out.println("scaleSpinner = " + tm.scale);
-       }  
+       } 
        
        // handle intensitySlider
        if (evt.getSource() == intensitySlider) {
@@ -238,18 +245,17 @@ public class TemplateDialog extends JDialog implements ChangeListener
       	    if(!dbrm.getValueIsAdjusting())
       	    {
       	    	tm.intensity = dbrm.getValue();
+      	    	updateContentGenerator();
       	    	 System.out.println("intensitySlider = " + tm.intensity);
       	    }
        }    
     }
     
-    public void leftRightSpinnerStateChanged(javax.swing.event.ChangeEvent evt)
+    void updateContentGenerator()
     {
-    	System.out.println("TO DO - do something the spinner changed");
-    	System.out.println("value now " + leftRightSpinner.getValue());
-        if (evt.getSource() == leftRightSpinner.getEditor()) {
-            System.out.println("it was an editor event");
-        }
+    	tm.generatePixels();
+    	contentGenerator.generatePixels();
+    	
     }
     
     

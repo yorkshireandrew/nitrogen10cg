@@ -216,4 +216,10 @@ public void zeroPerformanceCounts()
     linesRendered = 0;
 }
 
+/** cls that accepts an array which currently overwrites pixels only for testing */
+final public void cls(int[] array)
+{
+       System.arraycopy(array, 0, pix, 0, s);
+}
+
 }
