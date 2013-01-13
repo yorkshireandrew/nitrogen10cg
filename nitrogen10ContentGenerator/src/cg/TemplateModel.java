@@ -9,7 +9,6 @@ public class TemplateModel {
 	int downUpOffset;
 	boolean over;	// set true if the template is shown over the content
 	int intensity;
-	int oppositeSideIntensity;
 	int scale = 1000;
 	TemplateModel oppositeSideTemplateModel;
 	
@@ -32,7 +31,6 @@ public class TemplateModel {
 		retval.downUpOffset = prototype.downUpOffset;
 		retval.over = prototype.over;	
 		retval.intensity = prototype.intensity;
-		retval.oppositeSideIntensity = prototype.oppositeSideIntensity;
 		retval.scale = prototype.scale;
 		return retval;
 	}
@@ -46,7 +44,6 @@ public class TemplateModel {
 		this.downUpOffset = savedState.downUpOffset;
 		this.over = savedState.over;	
 		this.intensity = savedState.intensity;
-		this.oppositeSideIntensity = savedState.oppositeSideIntensity;
 		this.scale = savedState.scale;
 	}
 }

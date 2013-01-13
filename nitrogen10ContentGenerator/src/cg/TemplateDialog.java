@@ -28,13 +28,11 @@ public class TemplateDialog extends JDialog implements ChangeListener
 	String downUpString;
 	JSpinner scaleSpinner;
 	JSlider intensitySlider;
-	JSlider oppositeSideIntensitySlider;
 	
 	JLabel leftRightLabel 				= new JLabel("leftRightLabelNeedsSetting");
 	JLabel downUpLabel 					= new JLabel("downUpLabelNeedsSetting");
 	JLabel scaleLabel 					= new JLabel("Scale x1000   ");
 	JLabel intensityLabel 				= new JLabel("Intensity     ");
-	JLabel oppositeSideIntensityLabel 	= new JLabel("opposite side ");
 	
 	private TemplateModel tm;
 	
@@ -106,12 +104,6 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		intensitySlider.setPaintTicks(true);
 		intensitySlider.addChangeListener(this);
 		
-		// initialise the oppositeSideIntensity slider
-		oppositeSideIntensitySlider = new JSlider();
-		oppositeSideIntensitySlider.setModel(new DefaultBoundedRangeModel(tm.oppositeSideIntensity,1,0,100));
-		oppositeSideIntensitySlider.setMinorTickSpacing(10);
-		oppositeSideIntensitySlider.setPaintTicks(true);	
-		oppositeSideIntensitySlider.addChangeListener(this);
 		
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(
@@ -191,11 +183,6 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		intensityBox.add(intensitySlider);
 		intensityBox.add(Box.createHorizontalGlue());		
 
-		// create and fill oppositeSideIntensityBox
-		Box oppositeSideIntensityBox = new Box(BoxLayout.X_AXIS);
-		oppositeSideIntensityBox.add(oppositeSideIntensityLabel);		
-		oppositeSideIntensityBox.add(oppositeSideIntensitySlider);
-		oppositeSideIntensityBox.add(Box.createHorizontalGlue());
 		
 		// create a dialogBox and add everything to it
 		Box dialog = new Box(BoxLayout.Y_AXIS);	
@@ -208,8 +195,6 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		dialog.add(scaleBox);
 		dialog.add(Box.createVerticalGlue());
 		dialog.add(intensityBox);
-		dialog.add(Box.createVerticalGlue());
-		dialog.add(oppositeSideIntensityBox);
 		dialog.add(Box.createVerticalGlue());
 		dialog.add(okButton);
 		this.add(dialog);
@@ -255,17 +240,7 @@ public class TemplateDialog extends JDialog implements ChangeListener
       	    	tm.intensity = dbrm.getValue();
       	    	 System.out.println("intensitySlider = " + tm.intensity);
       	    }
-       }
-       
-       // handle oppositeSideIntensitySlider
-       if (evt.getSource() == oppositeSideIntensitySlider) {
-    	    DefaultBoundedRangeModel dbrm = (DefaultBoundedRangeModel)oppositeSideIntensitySlider.getModel();
-      	    if(!dbrm.getValueIsAdjusting())
-      	    {
-      	    	tm.oppositeSideIntensity = dbrm.getValue();
-      	    	 System.out.println("oppositeSideIntensitySlider = " + tm.oppositeSideIntensity);
-      	    }
-       }      
+       }    
     }
     
     public void leftRightSpinnerStateChanged(javax.swing.event.ChangeEvent evt)
