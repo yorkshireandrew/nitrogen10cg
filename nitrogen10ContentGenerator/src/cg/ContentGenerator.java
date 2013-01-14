@@ -3,6 +3,16 @@ package cg;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import modified_nitrogen1.Item;
+import modified_nitrogen1.ItemFactory_Caching;
+import modified_nitrogen1.NitrogenCreationException;
+import modified_nitrogen1.RendererHelper;
+import modified_nitrogen1.RendererTriplet;
+import modified_nitrogen1.Renderer_SimpleSingleColour;
+import modified_nitrogen1.Renderer_SimpleTexture;
+import modified_nitrogen1.SharedImmutableSubItem;
+import modified_nitrogen1.Transform;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -334,6 +344,56 @@ public class ContentGenerator extends JFrame{
 	{
 		nc.cls(templateModels[viewDirection].pixels);
 		nc.createTestSquare();
+		
+		// test
+        Transform t1	= new 	Transform(
+    			null,
+    			1f, 0f, 0f, 0f,
+    			0f, 1f, 0f, 0f,
+    			0f, 0f, 1f, 0f);
+        
+        Transform t2	= new 	Transform(
+    			t1,
+    			1f, 0f, 0f, 0f,
+    			0f, 1f, 0f, 0f,
+    			0f, 0f, 1f, -20f);
+        
+        // add renderers to RendererHelper
+        Renderer_SimpleTexture str = new Renderer_SimpleTexture();
+        RendererTriplet rt = new RendererTriplet(str);
+        try
+        {
+        	RendererHelper.addRendererTriplet("str",rt);
+        }
+        catch(Exception e){System.out.println(e.getMessage());}
+
+        Renderer_SimpleSingleColour sscr = new Renderer_SimpleSingleColour();           
+        RendererTriplet sscrt = new RendererTriplet(sscr);
+        try
+        {
+        	RendererHelper.addRendererTriplet("sscr",sscrt);
+        }
+        catch(Exception e){System.out.println(e.getMessage());}
+        
+        // create test item         
+        SharedImmutableSubItem testItemSISI = null;        
+        try{
+        	
+        	testItemSISI = new SharedImmutableSubItem("test1.txt");
+        }
+        catch(NitrogenCreationException e)
+        {
+        	e.printStackTrace();           	
+        }
+        
+        Item.setItemFactory(new ItemFactory_Caching());
+        
+        Item i = Item.createItem(testItemSISI,t2);
+        i.setVisibility(true); 
+        t1.render(nc);
+        
+        
+        
 		templateModels[viewDirection].overlayTemplate(
 				nc.pix, nc.zbuff);
 		
