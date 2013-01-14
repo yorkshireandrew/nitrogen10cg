@@ -333,7 +333,12 @@ public class ContentGenerator extends JFrame{
 	void generatePixels()
 	{
 		nc.cls(templateModels[viewDirection].pixels);
+		nc.createTestSquare();
+		templateModels[viewDirection].overlayTemplate(
+				nc.pix, nc.zbuff);
+		
 		nc.repaint();
+		
 	}
 
 }

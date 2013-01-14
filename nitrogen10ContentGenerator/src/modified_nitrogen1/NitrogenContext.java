@@ -58,10 +58,10 @@ public class NitrogenContext extends JPanel{
     int midh = h/2;
     
     /** The pixel buffer */
-    int[] pix;	
+    public int[] pix;	
     
     /** The z buffer */
-    int[] zbuff; 
+    public int[] zbuff; 
     
     /** Image that monitors source */
     Image im; 
@@ -147,10 +147,11 @@ public class NitrogenContext extends JPanel{
         }
 
         // repeat for z buffer setting to most -ve value possible
+        int clearVal = Integer.MIN_VALUE;
         for(int x = 0; x < w; x++)   
         {
             
-            zloc[x] = Integer.MIN_VALUE;
+            zloc[x] = clearVal;
         }
         y = 1;
 
@@ -165,13 +166,14 @@ public class NitrogenContext extends JPanel{
     
     final public void clearZBuffer()
     {
-        int[] zloc = zbuff;
+        int clearVal = Integer.MIN_VALUE;
+    	int[] zloc = zbuff;
         int y;
 
         for(int x = 0; x < w; x++)   
         {
             
-            zloc[x] = Integer.MIN_VALUE;
+            zloc[x] = clearVal;
         }
         y = 1;
 
@@ -220,6 +222,22 @@ public void zeroPerformanceCounts()
 final public void cls(int[] array)
 {
        System.arraycopy(array, 0, pix, 0, s);
+       clearZBuffer();
 }
+
+final public void createTestSquare()
+{
+	for(int x = 30; x < 60; x++)
+	{
+		for(int y = 30; y < 60; y++)
+		{
+			int index = x * w + y;
+			pix[index] = 0xFF808080;
+			zbuff[index] = 0;
+		}
+	}
+}
+
+
 
 }

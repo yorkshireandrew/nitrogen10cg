@@ -194,5 +194,33 @@ public class TemplateModel {
 		colourArray[index] = retval;
 	}
 	
+	/** overlays the template onto the rendered pixels */
+	void overlayTemplate(int[] pixels, int[] zbuffer)
+	{
+		if(overlay == false)return;
+		int clearVal = Integer.MIN_VALUE;
+		int pixelRed,pixelGreen,pixelBlue;
+		int pixelColour;
+		for(int x = 0; x < editScreenSize; x++)
+		{
+			if(zbuffer[x] == clearVal)continue;
+			pixelColour = pixels[x];
+			// extract the pixel colour
+			pixelBlue 	= (pixelColour & 0x0000FF);
+			pixelGreen = (pixelColour & 0x00FF00) >> 8;
+			pixelRed 	= (pixelColour& 0xFF0000) >> 16;
+			
+			pixelBlue += blue[x];
+			pixelGreen += green[x];
+			pixelRed += red[x];
+			
+			if(pixelBlue > 255) pixelBlue = 255;
+			if(pixelGreen > 255) pixelGreen = 255;
+			if(pixelRed > 255) pixelRed = 255;
+			
+			pixels[x] = 0xFF000000 | (pixelRed << 16) | (pixelGreen << 8) | pixelBlue;	
+		}
+	}
+	
 	
 }
