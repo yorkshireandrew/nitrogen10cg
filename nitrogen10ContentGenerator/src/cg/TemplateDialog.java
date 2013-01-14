@@ -21,18 +21,18 @@ import javax.swing.event.ChangeListener;
 
 public class TemplateDialog extends JDialog implements ChangeListener
 {
-	JTextField fileNameTextField;
-	JSpinner leftRightSpinner;
-	String leftRightString;
-	JSpinner downUpSpinner;
-	String downUpString;
-	JSpinner scaleSpinner;
-	JSlider intensitySlider;
+	JTextField 	fileNameTextField;
+	JSpinner 	templateXSpinner;
+	String 		templateXString;
+	JSpinner 	templateYSpinner;
+	String 		templateYString;
+	JSpinner 	templateScaleSpinner;
+	JSlider 	intensitySlider;
 	
-	JLabel leftRightLabel 				= new JLabel("leftRightLabelNeedsSetting");
-	JLabel downUpLabel 					= new JLabel("downUpLabelNeedsSetting");
-	JLabel scaleLabel 					= new JLabel("Scale x1000   ");
-	JLabel intensityLabel 				= new JLabel("Intensity     ");
+	JLabel tamplateXLabel 				= new JLabel("template X  ");
+	JLabel templateYLabel 				= new JLabel("template Y  ");
+	JLabel templateScaleLabel 			= new JLabel("Scale x1000 ");
+	JLabel intensityLabel 				= new JLabel("Intensity   ");
 	
 	private TemplateModel tm;
 	
@@ -85,23 +85,23 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		
 
 		
-		// initialise the leftRightSpinner
-		leftRightSpinner = new JSpinner();
-		leftRightSpinner.setModel(new SpinnerNumberModel(tm.leftRightOffset,-500,500,1));
-		leftRightSpinner.addChangeListener(this);
-		leftRightSpinner.setMaximumSize(leftRightSpinner.getPreferredSize());
+		// initialise the templateXSpinner
+		templateXSpinner = new JSpinner();
+		templateXSpinner.setModel(new SpinnerNumberModel(tm.templateX,-500,500,1));
+		templateXSpinner.addChangeListener(this);
+		templateXSpinner.setMaximumSize(templateXSpinner.getPreferredSize());
 
-		// initialise the downUpSpinner
-		downUpSpinner = new JSpinner();
-		downUpSpinner.setModel(new SpinnerNumberModel(tm.downUpOffset,-500,500,1));
-		downUpSpinner.addChangeListener(this);
-		downUpSpinner.setMaximumSize(downUpSpinner.getPreferredSize());
+		// initialise the templateYSpinner
+		templateYSpinner = new JSpinner();
+		templateYSpinner.setModel(new SpinnerNumberModel(tm.templateY,-500,500,1));
+		templateYSpinner.addChangeListener(this);
+		templateYSpinner.setMaximumSize(templateYSpinner.getPreferredSize());
 		
-		// initialise the scaleSpinner
-		scaleSpinner = new JSpinner();
-		scaleSpinner.setModel(new SpinnerNumberModel(tm.scale,0,10000,10));
-		scaleSpinner.addChangeListener(this);
-		scaleSpinner.setMaximumSize(scaleSpinner.getPreferredSize());
+		// initialise the templateScaleSpinner
+		templateScaleSpinner = new JSpinner();
+		templateScaleSpinner.setModel(new SpinnerNumberModel(tm.templateScale,0,10000,10));
+		templateScaleSpinner.addChangeListener(this);
+		templateScaleSpinner.setMaximumSize(templateScaleSpinner.getPreferredSize());
 		
 		// initialise the intensity slider
 		intensitySlider = new JSlider();
@@ -168,22 +168,22 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		fileBox.add(fileChooserButton);
 		fileBox.add(Box.createHorizontalGlue());
 		
-		// create and fill leftRightBox
-		Box leftRightBox = new Box(BoxLayout.X_AXIS);
-		leftRightBox.add(leftRightLabel);		
-		leftRightBox.add(leftRightSpinner);
-		leftRightBox.add(Box.createHorizontalGlue());
+		// create and fill templateXBox
+		Box templateXBox = new Box(BoxLayout.X_AXIS);
+		templateXBox.add(tamplateXLabel);		
+		templateXBox.add(templateXSpinner);
+		templateXBox.add(Box.createHorizontalGlue());
 		
-		// create and fill downUpBox
-		Box downUpBox = new Box(BoxLayout.X_AXIS);
-		downUpBox.add(downUpLabel);		
-		downUpBox.add(downUpSpinner);
-		downUpBox.add(Box.createHorizontalGlue());
+		// create and fill templateYBox
+		Box templateYBox = new Box(BoxLayout.X_AXIS);
+		templateYBox.add(templateYLabel);		
+		templateYBox.add(templateYSpinner);
+		templateYBox.add(Box.createHorizontalGlue());
 		
 		// create and fill scaleBox
 		Box scaleBox = new Box(BoxLayout.X_AXIS);
-		scaleBox.add(scaleLabel);		
-		scaleBox.add(scaleSpinner);
+		scaleBox.add(templateScaleLabel);		
+		scaleBox.add(templateScaleSpinner);
 		scaleBox.add(Box.createHorizontalGlue());
 		
 		// create and fill intensityBox
@@ -197,9 +197,9 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		Box dialog = new Box(BoxLayout.Y_AXIS);	
 		dialog.add(fileBox);
 		dialog.add(Box.createVerticalGlue());
-		dialog.add(leftRightBox);
+		dialog.add(templateXBox);
 		dialog.add(Box.createVerticalGlue());		
-		dialog.add(downUpBox);
+		dialog.add(templateYBox);
 		dialog.add(Box.createVerticalGlue());
 		dialog.add(scaleBox);
 		dialog.add(Box.createVerticalGlue());
@@ -217,26 +217,26 @@ public class TemplateDialog extends JDialog implements ChangeListener
 	
     public void stateChanged(javax.swing.event.ChangeEvent evt) {
     	
-    	// handle leftRightSpinner
-       if (evt.getSource() == leftRightSpinner) {
-    	    tm.leftRightOffset = (Integer)leftRightSpinner.getModel().getValue();
+    	// handle templateX Spinner
+       if (evt.getSource() == templateXSpinner) {
+    	    tm.templateX = (Integer)templateXSpinner.getModel().getValue();
     	    updateContentGenerator();
-    	    System.out.println("leftRightSpinner = " + tm.leftRightOffset);
+    	    System.out.println("leftRightSpinner = " + tm.templateX);
     	    
        }
        
-       // handle downUpSpinner
-       if (evt.getSource() == downUpSpinner) {
-   	    tm.downUpOffset = (Integer)downUpSpinner.getModel().getValue();
+       // handle templateY spinner
+       if (evt.getSource() == templateYSpinner) {
+   	    tm.templateY = (Integer)templateYSpinner.getModel().getValue();
    	    updateContentGenerator();
-   	    System.out.println("downUpSpinner = " + tm.downUpOffset);
+   	    System.out.println("downUpSpinner = " + tm.templateY);
        }
        
       // handle scaleSpinner
-       if (evt.getSource() == scaleSpinner) {
-      	    tm.scale = (Integer)scaleSpinner.getModel().getValue();
+       if (evt.getSource() == templateScaleSpinner) {
+      	    tm.templateScale = (Integer)templateScaleSpinner.getModel().getValue();
       	    updateContentGenerator();
-      	    System.out.println("scaleSpinner = " + tm.scale);
+      	    System.out.println("scaleSpinner = " + tm.templateScale);
        } 
        
        // handle intensitySlider

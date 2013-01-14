@@ -17,17 +17,17 @@ public class TemplateModel {
 	int OFF_TEMPLATE_BLUE = 0;
 
 	File templateFile;
-	int leftRightOffset;
-	int downUpOffset;
+	int templateX;
+	int templateY;
 	boolean over;	// set true if the template is shown over the content
 	int intensity;
-	int scale = 1000;
+	int templateScale = 1000;
 	
 	// pixels from file
-	int[] filePixels;
-	int fileWidth;
-	int fileHeight;
-	int fileSize;
+	int[] templatePixels;
+	int templateWidth;
+	int templateHeight;
+	int templateSize;
 	boolean fileLoaded = false;
 	
 	
@@ -64,11 +64,11 @@ public class TemplateModel {
 	{
 		TemplateModel retval = new TemplateModel();
 		retval.templateFile = prototype.templateFile;
-		retval.leftRightOffset = prototype.leftRightOffset;
-		retval.downUpOffset = prototype.downUpOffset;
+		retval.templateX = prototype.templateX;
+		retval.templateY = prototype.templateY;
 		retval.over = prototype.over;	
 		retval.intensity = prototype.intensity;
-		retval.scale = prototype.scale;
+		retval.templateScale = prototype.templateScale;
 		return retval;
 	}
 	
@@ -77,11 +77,11 @@ public class TemplateModel {
 	void restore(TemplateModel savedState)
 	{
 		this.templateFile = savedState.templateFile;
-		this.leftRightOffset = savedState.leftRightOffset;
-		this.downUpOffset = savedState.downUpOffset;
+		this.templateX = savedState.templateX;
+		this.templateY = savedState.templateY;
 		this.over = savedState.over;	
 		this.intensity = savedState.intensity;
-		this.scale = savedState.scale;
+		this.templateScale = savedState.templateScale;
 	}
 	
 	void loadFile()
@@ -112,9 +112,9 @@ public class TemplateModel {
         BufferedImage i = new BufferedImage(ii.getWidth(null),ii.getHeight(null),BufferedImage.TYPE_INT_ARGB);
         Graphics2D osg = i.createGraphics();
         osg.drawImage(ii, 0, 0, null);
-        fileHeight = i.getHeight();
-        fileWidth = i.getWidth();
-        filePixels = i.getRGB(0, 0, fileWidth, fileHeight, null, 0, fileWidth);	
+        templateHeight = i.getHeight();
+        templateWidth = i.getWidth();
+        templatePixels = i.getRGB(0, 0, templateWidth, templateHeight, null, 0, templateWidth);	
         fileLoaded = true;
         System.out.println("file Load looks to have worked");
 	}
@@ -155,20 +155,20 @@ public class TemplateModel {
 				
 				// calculate offsetX and check if it hits the template
 				offsetX = editX - halfWidth;
-				offsetX = offsetX - leftRightOffset;
-				if(offsetX < 0)continue;	// missed the template
-				offsetX = (offsetX * 1000) / scale;
-				if(offsetX >= fileWidth)continue;	// missed the template
+				offsetX = (offsetX * 1000) / templateScale;
+				offsetX = offsetX + templateX;
+				if(offsetX < 0)continue;			// missed the template
+				if(offsetX >= templateWidth)continue;	// missed the template
 				
 				// calculate offsetY and check if it hits the template
 				offsetY = editY - halfHeight;
-				offsetY = offsetY + downUpOffset;
+				offsetY = (offsetY * 1000) / templateScale;
+				offsetY = offsetY + templateY;
 				if(offsetY < 0)continue;	// missed the template
-				offsetY = (offsetY * 1000) / scale;
-				if(offsetY >= fileHeight)continue;	// missed the template
+				if(offsetY >= templateHeight)continue;	// missed the template
 				
-				int fileIndex = offsetY * fileWidth + offsetX;
-				int fileColour = filePixels[fileIndex];
+				int fileIndex = offsetY * templateWidth + offsetX;
+				int fileColour = templatePixels[fileIndex];
 				doColour(editIndex,red,green,blue,pixels,intensity,fileColour); 			
 			}
 		}
