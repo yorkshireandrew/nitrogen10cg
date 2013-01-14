@@ -19,7 +19,7 @@ public class TemplateModel {
 	File templateFile;
 	int templateX;
 	int templateY;
-	boolean over;	// set true if the template is shown over the content
+	boolean overlay;	// set true if the template is shown over the content
 	int intensity;
 	int templateScale = 1000;
 	
@@ -66,7 +66,7 @@ public class TemplateModel {
 		retval.templateFile = prototype.templateFile;
 		retval.templateX = prototype.templateX;
 		retval.templateY = prototype.templateY;
-		retval.over = prototype.over;	
+		retval.overlay = prototype.overlay;	
 		retval.intensity = prototype.intensity;
 		retval.templateScale = prototype.templateScale;
 		return retval;
@@ -79,7 +79,7 @@ public class TemplateModel {
 		this.templateFile = savedState.templateFile;
 		this.templateX = savedState.templateX;
 		this.templateY = savedState.templateY;
-		this.over = savedState.over;	
+		this.overlay = savedState.overlay;	
 		this.intensity = savedState.intensity;
 		this.templateScale = savedState.templateScale;
 	}

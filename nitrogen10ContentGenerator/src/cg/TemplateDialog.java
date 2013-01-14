@@ -8,6 +8,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -28,6 +29,7 @@ public class TemplateDialog extends JDialog implements ChangeListener
 	String 		templateYString;
 	JSpinner 	templateScaleSpinner;
 	JSlider 	intensitySlider;
+	JCheckBox	overlayCheckBox;
 	
 	JLabel tamplateXLabel 				= new JLabel("template X  ");
 	JLabel templateYLabel 				= new JLabel("template Y  ");
@@ -110,25 +112,31 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		intensitySlider.setPaintTicks(true);
 		intensitySlider.addChangeListener(this);
 		
-		
-		JButton okButton = new JButton("OK");
-		okButton.addActionListener(
+		// initialise overlay template
+		overlayCheckBox = new JCheckBox("Overlay ");
+		overlayCheckBox.setSelected(tm.overlay);
+		overlayCheckBox.addActionListener(
 				new ActionListener()
 				{
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						/*
-						// record the new templateFileName
-						if(t.getText().equals("none"))
-						{
-							// do nothing
-						}
-						else
-						{
-							cg.templateFileName[cg.viewDirection] = t.getText();
-						}
-						*/
+				    	tm.overlay = overlayCheckBox.getModel().isSelected();
+				    	System.out.println("overlay checkbox = " + tm.overlay);
+						updateContentGenerator();		
+					}			
+				});
+		
+		
+		JButton cancelButton = new JButton("CANCEL");
+		cancelButton.addActionListener(
+				new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						tm.restore(initialState);
+						updateContentGenerator();
 						td.setVisible(false);
 						td.dispose();			
 					}			
@@ -205,10 +213,12 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		dialog.add(Box.createVerticalGlue());
 		dialog.add(intensityBox);
 		dialog.add(Box.createVerticalGlue());
-		dialog.add(okButton);
+		dialog.add(overlayCheckBox);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(cancelButton);
 		this.add(dialog);
 		this.setSize(400,250);
-		this.setModal(true);
+		// this.setModal(true);
 		this.validate();
 		this.setLocationRelativeTo(cg);
         
@@ -248,7 +258,14 @@ public class TemplateDialog extends JDialog implements ChangeListener
       	    	updateContentGenerator();
       	    	 System.out.println("intensitySlider = " + tm.intensity);
       	    }
-       }    
+       } 
+  /*     
+       if (evt.getSource() == overlayCheckBox)
+       {
+    	   tm.over = overlayCheckBox.getModel().isSelected();
+    	   System.out.println("overlay checkbox = " + tm.over);
+       }
+       */
     }
     
     void updateContentGenerator()
