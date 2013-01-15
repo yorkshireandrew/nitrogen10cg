@@ -11,7 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 
-public class PolygonVertexGUI {
+public class PolygonVertexView {
 	JTextField indexTextField;
 	JTextField xTextField;
 	JTextField yTextField;
@@ -19,38 +19,45 @@ public class PolygonVertexGUI {
 	FixedSizeButton addButton;
 	FixedSizeButton moveWorkingToThisButton;
 	
-	PolygonVertexGUI(ContentGenerator cg, int index)
+	ContentGenerator cg;
+	PolygonVertexModel pvgm;
+	PolygonVertexController pvgh;	
+	
+	PolygonVertexView(ContentGenerator cg, PolygonVertexModel pvgm)
 	{
+		pvgh = new PolygonVertexController(cg,this,pvgm);
+		
 		indexTextField = new JTextField();
 		indexTextField.setColumns(4);
 		indexTextField.setText("none");
-		indexTextField.setAction(new PolygonVertexAction(cg, index, "index"));
+		indexTextField.setAction(pvgh);
 		indexTextField.setEnabled(false);
 		indexTextField.setMaximumSize(new Dimension(40,20));
 
 		xTextField = new JTextField();
 		xTextField.setColumns(4);
 		xTextField.setText("0");
-		xTextField.setAction(new PolygonVertexAction(cg, index, "x"));
+		xTextField.setAction(pvgh);
 		xTextField.setMaximumSize(new Dimension(40,20));
 		
 		yTextField = new JTextField();
 		yTextField.setColumns(4);
 		yTextField.setText("0");
-		yTextField.setAction(new PolygonVertexAction(cg, index, "y"));
+		yTextField.setAction(pvgh);
 		yTextField.setMaximumSize(new Dimension(40,20));
 
 		zTextField = new JTextField();
 		zTextField.setColumns(4);
 		zTextField.setText("0");
-		zTextField.setAction(new PolygonVertexAction(cg, index, "z"));
+		zTextField.setAction(pvgh);
 		zTextField.setMaximumSize(new Dimension(40,20));
 		
 		addButton = new FixedSizeButton("/res/fullRenderButton.PNG");
-		addButton.setAction(new PolygonAddButtonAction(cg,this));
+		addButton.setAction(pvgh);
 		addButton.setIcon("/res/addButton.PNG");
+		
 		moveWorkingToThisButton = new FixedSizeButton("/res/moveToVertexButton.PNG");
-		moveWorkingToThisButton.setAction(new PolygonMoveToVertexAction(cg,this));	
+		moveWorkingToThisButton.setAction(pvgh);	
 		moveWorkingToThisButton.setIcon("/res/moveToVertexButton.PNG");
 
 	}
@@ -68,45 +75,4 @@ public class PolygonVertexGUI {
 	}
 }
 
-class PolygonVertexAction extends AbstractAction
-{
-	PolygonVertexAction(ContentGenerator cg, int index, String type)
-	{
-		super();
-		this.putValue("ContentGenerator", cg);
-		this.putValue("index", new Integer(index));
-		this.putValue("type", type);
-	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		System.out.println("actionPerformed called on [" + this.getValue("index") + "] " + this.getValue("type"));			
-	}	
-}
-
-class PolygonAddButtonAction extends AbstractAction
-{
-	PolygonAddButtonAction(ContentGenerator cg, PolygonVertexGUI pvgui)
-	{
-		super();
-		this.putValue("ContentGenerator", cg);
-		this.putValue("pvgui", pvgui);
-	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		System.out.println("actionPerformed called on add button");			
-	}	
-}
-
-class PolygonMoveToVertexAction extends AbstractAction
-{
-	PolygonMoveToVertexAction(ContentGenerator cg, PolygonVertexGUI pvgui)
-	{
-		super();
-		this.putValue("ContentGenerator", cg);
-		this.putValue("pvgui", pvgui);
-	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		System.out.println("actionPerformed called on moveToVertexAction");			
-	}	
-}
+/** handles action events created by a PolygonVertexGUI */

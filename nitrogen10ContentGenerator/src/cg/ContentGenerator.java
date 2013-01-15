@@ -57,7 +57,6 @@ public class ContentGenerator extends JFrame{
 	FixedSizeIconToggleButton textureButton;
 	ButtonGroup viewTypeButtonGroup;
 	
-	
 	/** buttons for creating or editing */	
 	FixedSizeButton moveVertexButton;
 	FixedSizeButton newVertexButton;
@@ -65,37 +64,6 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton newPolygonDataButton;
 	FixedSizeButton newTextureMapButton;
 	FixedSizeButton newPolygonButton;
-	
-	/** TextBoxes containing xyz coordinates etc*/
-	// working cursor/vertex related
-	JTextField indexTextField;	
-	JTextField xTextField;	
-	JTextField yTextField;
-	JTextField zTextField;
-	
-	// polygon vertex1
-	JTextField vertex1IndexTextField;	
-	JTextField vertex1xTextField;	
-	JTextField vertex1yTextField;
-	JTextField vertex1zTextField;
-	
-	/** buttons for adding vertexes to working polygon */	
-	FixedSizeButton addPolygonVertex1;
-	FixedSizeButton addPolygonVertex2;
-	FixedSizeButton addPolygonVertex3;
-	FixedSizeButton addPolygonVertex4;
-	
-	
-	/** buttons for moving working vertex to a polygon vertex */	
-	FixedSizeButton moveToPolygonVertex1;
-	FixedSizeButton moveToPolygonVertex2;
-	FixedSizeButton moveToPolygonVertex3;
-	FixedSizeButton moveToPolygonVertex4;	
-	
-	
-	FixedSizeIconToggleButton test1;
-	FixedSizeIconToggleButton test2;
-	final ButtonGroup testButtonGroup;	
 	
 	int viewDirection;
 	static final int FRONT 	= 0;
@@ -105,30 +73,19 @@ public class ContentGenerator extends JFrame{
 	static final int TOP 	= 4;
 	static final int BOTTOM = 5;
 	
-//	String[] templateFileName = new String[6];
+	/** the template models controlled by the template dialog */
 	TemplateModel[] templateModels = new TemplateModel[6];
 	
+	/** the polygon vertex UI */
+	PolygonVertexView[] polygonVertexViews = new PolygonVertexView[4] ;
+	PolygonVertexModel[] polygonVertexModels = new PolygonVertexModel[4];
 
 	ContentGenerator()
 	{
         super("Content Generator");
         setSize(APP_WIDTH,APP_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
-		testButtonGroup = new ButtonGroup();
-		test1 = new FixedSizeIconToggleButton(this,
-				"/res/frontViewButton.PNG",
-				"/res/frontViewButtonSelected.PNG"
-				);
-		
-		test2 = new FixedSizeIconToggleButton(
-//				new ImageIcon(getClass().getResource("/res/frontViewButton.PNG")),
-//				new ImageIcon(getClass().getResource("/res/frontViewSelectedButton.PNG"))
-			new ImageIcon(getClass().getResource("/res/leftViewButton.PNG")),
-			new ImageIcon(getClass().getResource("/res/leftViewButtonSelected.PNG"))
-			);		
-//		JButton test3 = new JButton(new ImageIcon(getClass().getResource("/res/frontViewButton.PNG")));
-		
+        		
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip
 		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1,1,1, 1000);
@@ -281,12 +238,14 @@ public class ContentGenerator extends JFrame{
 	{
 		Box outerouterbox = new Box(BoxLayout.X_AXIS);
 		Box outerBox = new Box(BoxLayout.Y_AXIS);
-//		outerBox.setSize(300, 100);
-		for(int i = 0; i < 4; i++)
-		{
-			PolygonVertexGUI pvgui = new PolygonVertexGUI(this, i);
-			pvgui.createPolygonGUI(outerBox);		
+		
+		for(int i = 0 ; i < 4; i++)
+		{		
+			polygonVertexModels[i] = new PolygonVertexModel();
+			polygonVertexViews[i] = new PolygonVertexView(this, polygonVertexModels[i]);	
+			polygonVertexViews[i].createPolygonGUI(outerBox);
 		}
+
 		outerBox.setBorder(BorderFactory.createLineBorder(Color.black));
 		outerouterbox.add(outerBox);
 		outerouterbox.add(Box.createHorizontalGlue());
