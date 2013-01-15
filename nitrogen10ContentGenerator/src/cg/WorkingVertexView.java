@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class WorkingVertexView {
 	ContentGenerator cg;
@@ -110,5 +111,35 @@ public class WorkingVertexView {
 		outerbox.setBorder(BorderFactory.createLineBorder(Color.black));
 		
 		container.add(outerbox);
+	}
+	
+	void updateFromModel()
+	{
+		SwingUtilities.invokeLater(
+				new Runnable()
+				{
+					@Override
+					public void run() {
+						WorkingVertexModel wvm = workingVertexModel;
+						if(wvm.picked)
+						{
+							indexTextField.setText(Integer.toString(wvm.index));
+						}
+						else
+						{
+							indexTextField.setText("none");
+						}
+						
+						xTextField.setText(Integer.toString(wvm.x));
+						yTextField.setText(Integer.toString(wvm.y));
+						zTextField.setText(Integer.toString(wvm.z));
+						
+						dxTextField.setText(Integer.toString(wvm.dx));
+						dyTextField.setText(Integer.toString(wvm.dy));
+						dzTextField.setText(Integer.toString(wvm.dz));
+						distTextField.setText(Integer.toString(wvm.dist));						
+						
+					}				
+				});
 	}
 }

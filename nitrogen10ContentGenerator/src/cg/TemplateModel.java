@@ -52,6 +52,8 @@ public class TemplateModel {
 		green 		= new int[editScreenSize];
 		blue 		= new int[editScreenSize];
 		pixels 		= new int[editScreenSize];
+		
+		for(int i = 0 ; i < editScreenSize; i++)pixels[i] = OFF_TEMPLATE_COLOUR;
 	}
 	
 	// default constructor

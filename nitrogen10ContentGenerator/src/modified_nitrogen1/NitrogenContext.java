@@ -3,6 +3,8 @@ package modified_nitrogen1;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.MemoryImageSource;
 
 /**
@@ -19,7 +21,7 @@ import javax.swing.*;
 // import nitrogen1.TexMap;
 // import nitrogen1.Vert;
 
-public class NitrogenContext extends JPanel{
+public class NitrogenContext extends JPanel {
 	static final int SHIFT = 20;	// shift used when rendering textures
 	
 	/** multiplier used in perspective magnifying the image so that the xclip value equals the right of button */
@@ -47,9 +49,9 @@ public class NitrogenContext extends JPanel{
 	boolean debug = false;
 	
 	/** width in pixels of the NitrogenContext */
-    int w = 0;		// width
+    public int w = 0;		// width
     /** height in pixels of the NitrogenContext */
-    int h = 0;		// height
+    public int h = 0;		// height
     /** Number of pixels in the NitrogenContext */
     int s = 0;		// size = width * height
     /** Middle of width */
@@ -237,7 +239,5 @@ final public void createTestSquare()
 		}
 	}
 }
-
-
 
 }

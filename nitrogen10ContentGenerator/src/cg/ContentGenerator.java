@@ -25,10 +25,17 @@ public class ContentGenerator extends JFrame{
 	// constants
 	static final int APP_WIDTH = 1000;
 	static final int APP_HEIGHT = 650;
-	static final int EDIT_SCREEN_WIDTH 	= 700;
+	static final int EDIT_SCREEN_WIDTH	= 700;
 	static final int EDIT_SCREEN_HEIGHT = 600;
+	static final int CONSTRAINED_BORDER_WIDTH = 10;
+	static final int CONSTRAINED_BORDER_COLOUR = 0xFFFF0000;
+	static final int CURSOR = 50;	// colour change caused by cursor
+	
+	// derived constants
 	static final int EDIT_SCREEN_SIZE 	= EDIT_SCREEN_WIDTH * EDIT_SCREEN_HEIGHT;
-
+	static final int EDIT_SCREEN_MIDX = EDIT_SCREEN_WIDTH / 2;
+	static final int EDIT_SCREEN_MIDY = EDIT_SCREEN_HEIGHT / 2;
+	
 	/** the main screen */
 	NitrogenContext nc;
 	
@@ -83,6 +90,9 @@ public class ContentGenerator extends JFrame{
 	WorkingVertexView 		workingVertexView;
 	WorkingVertexModel 		workingVertexModel;
 	
+	int cursor_x = EDIT_SCREEN_MIDX;
+	int cursor_y = EDIT_SCREEN_MIDY;
+	
 	ContentGenerator()
 	{
         super("Content Generator");
@@ -113,6 +123,7 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(rightHandControls);
 		getContentPane().add(outerBox);
 		getContentPane().validate();	
+		nc.addMouseListener(new ContentGeneratorMouseListener());
 	}
 	
 	
@@ -228,8 +239,6 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(newVertexDataButton);
 		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
 		outerBox.add(newPolygonButton);
-		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
-		outerBox.add(newPolygonDataButton);
 		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
 		outerBox.add(newPolygonDataButton);
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
@@ -367,11 +376,184 @@ public class ContentGenerator extends JFrame{
 		templateModels[viewDirection].overlayTemplate(
 				nc.pix, nc.zbuff);
 		
+		addConstrainedBorder(nc);
+		addCursor(nc,100,100);
+		nc.repaint();	
+	}
+	
+	void renderEditArea()
+	{
+		nc.cls(templateModels[viewDirection].pixels);
+		nc.createTestSquare();
+		templateModels[viewDirection].overlayTemplate(
+				nc.pix, nc.zbuff);
+		
+		addConstrainedBorder(nc);
+		addCursor(nc,cursor_x,cursor_y);
 		nc.repaint();
+	}
+	
+	/** adds the constrained border onto edit area */
+	void addConstrainedBorder(NitrogenContext nc)
+	{
+		int[] pixels = nc.pix;
+		int width = nc.w;
+		int height = nc.h;
+		
+		int[] toprow = new int[width];
+		for(int i = 0; i < width; i++)toprow[i] = CONSTRAINED_BORDER_COLOUR;
+		for(int y = 0; y < CONSTRAINED_BORDER_WIDTH; y++)
+		{
+			System.arraycopy(toprow, 0, pixels, (width * y), width);
+		}
+		
+		for(int y = 0; y < height; y++)
+		{
+			System.arraycopy(toprow, 0, pixels, (width * y), CONSTRAINED_BORDER_WIDTH);
+		}	
+	}
+	
+	/** add cursor onto edit area */
+	void addCursor(NitrogenContext nc, int x_in, int y_in)
+	{
+		int[] pixels = nc.pix;
+		int width = nc.w;
+		int height = nc.h;
+		
+		// generate vertical cursor
+		for(int y = 0; y < height; y++)
+		{
+			int index = y*width + x_in;
+			pixels[index] = cursorColour(pixels[index]);
+		}
+		
+		// generate horizontal cursor
+		for(int x = 0; x < width; x++)
+		{
+			int index = y_in*width + x;
+			pixels[index] = cursorColour(pixels[index]);
+		}		
+		
 		
 	}
+	
+	int cursorColour(int pixelColour)
+	{
+		// extract the pixel colour
+		int pixelBlue 	= (pixelColour & 0x0000FF);
+		int pixelGreen = (pixelColour & 0x00FF00) >> 8;
+		int pixelRed 	= (pixelColour& 0xFF0000) >> 16;
+		
+		int pixelBluePlus = pixelBlue + CURSOR;
+		int pixelGreenPlus = pixelGreen + CURSOR;
+		int pixelRedPlus = pixelRed + CURSOR;
+		
+		int vote = 0;
+		if(pixelBluePlus > 255)
+		{
+			pixelBluePlus = 255;
+			vote++;
+		}
+		if(pixelGreenPlus > 255)
+		{
+			pixelGreenPlus = 255;
+			vote++;
+		}
+		if(pixelRedPlus > 255) 
+		{
+			pixelRedPlus = 255;
+			vote++;
+		}
+		
+		if(vote < 2)
+		{
+			int retval = 0xFF000000 | (pixelRedPlus << 16) | (pixelGreenPlus << 8) | pixelBluePlus;	
+			return retval;
+		}
+		
+		int pixelBlueMinus = pixelBlue - CURSOR;
+		int pixelGreenMinus = pixelGreen - CURSOR;
+		int pixelRedMinus = pixelRed - CURSOR;		
+		
+		if(pixelBlueMinus < 0)pixelBlueMinus = 0;
+		if(pixelGreenMinus < 0)pixelGreenMinus = 0;
+		if(pixelRedMinus < 0)pixelRedMinus = 0;
+		
+		int retval = 0xFF000000 | (pixelRedMinus << 16) | (pixelGreenMinus << 8) | pixelBlueMinus;	
+		return retval;
+	}
+	
+	void updateWorkingVertex()
+	{
+		int screenX = cursor_x - EDIT_SCREEN_MIDX;
+		int screenY = EDIT_SCREEN_MIDY - cursor_y;
+		
+		switch(viewDirection)
+		{
+			case FRONT:
+				workingVertexModel.x = screenX;
+				workingVertexModel.y = screenY;
+				break;
+			case LEFT:
+				workingVertexModel.z = -screenX;
+				workingVertexModel.y = screenY;
+				break;
+			case BACK:
+				workingVertexModel.x = -screenX;
+				workingVertexModel.y = screenY;
+				break;
+			case RIGHT:
+				workingVertexModel.z = screenX;
+				workingVertexModel.y = screenY;
+				break;
+			case TOP: 
+				workingVertexModel.z = -screenX;
+				workingVertexModel.x = -screenY;
+				break;
+			case BOTTOM:
+				workingVertexModel.z = -screenX;
+				workingVertexModel.x = screenY;
+				break;
+		}
+		workingVertexModel.computeDistances();
+		workingVertexView.updateFromModel();
 
+		
+	}
+	
+	/** class to handle mouse input */
+	class ContentGeneratorMouseListener extends MouseInputAdapter
+	{
+		public void mouseClicked(MouseEvent e)
+		{
+			super.mouseMoved(e);
+			if(e.getComponent() == nc)
+			{
+				System.out.println("mouseClicked over nc");
+				System.out.println("raw: x=" + e.getX() + ", y=" + e.getY());
+				int rawX = e.getX();
+				int rawY = e.getY();
+				if(rawY < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
+				{
+					ContentGenerator.this.cursor_x = rawX;
+				}
+				else if(rawX < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
+				{
+					ContentGenerator.this.cursor_y = rawY;
+				}
+				else
+				{
+					ContentGenerator.this.cursor_x = rawX;
+					ContentGenerator.this.cursor_y = rawY;					
+				}
+			}
+			ContentGenerator.this.renderEditArea();
+			ContentGenerator.this.updateWorkingVertex();	
+		}
+	}
 }
+
+
 
 class TemplateAction extends AbstractAction
 {
