@@ -77,9 +77,12 @@ public class ContentGenerator extends JFrame{
 	TemplateModel[] templateModels = new TemplateModel[6];
 	
 	/** the polygon vertex UI */
-	PolygonVertexView[] polygonVertexViews = new PolygonVertexView[4] ;
-	PolygonVertexModel[] polygonVertexModels = new PolygonVertexModel[4];
+	PolygonVertexView[] 	polygonVertexViews = new PolygonVertexView[4] ;
+	PolygonVertexModel[] 	polygonVertexModels = new PolygonVertexModel[4];
 
+	WorkingVertexView 		workingVertexView;
+	WorkingVertexModel 		workingVertexModel;
+	
 	ContentGenerator()
 	{
         super("Content Generator");
@@ -99,14 +102,15 @@ public class ContentGenerator extends JFrame{
         }
 		
 		createMenu();
-		Box testBox = new Box(BoxLayout.Y_AXIS);
-		createViewButtons(testBox);
-		createNewPolygonVertexGUI(testBox);
-		testBox.add(Box.createHorizontalGlue());
+		Box rightHandControls = new Box(BoxLayout.Y_AXIS);
+		createViewButtons(rightHandControls);
+		createWorkingVertexGUI(rightHandControls);
+		createNewPolygonVertexGUI(rightHandControls);
+		rightHandControls.add(Box.createVerticalGlue());
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		outerBox.add(nc);
 		outerBox.add(Box.createHorizontalGlue());
-		outerBox.add(testBox);
+		outerBox.add(rightHandControls);
 		getContentPane().add(outerBox);
 		getContentPane().validate();	
 	}
@@ -250,6 +254,13 @@ public class ContentGenerator extends JFrame{
 		outerouterbox.add(outerBox);
 		outerouterbox.add(Box.createHorizontalGlue());
 		container.add(outerouterbox);
+	}
+	
+	void createWorkingVertexGUI(Container container)
+	{
+		workingVertexModel = new WorkingVertexModel();
+		workingVertexView = new WorkingVertexView(this, workingVertexModel);
+		workingVertexView.createWorkingVertexGUI(container);
 	}
 	
 	void createMenu()

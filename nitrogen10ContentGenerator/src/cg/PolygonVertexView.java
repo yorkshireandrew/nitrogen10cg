@@ -21,43 +21,43 @@ public class PolygonVertexView {
 	
 	ContentGenerator cg;
 	PolygonVertexModel pvgm;
-	PolygonVertexController pvgh;	
+	PolygonVertexController polygonVertexController;	
 	
-	PolygonVertexView(ContentGenerator cg, PolygonVertexModel pvgm)
+	PolygonVertexView(ContentGenerator cg, PolygonVertexModel pvm)
 	{
-		pvgh = new PolygonVertexController(cg,this,pvgm);
+		polygonVertexController = new PolygonVertexController(cg,this,pvm);
 		
 		indexTextField = new JTextField();
 		indexTextField.setColumns(4);
 		indexTextField.setText("none");
-		indexTextField.setAction(pvgh);
+		indexTextField.setAction(polygonVertexController);
 		indexTextField.setEnabled(false);
 		indexTextField.setMaximumSize(new Dimension(40,20));
 
 		xTextField = new JTextField();
 		xTextField.setColumns(4);
 		xTextField.setText("0");
-		xTextField.setAction(pvgh);
+		xTextField.setAction(polygonVertexController);
 		xTextField.setMaximumSize(new Dimension(40,20));
 		
 		yTextField = new JTextField();
 		yTextField.setColumns(4);
 		yTextField.setText("0");
-		yTextField.setAction(pvgh);
+		yTextField.setAction(polygonVertexController);
 		yTextField.setMaximumSize(new Dimension(40,20));
 
 		zTextField = new JTextField();
 		zTextField.setColumns(4);
 		zTextField.setText("0");
-		zTextField.setAction(pvgh);
+		zTextField.setAction(polygonVertexController);
 		zTextField.setMaximumSize(new Dimension(40,20));
 		
 		addButton = new FixedSizeButton("/res/fullRenderButton.PNG");
-		addButton.setAction(pvgh);
+		addButton.setAction(polygonVertexController);
 		addButton.setIcon("/res/addButton.PNG");
 		
 		moveWorkingToThisButton = new FixedSizeButton("/res/moveToVertexButton.PNG");
-		moveWorkingToThisButton.setAction(pvgh);	
+		moveWorkingToThisButton.setAction(polygonVertexController);	
 		moveWorkingToThisButton.setIcon("/res/moveToVertexButton.PNG");
 
 	}
@@ -71,6 +71,7 @@ public class PolygonVertexView {
 		outerbox.add(zTextField);
 		outerbox.add(addButton);
 		outerbox.add(moveWorkingToThisButton);
+		outerbox.add(Box.createHorizontalGlue());
 		container.add(outerbox);
 	}
 }
