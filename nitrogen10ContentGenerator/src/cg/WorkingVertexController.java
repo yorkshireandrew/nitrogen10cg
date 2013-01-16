@@ -20,7 +20,8 @@ public class WorkingVertexController extends AbstractAction
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		
+		// Handle an edit to the x y z values
 		if(
 			(e.getSource() == workingVertexView.xTextField)
 			||(e.getSource() == workingVertexView.yTextField)
@@ -47,7 +48,7 @@ public class WorkingVertexController extends AbstractAction
 				workingVertexModel.x = original_x;
 				workingVertexModel.y = original_y;
 				workingVertexModel.z = original_z;
-				workingVertexView.updateFromModel();
+				updateViewFromModel(); // overkill workingVertexView.updateFromModel() is sufficient
 				return;
 			}
 			
@@ -86,9 +87,7 @@ public class WorkingVertexController extends AbstractAction
 				workingVertexModel.x = proposed_x;
 				workingVertexModel.y = proposed_y;
 				workingVertexModel.z = proposed_z;
-				workingVertexModel.computeDistances();
-				workingVertexView.updateFromModel();
-				
+				updateViewFromModel();
 				
 			}
 			else
@@ -96,13 +95,37 @@ public class WorkingVertexController extends AbstractAction
 				workingVertexModel.x = original_x;
 				workingVertexModel.y = original_y;
 				workingVertexModel.z = original_z;
-				workingVertexView.updateFromModel();
+				updateViewFromModel(); // overkill workingVertexView.updateFromModel() is sufficient
 				return;				
-			}
-			
-			
-			
-			
-		}	
+			}	
+		}// end of edit to xyz values if	
+		
+		// Handle a moveToZeroXButton press
+		if(e.getSource() == workingVertexView.moveToZeroXButton)
+		{
+			workingVertexModel.x = 0;
+			updateViewFromModel();
+			return;
+		}
+		
+		// Handle a setRefButton press
+		if(e.getSource() == workingVertexView.setRefButton)
+		{
+			workingVertexModel.setReference();
+			workingVertexModel.computeDistances();
+			workingVertexView.updateFromModel();	
+			return;
+		}
+		
+		
 	}
-}
+	
+	void updateViewFromModel()
+	{
+		workingVertexModel.computeDistances();
+		workingVertexView.updateFromModel();
+		cg.cgc.updateCursorFromWorkingVertex();		
+	}
+	
+	
+}// end of WorkingVertexController class

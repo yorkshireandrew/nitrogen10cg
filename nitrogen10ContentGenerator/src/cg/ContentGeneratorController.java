@@ -50,6 +50,55 @@ public class ContentGeneratorController
 		cg.workingVertexModel.computeDistances();
 		cg.workingVertexView.updateFromModel();	
 	}
+	
+	void updateCursorFromWorkingVertex()
+	{
+		int screenX;
+		int screenY;
+		
+		switch(cg.viewDirection)
+		{
+			case ContentGenerator.FRONT:
+				screenX = cg.workingVertexModel.x;
+				screenY = cg.workingVertexModel.y;
+				break;
+			case ContentGenerator.LEFT:
+				screenX = -cg.workingVertexModel.z;
+				screenY = cg.workingVertexModel.y;
+				break;
+			case ContentGenerator.BACK:
+				screenX = -cg.workingVertexModel.x;
+				screenY = cg.workingVertexModel.y;
+				break;
+			case ContentGenerator.RIGHT:
+				screenX = cg.workingVertexModel.z;
+				screenY = cg.workingVertexModel.y;
+				break;
+			case ContentGenerator.TOP: 
+				screenX = -cg.workingVertexModel.z;
+				screenY = -cg.workingVertexModel.x;
+				break;
+			case ContentGenerator.BOTTOM:
+				screenX = -cg.workingVertexModel.z;
+				screenY = cg.workingVertexModel.x;
+				break;				
+			default:
+				screenX = 0;
+				screenY = 0;
+		}
+		
+		screenX = screenX + ContentGenerator.EDIT_SCREEN_MIDX;
+		screenY = ContentGenerator.EDIT_SCREEN_MIDY - screenY;
+
+		if(screenX < 0)screenX = 0;
+		if(screenY < 0)screenY = 0;
+		if(screenX >= ContentGenerator.EDIT_SCREEN_WIDTH)screenX = ContentGenerator.EDIT_SCREEN_WIDTH - 1;
+		if(screenY >= ContentGenerator.EDIT_SCREEN_HEIGHT)screenY = ContentGenerator.EDIT_SCREEN_HEIGHT - 1;
+		
+		cg.cursor_x = screenX;
+		cg.cursor_y = screenY;
+		cg.renderEditArea();
+	}
 }
 
 /** class to handle mouse clicks on the edit area */

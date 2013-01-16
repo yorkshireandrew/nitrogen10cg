@@ -88,8 +88,8 @@ public class WorkingVertexView {
 		setRefButton.setIcon("/res/setRefButton.PNG");
 
 		moveToZeroXButton = new FixedSizeButton("/res/moveToZeroXButton.PNG");
-		setRefButton.setAction(workingVertexController);
-
+		moveToZeroXButton.setAction(workingVertexController);
+		moveToZeroXButton.setIcon("/res/moveToZeroXButton.PNG");
 	}
 	
 	void createWorkingVertexGUI(Container container)

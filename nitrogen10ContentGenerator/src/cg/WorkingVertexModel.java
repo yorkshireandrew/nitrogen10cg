@@ -31,4 +31,11 @@ public class WorkingVertexModel {
 		double d = Math.sqrt(dx*dx+dy*dy+dz*dz);
 		dist = (int)d;	
 	}
+	
+	void setReference()
+	{
+		ref_x = x;
+		ref_y = y;
+		ref_z = z;
+	}
 }
