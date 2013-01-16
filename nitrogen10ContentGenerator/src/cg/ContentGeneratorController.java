@@ -2,11 +2,16 @@ package cg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 
-public class ContentGeneratorController
+import modified_nitrogen1.*;
+
+
+public class ContentGeneratorController extends AbstractAction
 {
 	ContentGenerator cg;
 	
@@ -14,6 +19,16 @@ public class ContentGeneratorController
 	{
 		this.cg = cg;
 	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+		if(source == cg.newVertexButton)
+		{
+			System.out.println("newVertexButton press");
+			addNewVertex();
+		}
+	}		
 	
 	void updateWorkingVertex()
 	{
@@ -99,7 +114,73 @@ public class ContentGeneratorController
 		cg.cursor_y = screenY;
 		cg.renderEditArea();
 	}
+	
+	/** adds a ImmutableVertex to the generatedSISI */
+	void addNewVertex()
+	{
+		// get where we want to add the vertex
+		WorkingVertexModel wvm = cg.workingVertexModel;
+		int wvmx = wvm.x;
+		int wvmy = wvm.y;
+		int wvmz = wvm.z;
+		
+		// get the generatedSISI
+		SharedImmutableSubItem gs = cg.generatedSISI;
+		
+		// return if an existing vertex is at same location
+		ImmutableVertex[] iv = gs.getImmutableVertexes();	
+		int ivl = iv.length;
+		for(int index = 0; index < ivl ; index++)
+		{
+			ImmutableVertex checkVertex = iv[index];
+			if(
+					(((int)checkVertex.is_x) == ((int)wvmx))
+					&&(((int)checkVertex.is_y) == ((int)wvmy))
+					&&(((int)checkVertex.is_z) == ((int)wvmz))
+				)
+			{
+				JOptionPane.showMessageDialog(cg, "A vertex is already there");
+				return;
+			}
+		}
+		
+		saveSISI();
+		
+		ImmutableVertex[] newVertexArray = Arrays.copyOf(iv, (ivl+1));
+		newVertexArray[ivl]= new ImmutableVertex(wvmx,wvmy,wvmz);
+		gs.setImmutableVertexes(newVertexArray);
+		
+		// tell working vertex about it
+		wvm.index = ivl;
+		wvm.picked = true;
+		cg.workingVertexView.updateFromModel();
+		
+		// ensure we make it visible in edit area
+		cg.renderEditArea();
+	}
+	
+	/** Hook for UNDO*/
+	void saveSISI()
+	{
+		// TO DO
+		return;
+	}
 }
+
+
+
+
+
+
+
+// ************************************************
+// ************************************************
+// *********** Other controller classes ***********
+//************************************************
+//************************************************
+
+
+
 
 /** class to handle mouse clicks on the edit area */
 class ContentGeneratorMouseListener extends MouseInputAdapter

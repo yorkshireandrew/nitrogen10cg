@@ -271,8 +271,7 @@ public class TemplateDialog extends JDialog implements ChangeListener
     void updateContentGenerator()
     {
     	tm.generatePixels();
-    	contentGenerator.generatePixels();
-    	
+    	contentGenerator.renderEditArea();    	
     }
     
     

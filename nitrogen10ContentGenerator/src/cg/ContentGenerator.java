@@ -39,6 +39,50 @@ public class ContentGenerator extends JFrame{
 	/** the main screen */
 	NitrogenContext nc;
 	
+	/** The SharedImuutableSubItem content being generated */
+	SharedImmutableSubItem generatedSISI = new SharedImmutableSubItem();
+	/** Item used to render the generatedSISI. Gets re-constructed if the generatedSISI is altered */
+	Item generatedItem;
+	
+	/** transform chain to alter view of generatedItem */
+    Transform rootTransform	= new 	Transform(
+			null,
+			1f, 0f, 0f, 0f,
+			0f, 1f, 0f, 0f,
+			0f, 0f, 1f, 0f);
+	
+    Transform distTransform	= new 	Transform(
+			rootTransform,
+			1f, 0f, 0f, 0f,
+			0f, 1f, 0f, 0f,
+			0f, 0f, 1f, -500f);
+    
+    Transform turnTransform	= new 	Transform(
+			distTransform,
+			1f, 0f, 0f, 0f,
+			0f, 1f, 0f, 0f,
+			0f, 0f, 1f, 0f);
+    
+    Transform climbTransform	= new 	Transform(
+			turnTransform,
+			1f, 0f, 0f, 0f,
+			0f, 1f, 0f, 0f,
+			0f, 0f, 1f, 0f);
+    
+    Transform rollTransform	= new 	Transform(
+			climbTransform,
+			1f, 0f, 0f, 0f,
+			0f, 1f, 0f, 0f,
+			0f, 0f, 1f, 0f);
+    
+    Transform viewDirectionTransform	= new 	Transform(
+			rollTransform,
+			1f, 0f, 0f, 0f,
+			0f, 1f, 0f, 0f,
+			0f, 0f, 1f, 0f); 
+    
+
+    
 	/** buttons for selecting the view */	
 	FixedSizeIconToggleButton frontViewButton;
 	FixedSizeIconToggleButton leftViewButton;
@@ -116,11 +160,22 @@ public class ContentGenerator extends JFrame{
         }
 		
 		createMenu();
+		createWorld();
+		
+		// create a box to fill with various RHS controls
 		Box rightHandControls = new Box(BoxLayout.Y_AXIS);
-		createViewButtons(rightHandControls);
-		createWorkingVertexGUI(rightHandControls);
-		createNewPolygonVertexGUI(rightHandControls);
-		rightHandControls.add(Box.createVerticalGlue());
+		
+		// create the controls for standard view
+		Box standardViewControls = new Box(BoxLayout.Y_AXIS);
+		createViewButtons(standardViewControls);
+		createWorkingVertexGUI(standardViewControls);
+		createNewPolygonVertexGUI(standardViewControls);
+		standardViewControls.add(Box.createVerticalGlue());
+		
+		// initially rightHandControls are for standard view
+		rightHandControls.add(standardViewControls);
+		
+		// create whole user interface
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		outerBox.add(nc);
 		outerBox.add(Box.createHorizontalGlue());
@@ -235,18 +290,42 @@ public class ContentGenerator extends JFrame{
 	{
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		
-		moveVertexButton = new FixedSizeButton("/res/moveVertexButton.PNG");
-		outerBox.add(moveVertexButton);
+		// new vertex button
 		newVertexButton = new FixedSizeButton("/res/newVertexButton.PNG");
+		newVertexButton.addActionListener(cgc);
+		newVertexButton.setIcon("/res/newVertexButton.PNG");		
 		outerBox.add(newVertexButton);
+		
+		// move vertex button
+		moveVertexButton = new FixedSizeButton("/res/moveVertexButton.PNG");
+		moveVertexButton.addActionListener(cgc);
+		moveVertexButton.setIcon("/res/moveVertexButton.PNG");
+		outerBox.add(moveVertexButton);
+		
+		// new vertex data button
 		newVertexDataButton = new FixedSizeButton("/res/newVertexDataButton.PNG");
+		newVertexDataButton.addActionListener(cgc);
+		newVertexDataButton.setIcon("/res/newVertexDataButton.PNG");
 		outerBox.add(newVertexDataButton);
+		
+		// new polygon button
 		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
+		newPolygonButton.addActionListener(cgc);
+		newPolygonButton.setIcon("/res/newPolygonButton.PNG");
 		outerBox.add(newPolygonButton);
+		
+		// new polygon data button
 		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
+		newPolygonDataButton.addActionListener(cgc);
+		newPolygonDataButton.setIcon("/res/newPolygonDataButton.PNG");
 		outerBox.add(newPolygonDataButton);
+		
+		// new texture map button
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
+		newTextureMapButton.addActionListener(cgc);
+		newTextureMapButton.setIcon("/res/newTextureMapButton.PNG");
 		outerBox.add(newTextureMapButton);
+		
 		outerBox.add(Box.createHorizontalGlue());
 		container.add(outerBox);	
 	}
@@ -323,6 +402,8 @@ public class ContentGenerator extends JFrame{
 		container.add(retval);	
 	}
 	
+	/*
+	// created for test perposes during early development
 	void generatePixels()
 	{
 		nc.cls(templateModels[viewDirection].pixels);
@@ -384,11 +465,13 @@ public class ContentGenerator extends JFrame{
 		addCursor(nc,100,100);
 		nc.repaint();	
 	}
+	*/
 	
 	void renderEditArea()
 	{
 		nc.cls(templateModels[viewDirection].pixels);
-		nc.createTestSquare();
+		//nc.createTestSquare();
+		rootTransform.render(nc);
 		templateModels[viewDirection].overlayTemplate(
 				nc.pix, nc.zbuff);
 		
@@ -486,6 +569,83 @@ public class ContentGenerator extends JFrame{
 		
 		int retval = 0xFF000000 | (pixelRedMinus << 16) | (pixelGreenMinus << 8) | pixelBlueMinus;	
 		return retval;
+	}
+	
+	// initialises the world that the edit area NitrogenContext renders
+	void createWorld()
+	{	
+		// create transform chain with generatedItem on top
+		// To alter the view we alter these transforms
+	    rootTransform	= new 	Transform(
+				null,
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+		
+	    distTransform	= new 	Transform(
+				rootTransform,
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, -500f);
+	    
+	    turnTransform	= new 	Transform(
+				distTransform,
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+	    
+	    climbTransform	= new 	Transform(
+				turnTransform,
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+	    
+	    rollTransform	= new 	Transform(
+				climbTransform,
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+	    
+	    viewDirectionTransform	= new 	Transform(
+				rollTransform,
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f); 
+	    // create Renderers
+	    createRenderers();
+		// create basic (mutable) SISI
+		generatedSISI = new SharedImmutableSubItem();	
+		// Let garbage collector be responsible for dead Items              
+        Item.setItemFactory(new ItemFactory_Default());
+        // create default Item
+        generatedItem = Item.createItem(generatedSISI,viewDirectionTransform);
+        generatedItem.setVisibility(true);
+        generatedItem.setName("default Item");
+	}
+	
+	/** method to set up all the RendererTriplets
+	 * available in the ContentGenerator. Amend this
+	 * if you need to add in more RendererTriplets
+	 */
+	void createRenderers()
+	{
+        // RendererTriplet using just the SimpleTexture renderer
+		Renderer_SimpleTexture str = new Renderer_SimpleTexture();
+        RendererTriplet rt = new RendererTriplet(str);
+        try
+        {
+        	RendererHelper.addRendererTriplet("str",rt);
+        }
+        catch(Exception e){System.out.println(e.getMessage());}
+
+        // RendererTriplet using just the SimpleSingleColour renderer 
+        Renderer_SimpleSingleColour sscr = new Renderer_SimpleSingleColour();           
+        RendererTriplet sscrt = new RendererTriplet(sscr);
+        try
+        {
+        	RendererHelper.addRendererTriplet("sscr",sscrt);
+        }
+        catch(Exception e){System.out.println(e.getMessage());}		
 	}
 	
 
