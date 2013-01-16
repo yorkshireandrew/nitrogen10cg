@@ -26,6 +26,7 @@ public class WorkingVertexView {
 	JTextField distTextField;
 	
 	FixedSizeButton setRefButton;
+	FixedSizeButton moveToZeroXButton;
 	
 	WorkingVertexView(ContentGenerator cg, WorkingVertexModel workingVertexModel)
 	{
@@ -82,9 +83,13 @@ public class WorkingVertexView {
 		distTextField.setEnabled(false);
 		distTextField.setMaximumSize(new Dimension(40,20));
 		
-		setRefButton = new FixedSizeButton("/res/fullRenderButton.PNG");
+		setRefButton = new FixedSizeButton("/res/setRefButton.PNG");
 		setRefButton.setAction(workingVertexController);
 		setRefButton.setIcon("/res/setRefButton.PNG");
+
+		moveToZeroXButton = new FixedSizeButton("/res/moveToZeroXButton.PNG");
+		setRefButton.setAction(workingVertexController);
+
 	}
 	
 	void createWorkingVertexGUI(Container container)
@@ -97,13 +102,14 @@ public class WorkingVertexView {
 		topbox.add(xTextField);
 		topbox.add(yTextField);
 		topbox.add(zTextField);
-		topbox.add(setRefButton);
+		topbox.add(moveToZeroXButton);
 		topbox.add(Box.createHorizontalGlue());
 		
 		botbox.add(distTextField);
 		botbox.add(dxTextField);
 		botbox.add(dyTextField);
-		botbox.add(dzTextField);	
+		botbox.add(dzTextField);
+		botbox.add(setRefButton);
 		botbox.add(Box.createHorizontalGlue());
 		
 		outerbox.add(topbox);

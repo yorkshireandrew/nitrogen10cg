@@ -43,9 +43,9 @@ public class TemplateModel {
 	
 	TemplateModel(ContentGenerator cg)
 	{
-		editScreenSize 		= cg.EDIT_SCREEN_SIZE;
-		editScreenHeight 	= cg.EDIT_SCREEN_HEIGHT;
-		editScreenWidth 	= cg.EDIT_SCREEN_WIDTH;
+		editScreenSize 		= ContentGenerator.EDIT_SCREEN_SIZE;
+		editScreenHeight 	= ContentGenerator.EDIT_SCREEN_HEIGHT;
+		editScreenWidth 	= ContentGenerator.EDIT_SCREEN_WIDTH;
 		
 		// create a load of initially black pixels
 		red 		= new int[editScreenSize];

@@ -93,11 +93,15 @@ public class ContentGenerator extends JFrame{
 	int cursor_x = EDIT_SCREEN_MIDX;
 	int cursor_y = EDIT_SCREEN_MIDY;
 	
+	ContentGeneratorController cgc;
+	
 	ContentGenerator()
 	{
         super("Content Generator");
         setSize(APP_WIDTH,APP_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        cgc = new ContentGeneratorController(this);
         		
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip
@@ -123,7 +127,7 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(rightHandControls);
 		getContentPane().add(outerBox);
 		getContentPane().validate();	
-		nc.addMouseListener(new ContentGeneratorMouseListener());
+		nc.addMouseListener(new ContentGeneratorMouseListener(this,cgc));
 	}
 	
 	
@@ -291,7 +295,7 @@ public class ContentGenerator extends JFrame{
 //  item.addActionListener(new mySourceFileListener());  
     
     edit.add(item = new JMenuItem("Template..."));
-    item.addActionListener(new TemplateAction(this));  
+    item.addActionListener(new TemplateMenuItemAction(this));  
     edit.add(item = new JMenuItem("Circle..."));
     edit.add(item = new JMenuItem("Remove Polygon"));
     edit.add(item = new JMenuItem("Collision Vertexes..."));
@@ -437,6 +441,7 @@ public class ContentGenerator extends JFrame{
 		
 	}
 	
+	/** Generates pixel colours for cursor, called by addCursor */
 	int cursorColour(int pixelColour)
 	{
 		// extract the pixel colour
@@ -483,91 +488,7 @@ public class ContentGenerator extends JFrame{
 		return retval;
 	}
 	
-	void updateWorkingVertex()
-	{
-		int screenX = cursor_x - EDIT_SCREEN_MIDX;
-		int screenY = EDIT_SCREEN_MIDY - cursor_y;
-		
-		switch(viewDirection)
-		{
-			case FRONT:
-				workingVertexModel.x = screenX;
-				workingVertexModel.y = screenY;
-				break;
-			case LEFT:
-				workingVertexModel.z = -screenX;
-				workingVertexModel.y = screenY;
-				break;
-			case BACK:
-				workingVertexModel.x = -screenX;
-				workingVertexModel.y = screenY;
-				break;
-			case RIGHT:
-				workingVertexModel.z = screenX;
-				workingVertexModel.y = screenY;
-				break;
-			case TOP: 
-				workingVertexModel.z = -screenX;
-				workingVertexModel.x = -screenY;
-				break;
-			case BOTTOM:
-				workingVertexModel.z = -screenX;
-				workingVertexModel.x = screenY;
-				break;
-		}
-		workingVertexModel.computeDistances();
-		workingVertexView.updateFromModel();
 
-		
-	}
-	
-	/** class to handle mouse input */
-	class ContentGeneratorMouseListener extends MouseInputAdapter
-	{
-		public void mouseClicked(MouseEvent e)
-		{
-			super.mouseMoved(e);
-			if(e.getComponent() == nc)
-			{
-				System.out.println("mouseClicked over nc");
-				System.out.println("raw: x=" + e.getX() + ", y=" + e.getY());
-				int rawX = e.getX();
-				int rawY = e.getY();
-				if(rawY < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
-				{
-					ContentGenerator.this.cursor_x = rawX;
-				}
-				else if(rawX < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
-				{
-					ContentGenerator.this.cursor_y = rawY;
-				}
-				else
-				{
-					ContentGenerator.this.cursor_x = rawX;
-					ContentGenerator.this.cursor_y = rawY;					
-				}
-			}
-			ContentGenerator.this.renderEditArea();
-			ContentGenerator.this.updateWorkingVertex();	
-		}
-	}
 }
-
-
-
-class TemplateAction extends AbstractAction
-{
-
-	ContentGenerator cg;
-	TemplateAction(ContentGenerator cg)
-	{
-		this.cg = cg;
-	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		TemplateDialog td = new TemplateDialog(cg,cg.templateModels[cg.viewDirection]);
-		td.setVisible(true);
-	}
-	
-}
+
