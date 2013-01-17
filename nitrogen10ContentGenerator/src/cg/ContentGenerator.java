@@ -217,18 +217,31 @@ public class ContentGenerator extends JFrame{
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		
 		vertexesOnlyButton = new FixedSizeIconToggleButton(this,"/res/vertexesOnlyButton.PNG","/res/vertexesOnlySelectedButton.PNG");
+		vertexesOnlyButton.setToolTipText("vertexes only view");
 		outerBox.add(vertexesOnlyButton);
+		
 		wireframeOnlyButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyButton.PNG","/res/wireframeOnlySelectedButton.PNG");
+		wireframeOnlyButton.setToolTipText("full wireframe view");
 		outerBox.add(wireframeOnlyButton);
+		
 		wireframeOnlyBacksideCulledButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyBacksideCulledButton.PNG","/res/wireframeOnlyBacksideCulledSelectedButton.PNG");
+		wireframeOnlyBacksideCulledButton.setToolTipText("backside culled wireframe view");
 		outerBox.add(wireframeOnlyBacksideCulledButton);
+		
 		fullRenderButton = new FixedSizeIconToggleButton(this,"/res/fullRenderButton.PNG","/res/fullRenderSelectedButton.PNG");
+		fullRenderButton.setToolTipText("fully rendered view");
 		outerBox.add(fullRenderButton);
+		
 		perspectiveButton = new FixedSizeIconToggleButton(this,"/res/perspectiveButton.PNG","/res/perspectiveSelectedButton.PNG");
+		perspectiveButton.setToolTipText("perspective view");
 		outerBox.add(perspectiveButton);
+		
 		textureButton = new FixedSizeIconToggleButton(this,"/res/textureButton.PNG","/res/textureSelectedButton.PNG");
+		textureButton.setToolTipText("texture maps view");
 		outerBox.add(textureButton);
+		
 		showCollisionVertexesButton = new FixedSizeIconToggleButton(this,"/res/showCollisionVertexesButton.PNG","/res/showCollisionVertexesSelectedButton.PNG");
+		showCollisionVertexesButton.setToolTipText("show collision vertexes");
 		outerBox.add(showCollisionVertexesButton);
 		outerBox.add(Box.createHorizontalGlue());
 		
