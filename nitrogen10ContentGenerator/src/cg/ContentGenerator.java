@@ -40,49 +40,18 @@ public class ContentGenerator extends JFrame{
 	NitrogenContext nc;
 	
 	/** The SharedImuutableSubItem content being generated */
-	SharedImmutableSubItem generatedSISI = new SharedImmutableSubItem();
+	SharedImmutableSubItem generatedSISI;
 	/** Item used to render the generatedSISI. Gets re-constructed if the generatedSISI is altered */
 	Item generatedItem;
 	
 	/** transform chain to alter view of generatedItem */
-    Transform rootTransform	= new 	Transform(
-			null,
-			1f, 0f, 0f, 0f,
-			0f, 1f, 0f, 0f,
-			0f, 0f, 1f, 0f);
-	
-    Transform distTransform	= new 	Transform(
-			rootTransform,
-			1f, 0f, 0f, 0f,
-			0f, 1f, 0f, 0f,
-			0f, 0f, 1f, -500f);
-    
-    Transform turnTransform	= new 	Transform(
-			distTransform,
-			1f, 0f, 0f, 0f,
-			0f, 1f, 0f, 0f,
-			0f, 0f, 1f, 0f);
-    
-    Transform climbTransform	= new 	Transform(
-			turnTransform,
-			1f, 0f, 0f, 0f,
-			0f, 1f, 0f, 0f,
-			0f, 0f, 1f, 0f);
-    
-    Transform rollTransform	= new 	Transform(
-			climbTransform,
-			1f, 0f, 0f, 0f,
-			0f, 1f, 0f, 0f,
-			0f, 0f, 1f, 0f);
-    
-    Transform viewDirectionTransform	= new 	Transform(
-			rollTransform,
-			1f, 0f, 0f, 0f,
-			0f, 1f, 0f, 0f,
-			0f, 0f, 1f, 0f); 
-    
-
-    
+    Transform rootTransform;	
+    Transform distTransform;   
+    Transform turnTransform;   
+    Transform climbTransform;    
+    Transform rollTransform	;
+    Transform viewDirectionTransform; 
+     
 	/** buttons for selecting the view */	
 	FixedSizeIconToggleButton frontViewButton;
 	FixedSizeIconToggleButton leftViewButton;
@@ -90,8 +59,7 @@ public class ContentGenerator extends JFrame{
 	FixedSizeIconToggleButton rightViewButton;
 	FixedSizeIconToggleButton topViewButton;
 	FixedSizeIconToggleButton bottomViewButton;
-	ButtonGroup viewButtonGroup;
-	
+	ButtonGroup viewButtonGroup;	
 	
 	/** buttons for picking vertexes */	
 	FixedSizeButton pickFrontVertexButton;
@@ -102,6 +70,7 @@ public class ContentGenerator extends JFrame{
 	/** buttons for selecting view type */
 	FixedSizeIconToggleButton vertexesOnlyButton;
 	FixedSizeIconToggleButton wireframeOnlyButton;
+	FixedSizeIconToggleButton wireframeOnlyBacksideCulledButton;
 	FixedSizeIconToggleButton fullRenderButton;
 	FixedSizeIconToggleButton showCollisionVertexesButton;
 	FixedSizeIconToggleButton perspectiveButton;
@@ -251,20 +220,25 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(vertexesOnlyButton);
 		wireframeOnlyButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyButton.PNG","/res/wireframeOnlySelectedButton.PNG");
 		outerBox.add(wireframeOnlyButton);
+		wireframeOnlyBacksideCulledButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyBacksideCulledButton.PNG","/res/wireframeOnlyBacksideCulledSelectedButton.PNG");
+		outerBox.add(wireframeOnlyBacksideCulledButton);
 		fullRenderButton = new FixedSizeIconToggleButton(this,"/res/fullRenderButton.PNG","/res/fullRenderSelectedButton.PNG");
 		outerBox.add(fullRenderButton);
-		showCollisionVertexesButton = new FixedSizeIconToggleButton(this,"/res/showCollisionVertexesButton.PNG","/res/showCollisionVertexesSelectedButton.PNG");
-		outerBox.add(showCollisionVertexesButton);
 		perspectiveButton = new FixedSizeIconToggleButton(this,"/res/perspectiveButton.PNG","/res/perspectiveSelectedButton.PNG");
 		outerBox.add(perspectiveButton);
 		textureButton = new FixedSizeIconToggleButton(this,"/res/textureButton.PNG","/res/textureSelectedButton.PNG");
 		outerBox.add(textureButton);
+		showCollisionVertexesButton = new FixedSizeIconToggleButton(this,"/res/showCollisionVertexesButton.PNG","/res/showCollisionVertexesSelectedButton.PNG");
+		outerBox.add(showCollisionVertexesButton);
 		outerBox.add(Box.createHorizontalGlue());
 		
 		viewTypeButtonGroup = new ButtonGroup();
 		viewTypeButtonGroup.add(vertexesOnlyButton);
 		viewTypeButtonGroup.add(wireframeOnlyButton);
+		viewTypeButtonGroup.add(wireframeOnlyBacksideCulledButton);		
 		viewTypeButtonGroup.add(fullRenderButton);
+		viewTypeButtonGroup.add(perspectiveButton);	
+		viewTypeButtonGroup.add(textureButton);				
 		vertexesOnlyButton.setSelected(true);
 		
 		container.add(outerBox);	
