@@ -959,6 +959,16 @@ final public class Item implements Serializable{
 		renderPixel(nc,vertex.sx,vertex.sy-1,colour);
 	}
 	
+	final public Vertex getVertex(int index)
+	{
+		final int colour = 0xFFFF0000;	//red
+		Vertex[] vertexesL = vertexes;
+		Vertex vertex;
+		if(index >= vertexesL.length) return null;
+		vertex = vertexesL[index];
+		return vertex;
+	}
+	
 	void renderPixel(NitrogenContext context ,int x,int y,int colour)
 	{
 		
@@ -973,8 +983,107 @@ final public class Item implements Serializable{
 		{
 			nitrogenContextPixels[pixelIndex] = colour; 			
 		}
+	}
+	
+	/** For ContentGenerator. Finds the vertex with largest sz at approximately the given screen coordinates. Returns null if no suitable vertex is found */
+	public int findNearestVertexAt(int x,int y, float nearplane)
+	{
+		int retval = -1;
+		int nearest_z = Integer.MIN_VALUE;
+		
+		Vertex[] vertexesL = vertexes;
+		int vl = vertexesL.length;
+		Vertex vertex;
 		
 
+		for(int index = 0; index < vl; index++)
+		{
+			vertex = vertexesL[index];
+			
+			// ignore vertexes wrong side of the near plane
+			// their screen space coordinates will not be valid
+			if(-vertex.vs_z < nearplane)continue;
+			
+			// ignore misses greater than a pixel
+			if(vertex.sx > (x+1))continue;
+			if(vertex.sx < (x-1))continue;
+			if(vertex.sy > (y+1))continue;			
+			if(vertex.sy < (y-1))continue;
+			
+			// remember it if its closest (most +ve z)
+			if(vertex.sz > nearest_z)
+			{
+				nearest_z = vertex.sz;
+				retval = index;
+			}
+		}
+		return retval;
+	}
+	
+	/** For ContentGenerator. Finds the vertex with largest sz at approximately the given screen coordinates. Returns null if no suitable vertex is found */
+	public int findFurthestVertexAt(int x,int y, float nearplane)
+	{
+		int retval = -1;
+		int furthest_z = Integer.MAX_VALUE;
+		
+		Vertex[] vertexesL = vertexes;
+		int vl = vertexesL.length;
+		Vertex vertex;
+		
+
+		for(int index = 0; index < vl; index++)
+		{
+			vertex = vertexesL[index];
+			
+			// ignore vertexes wrong side of the near plane
+			// their screen space coordinates will not be valid
+			if(-vertex.vs_z < nearplane)continue;
+			
+			// ignore misses greater than a pixel
+			if(vertex.sx > (x+1))continue;
+			if(vertex.sx < (x-1))continue;
+			if(vertex.sy > (y+1))continue;			
+			if(vertex.sy < (y-1))continue;
+			
+			// remember it if its farthest (most -ve z)
+			if(vertex.sz < furthest_z)
+			{
+				furthest_z = vertex.sz;
+				retval = index;
+			}
+		}
+		return retval;
+	}
+	
+	/** For ContentGenerator. Finds the vertex with largest sz at approximately the given screen coordinates. Returns null if no suitable vertex is found */
+	public int findNearestVertexTo(int x,int y, int z)
+	{
+		int retval = -1;
+		float nearestDist = Float.MAX_VALUE;
+		
+		Vertex[] vertexesL = vertexes;
+		int vl = vertexesL.length;
+		Vertex vertex;
+		
+
+		for(int index = 0; index < vl; index++)
+		{
+			vertex = vertexesL[index];
+			
+			float dx = (vertex.getX() - x);
+			float dy = (vertex.getY() - y);
+			float dz = (vertex.getZ() - z);
+			
+			float dist = dx * dx + dy * dy + dz * dz;
+						
+			// remember it if its closest
+			if(dist < nearestDist)
+			{
+				nearestDist = dist;
+				retval = index;
+			}
+		}
+		return retval;
 	}
 	
 

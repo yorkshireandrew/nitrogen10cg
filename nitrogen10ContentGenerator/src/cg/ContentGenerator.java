@@ -310,12 +310,27 @@ public class ContentGenerator extends JFrame{
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		
 		pickFrontVertexButton = new FixedSizeButton("/res/pickFrontVertexButton.PNG");
+		pickFrontVertexButton.addActionListener(cgc);
+		pickFrontVertexButton.setToolTipText("Pick the for-most vertex under the cursor");
+		pickFrontVertexButton.setIcon("/res/pickFrontVertexButton.PNG");
 		outerBox.add(pickFrontVertexButton);
+		
 		pickBackVertexButton = new FixedSizeButton("/res/pickBackVertexButton.PNG");
+		pickBackVertexButton.addActionListener(cgc);
+		pickBackVertexButton.setToolTipText("Pick the rear-most vertex under the cursor");
+		pickBackVertexButton.setIcon("/res/pickBackVertexButton.PNG");
 		outerBox.add(pickBackVertexButton);
+		
 		pickXYZVertexButton = new FixedSizeButton("/res/pickXYZVertexButton.PNG");
+		pickXYZVertexButton.addActionListener(cgc);
+		pickXYZVertexButton.setToolTipText("Pick the vertex that is closest in XYZ terms to the cursor");
+		pickXYZVertexButton.setIcon("/res/pickXYZVertexButton.PNG");
 		outerBox.add(pickXYZVertexButton);
+			
 		pickPolygonButton = new FixedSizeButton("/res/pickPolygonButton.PNG");
+		pickPolygonButton.addActionListener(cgc);
+		pickPolygonButton.setToolTipText("Pick the polygon under the cursor");
+		pickPolygonButton.setIcon("/res/pickPolygonButton.PNG");
 		outerBox.add(pickPolygonButton);
 		outerBox.add(Box.createHorizontalGlue());
 		container.add(outerBox);	

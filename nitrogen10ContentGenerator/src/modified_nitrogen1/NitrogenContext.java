@@ -40,7 +40,7 @@ public class NitrogenContext extends JPanel {
 	final float yClip;
 	
 	/** distance between viewpoint and near clip plane (a positive value) */
-	final float nearClip;
+	public final float nearClip;
 	
 	/** distance between viewpoint and far clip plane (a positive value) */
 	final float farClip;

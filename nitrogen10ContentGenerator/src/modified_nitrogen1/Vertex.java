@@ -244,8 +244,19 @@ public final class Vertex implements Serializable{
     	rotationNeedsUpdate = true;
         screenCoordinatesNeedUpdate = true;   	
     }    
-
     
+    final public float getX()
+    {
+    	return is_x;
+    }
+    final public float getY()
+    {
+    	return is_y;
+    }
+    final public float getZ()
+    {
+    	return is_z;
+    }   
     
 
 

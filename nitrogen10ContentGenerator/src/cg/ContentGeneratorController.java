@@ -70,9 +70,27 @@ public class ContentGeneratorController extends AbstractAction
 			System.out.println("bottomViewButton pressed");
 			bottomView();
 		}
+		
+		if(source == cg.pickFrontVertexButton)
+		{
+			System.out.println("pickFrontVertexButton pressed");
+			pickFrontVertex();
+		}
+		
+		if(source == cg.pickBackVertexButton)
+		{
+			System.out.println("pickBackVertexButton pressed");
+			pickBackVertex();
+		}
+		
+		if(source == cg.pickXYZVertexButton)
+		{
+			System.out.println("pickXYZVertexButton pressed");
+			pickXYZVertex();
+		}
 	}		
 	
-	void updateWorkingVertex()
+	void updateWorkingVertexFromCursor()
 	{
 		int screenX = cg.cursor_x - ContentGenerator.EDIT_SCREEN_MIDX;
 		int screenY = ContentGenerator.EDIT_SCREEN_MIDY - cg.cursor_y;
@@ -371,6 +389,93 @@ public class ContentGeneratorController extends AbstractAction
 		// ensure we make it visible in edit area
 		cgL.renderEditArea();	
 	}
+	
+	void pickFrontVertex()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+
+		// force the Item to recalculate its 
+		// vertexes view screen coordinates
+		// it renders them as a side effect
+		Item gi = cg.generatedItem;
+		gi.calculateVertexes();
+		gi.renderVertexes(cgL.nc);
+		float nearClip = cgL.nc.nearClip;
+		int i = gi.findNearestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip);
+		
+		// return if we did not find a vertex
+		if(i == -1)return;
+		Vertex v = gi.getVertex(i);
+		WorkingVertexModel wvm = cgL.workingVertexModel;
+	
+		wvm.picked = true;
+		wvm.index = i;
+		wvm.x = (int)v.getX();
+		wvm.y = (int)v.getY();
+		wvm.z = (int)v.getZ();
+		wvm.computeDistances();
+		cgL.workingVertexView.updateFromModel();	
+		updateCursorFromWorkingVertex();
+	}
+	
+	void pickBackVertex()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+
+		// force the Item to recalculate its 
+		// vertexes view screen coordinates
+		// it renders them as a side effect
+		Item gi = cg.generatedItem;
+		gi.calculateVertexes();
+		gi.renderVertexes(cgL.nc);
+		float nearClip = cgL.nc.nearClip;
+		int i = gi.findFurthestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip);
+		
+		// return if we did not find a vertex
+		if(i == -1)return;
+		Vertex v = gi.getVertex(i);
+		WorkingVertexModel wvm = cgL.workingVertexModel;
+	
+		wvm.picked = true;
+		wvm.index = i;
+		wvm.x = (int)v.getX();
+		wvm.y = (int)v.getY();
+		wvm.z = (int)v.getZ();
+		wvm.computeDistances();
+		cgL.workingVertexView.updateFromModel();	
+		updateCursorFromWorkingVertex();
+	}
+	
+	void pickXYZVertex()
+	{
+		ContentGenerator cgL = cg;
+		
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+
+		Item gi = cg.generatedItem;
+		WorkingVertexModel wvm = cgL.workingVertexModel;
+		
+		int i = gi.findNearestVertexTo(wvm.x,wvm.y,wvm.z);
+		
+		// return if we did not find a vertex
+		if(i == -1)return;
+		Vertex v = gi.getVertex(i);
+	
+		wvm.picked = true;
+		wvm.index = i;
+		wvm.x = (int)v.getX();
+		wvm.y = (int)v.getY();
+		wvm.z = (int)v.getZ();
+		wvm.computeDistances();
+		cgL.workingVertexView.updateFromModel();	
+		updateCursorFromWorkingVertex();
+	}
+	
 	/** Hook for UNDO*/
 	void saveSISI()
 	{
@@ -431,7 +536,7 @@ class ContentGeneratorMouseListener extends MouseInputAdapter
 			}
 		}
 		cg.renderEditArea();
-		cgc.updateWorkingVertex();	
+		cgc.updateWorkingVertexFromCursor();	
 	}
 }
 
