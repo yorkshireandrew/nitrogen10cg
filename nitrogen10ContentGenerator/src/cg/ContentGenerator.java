@@ -111,6 +111,7 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton newVertexButton;
 	FixedSizeButton newVertexDataButton;
 	FixedSizeButton newPolygonDataButton;
+	FixedSizeButton newBacksideButton;
 	FixedSizeButton newTextureMapButton;
 	FixedSizeButton newPolygonButton;
 	
@@ -243,38 +244,38 @@ public class ContentGenerator extends JFrame{
 		
 		// add view type buttons
 		orthogonalProjectionButton = new FixedSizeIconToggleButton(this,"/res/orthogonalProjectionButton.PNG","/res/orthogonalProjectionSelectedButton.PNG");
-		orthogonalProjectionButton.setToolTipText("orthogonal projection view");
+		orthogonalProjectionButton.setToolTipText("Orthogonal projection view");
 		outerBox.add(orthogonalProjectionButton);
 		
 		perspectiveButton = new FixedSizeIconToggleButton(this,"/res/perspectiveButton.PNG","/res/perspectiveSelectedButton.PNG");
-		perspectiveButton.setToolTipText("perspective view");
+		perspectiveButton.setToolTipText("Perspective view");
 		outerBox.add(perspectiveButton);
 		
 		textureButton = new FixedSizeIconToggleButton(this,"/res/textureButton.PNG","/res/textureSelectedButton.PNG");
-		textureButton.setToolTipText("texture map view");
+		textureButton.setToolTipText("Texture map view");
 		outerBox.add(textureButton);
 		
 		outerBox.add(Box.createHorizontalGlue());
 		
 		// add view detail buttons
 		vertexesOnlyButton = new FixedSizeIconToggleButton(this,"/res/vertexesOnlyButton.PNG","/res/vertexesOnlySelectedButton.PNG");
-		vertexesOnlyButton.setToolTipText("vertexes only");
+		vertexesOnlyButton.setToolTipText("Vertexes only");
 		outerBox.add(vertexesOnlyButton);
 		
 		wireframeOnlyButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyButton.PNG","/res/wireframeOnlySelectedButton.PNG");
-		wireframeOnlyButton.setToolTipText("full wireframe");
+		wireframeOnlyButton.setToolTipText("Full wireframe");
 		outerBox.add(wireframeOnlyButton);
 		
 		wireframeOnlyBacksideCulledButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyBacksideCulledButton.PNG","/res/wireframeOnlyBacksideCulledSelectedButton.PNG");
-		wireframeOnlyBacksideCulledButton.setToolTipText("backside culled wireframe");
+		wireframeOnlyBacksideCulledButton.setToolTipText("Backside culled wireframe");
 		outerBox.add(wireframeOnlyBacksideCulledButton);
 		
 		fullRenderButton = new FixedSizeIconToggleButton(this,"/res/fullRenderButton.PNG","/res/fullRenderSelectedButton.PNG");
-		fullRenderButton.setToolTipText("fully rendered");
+		fullRenderButton.setToolTipText("Fully rendered");
 		outerBox.add(fullRenderButton);
 		
 		showCollisionVertexesButton = new FixedSizeIconToggleButton(this,"/res/showCollisionVertexesButton.PNG","/res/showCollisionVertexesSelectedButton.PNG");
-		showCollisionVertexesButton.setToolTipText("show collision vertexes");
+		showCollisionVertexesButton.setToolTipText("Show collision vertexes");
 		outerBox.add(showCollisionVertexesButton);
 		outerBox.add(Box.createHorizontalGlue());
 		
@@ -317,36 +318,49 @@ public class ContentGenerator extends JFrame{
 		// new vertex button
 		newVertexButton = new FixedSizeButton("/res/newVertexButton.PNG");
 		newVertexButton.addActionListener(cgc);
+		newVertexButton.setToolTipText("Create a new vertex");
 		newVertexButton.setIcon("/res/newVertexButton.PNG");		
 		outerBox.add(newVertexButton);
 		
 		// move vertex button
 		moveVertexButton = new FixedSizeButton("/res/moveVertexButton.PNG");
 		moveVertexButton.addActionListener(cgc);
+		moveVertexButton.setToolTipText("Move the selected vertex");
 		moveVertexButton.setIcon("/res/moveVertexButton.PNG");
 		outerBox.add(moveVertexButton);
 		
 		// new vertex data button
 		newVertexDataButton = new FixedSizeButton("/res/newVertexDataButton.PNG");
 		newVertexDataButton.addActionListener(cgc);
+		newVertexDataButton.setToolTipText("Create a new vertex data datablock");
 		newVertexDataButton.setIcon("/res/newVertexDataButton.PNG");
 		outerBox.add(newVertexDataButton);
 		
 		// new polygon data button
 		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
 		newPolygonDataButton.addActionListener(cgc);
+		newPolygonDataButton.setToolTipText("Create a new polygon data datablock");
 		newPolygonDataButton.setIcon("/res/newPolygonDataButton.PNG");
 		outerBox.add(newPolygonDataButton);
+		
+		// new backside button
+		newBacksideButton = new FixedSizeButton("/res/newBacksideButton.PNG");
+		newBacksideButton.addActionListener(cgc);
+		newBacksideButton.setToolTipText("Create a new backside, used for culling");
+		newBacksideButton.setIcon("/res/newBacksideButton.PNG");
+		outerBox.add(newBacksideButton);
 		
 		// new polygon button
 		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
 		newPolygonButton.addActionListener(cgc);
+		newPolygonButton.setToolTipText("Create a new polygon");
 		newPolygonButton.setIcon("/res/newPolygonButton.PNG");
 		outerBox.add(newPolygonButton);
 		
 		// new texture map button
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
 		newTextureMapButton.addActionListener(cgc);
+		newTextureMapButton.setToolTipText("Create a new texture map reference");
 		newTextureMapButton.setIcon("/res/newTextureMapButton.PNG");
 		outerBox.add(newTextureMapButton);
 		
