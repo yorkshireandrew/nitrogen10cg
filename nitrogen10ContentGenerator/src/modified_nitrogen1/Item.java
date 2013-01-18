@@ -921,7 +921,11 @@ final public class Item implements Serializable{
 		{
 			vertex = vertexesL[index];
 			vertex.rotationNeedsUpdate = true;
-			vertex.translationNeedsUpdate = true;		
+			vertex.translationNeedsUpdate = true;	
+			
+			// enforce near clip plane to prevent divide by zero
+			if(-vertex.vs_z < nc.nearClip) return;
+			
 			vertex.calculateScreenSpaceCoordinate(nc);
 			
 			renderPixel(nc,vertex.sx,vertex.sy,colour);
@@ -940,6 +944,10 @@ final public class Item implements Serializable{
 		Vertex vertex;
 		if(index >= vertexesL.length) return;
 		vertex = vertexesL[index];
+		
+		// enforce near clip plane to prevent divide by zero
+		if(-vertex.vs_z < nc.nearClip) return;
+		
 		vertex.rotationNeedsUpdate = true;
 		vertex.translationNeedsUpdate = true;		
 		vertex.calculateScreenSpaceCoordinate(nc);
@@ -953,6 +961,7 @@ final public class Item implements Serializable{
 	
 	void renderPixel(NitrogenContext context ,int x,int y,int colour)
 	{
+		
 		int[] nitrogenContextPixels = context.pix;
 		int nitrogenContextWidth = context.w;
 		int nitrogenContextSize = context.s;	
