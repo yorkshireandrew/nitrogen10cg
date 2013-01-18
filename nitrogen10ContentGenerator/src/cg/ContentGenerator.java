@@ -332,17 +332,17 @@ public class ContentGenerator extends JFrame{
 		newVertexDataButton.setIcon("/res/newVertexDataButton.PNG");
 		outerBox.add(newVertexDataButton);
 		
-		// new polygon button
-		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
-		newPolygonButton.addActionListener(cgc);
-		newPolygonButton.setIcon("/res/newPolygonButton.PNG");
-		outerBox.add(newPolygonButton);
-		
 		// new polygon data button
 		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
 		newPolygonDataButton.addActionListener(cgc);
 		newPolygonDataButton.setIcon("/res/newPolygonDataButton.PNG");
 		outerBox.add(newPolygonDataButton);
+		
+		// new polygon button
+		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
+		newPolygonButton.addActionListener(cgc);
+		newPolygonButton.setIcon("/res/newPolygonButton.PNG");
+		outerBox.add(newPolygonButton);
 		
 		// new texture map button
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
@@ -496,16 +496,24 @@ public class ContentGenerator extends JFrame{
 		nc.cls(templateModels[viewDirection].pixels);
 		//nc.createTestSquare();
 		rootTransform.render(nc);
+		
+		if(viewDetail == VERTEXES_ONLY)
+		{
+			generatedItem.calculateVertexes();
+			generatedItem.renderVertexes(nc);
+		}
+		
 		templateModels[viewDirection].overlayTemplate(
 				nc.pix, nc.zbuff);
 		
-		addConstrainedBorder(nc);
-		addCursor(nc,cursor_x,cursor_y);
+		showConstrainedBorder(nc);
+		showCursor(nc,cursor_x,cursor_y);
+		showWorkingVertex();
 		nc.repaint();
 	}
 	
 	/** adds the constrained border onto edit area */
-	void addConstrainedBorder(NitrogenContext nc)
+	void showConstrainedBorder(NitrogenContext nc)
 	{
 		int[] pixels = nc.pix;
 		int width = nc.w;
@@ -515,17 +523,24 @@ public class ContentGenerator extends JFrame{
 		for(int i = 0; i < width; i++)toprow[i] = CONSTRAINED_BORDER_COLOUR;
 		for(int y = 0; y < CONSTRAINED_BORDER_WIDTH; y++)
 		{
-			System.arraycopy(toprow, 0, pixels, (width * y), width);
+			System.arraycopy(toprow, 0, pixels, (width * y), width);			
 		}
 		
 		for(int y = 0; y < height; y++)
 		{
 			System.arraycopy(toprow, 0, pixels, (width * y), CONSTRAINED_BORDER_WIDTH);
 		}	
+		
+		for(int y = 0; y < CONSTRAINED_BORDER_WIDTH; y++)
+		{
+			// zero markers
+			pixels[width * y + EDIT_SCREEN_MIDX] = 0xFFFFFFFF;
+			pixels[width * EDIT_SCREEN_MIDY + y] = 0xFFFFFFFF;		
+		}
 	}
 	
 	/** add cursor onto edit area */
-	void addCursor(NitrogenContext nc, int x_in, int y_in)
+	void showCursor(NitrogenContext nc, int x_in, int y_in)
 	{
 		int[] pixels = nc.pix;
 		int width = nc.w;
@@ -593,6 +608,14 @@ public class ContentGenerator extends JFrame{
 		
 		int retval = 0xFF000000 | (pixelRedMinus << 16) | (pixelGreenMinus << 8) | pixelBlueMinus;	
 		return retval;
+	}
+	
+	void showWorkingVertex()
+	{
+		if(workingVertexModel.picked)
+		{
+			generatedItem.renderVertex(nc, workingVertexModel.index);
+		}
 	}
 	
 	// initialises the world that the edit area NitrogenContext renders

@@ -330,7 +330,7 @@ final public class Item implements Serializable{
 						v31,v32,v33,v34);
 			}
 			
-			if(backside.facingViewer())
+			if(backside.facingViewer() || context.contentGeneratorForcesNoCulling)
 			{
 				// -- optimised to here --
 				// Calculate the vertexes, then Pass the polygon on to the next process.
@@ -876,4 +876,97 @@ final public class Item implements Serializable{
 			}		
 		});
 	}
+	
+	final public void calculateVertexes()
+	{
+			Transform parentL = parent;
+			// ensure parent Transform is up to date
+			parentL.updateViewSpace();			
+			
+			// mark the Vertexes for computation
+			lazyComputeBacksidesAndVertexs();
+			
+			float pc11 = parentL.c11;
+			float pc12 = parentL.c12;
+			float pc13 = parentL.c13;
+			float pc14 = parentL.c14;
+			
+			float pc21 = parentL.c21;
+			float pc22 = parentL.c22;
+			float pc23 = parentL.c23;
+			float pc24 = parentL.c24;
+			
+			float pc31 = parentL.c31;
+			float pc32 = parentL.c32;
+			float pc33 = parentL.c33;
+			float pc34 = parentL.c34;
+			
+			Vertex[] vertexesL = vertexes;
+			int vertexLength = vertexesL.length;
+			for(int i = 0; i < vertexLength; i++)
+			{
+				vertexesL[i].calculateViewSpaceCoordinates(pc11,pc12,pc13,pc14,pc21,pc22,pc23,pc24,pc31,pc32,pc33,pc34);
+			}
+	}
+	
+	/** ContentGenerator calls this to display all the Item Vertexes */
+	final public void renderVertexes(NitrogenContext nc)
+	{
+		final int colour = 0xFFFFFFFF;
+		Vertex[] vertexesL = vertexes;
+		int vl = vertexesL.length;
+		Vertex vertex;
+
+		for(int index = 0; index < vl; index++)
+		{
+			vertex = vertexesL[index];
+			vertex.rotationNeedsUpdate = true;
+			vertex.translationNeedsUpdate = true;		
+			vertex.calculateScreenSpaceCoordinate(nc);
+			
+			renderPixel(nc,vertex.sx,vertex.sy,colour);
+			renderPixel(nc,vertex.sx+1,vertex.sy,colour);
+			renderPixel(nc,vertex.sx-1,vertex.sy,colour);
+			renderPixel(nc,vertex.sx,vertex.sy+1,colour);
+			renderPixel(nc,vertex.sx,vertex.sy-1,colour);
+		}
+	}
+
+	/** ContentGenerator calls this to display a specific Item Vertex*/
+	final public void renderVertex(NitrogenContext nc, int index)
+	{
+		final int colour = 0xFFFF0000;	//red
+		Vertex[] vertexesL = vertexes;
+		Vertex vertex;
+		if(index >= vertexesL.length) return;
+		vertex = vertexesL[index];
+		vertex.rotationNeedsUpdate = true;
+		vertex.translationNeedsUpdate = true;		
+		vertex.calculateScreenSpaceCoordinate(nc);
+		
+		renderPixel(nc,vertex.sx,vertex.sy,colour);
+		renderPixel(nc,vertex.sx+1,vertex.sy,colour);
+		renderPixel(nc,vertex.sx-1,vertex.sy,colour);
+		renderPixel(nc,vertex.sx,vertex.sy+1,colour);
+		renderPixel(nc,vertex.sx,vertex.sy-1,colour);
+	}
+	
+	void renderPixel(NitrogenContext context ,int x,int y,int colour)
+	{
+		int[] nitrogenContextPixels = context.pix;
+		int nitrogenContextWidth = context.w;
+		int nitrogenContextSize = context.s;	
+		int pixelIndex = nitrogenContextWidth * y + x;
+		if(
+				(pixelIndex >= 0)
+				&&(pixelIndex < nitrogenContextSize)
+		)
+		{
+			nitrogenContextPixels[pixelIndex] = colour; 			
+		}
+		
+
+	}
+	
+
 }

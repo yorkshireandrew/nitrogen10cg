@@ -22,6 +22,9 @@ import javax.swing.*;
 // import nitrogen1.Vert;
 
 public class NitrogenContext extends JPanel {
+	boolean contentGeneratorForcesNoCulling = true;
+	boolean contentGeneratorForcesNoPerspective = true;
+	
 	static final int SHIFT = 20;	// shift used when rendering textures
 	
 	/** multiplier used in perspective magnifying the image so that the xclip value equals the right of button */

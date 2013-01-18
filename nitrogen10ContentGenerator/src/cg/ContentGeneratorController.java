@@ -28,6 +28,12 @@ public class ContentGeneratorController extends AbstractAction
 			System.out.println("newVertexButton press");
 			addNewVertex();
 		}
+		
+		if(source == cg.moveVertexButton)
+		{
+			System.out.println("moveVertexButton pressed");
+			moveVertex();
+		}
 	}		
 	
 	void updateWorkingVertex()
@@ -155,8 +161,71 @@ public class ContentGeneratorController extends AbstractAction
 		wvm.picked = true;
 		cg.workingVertexView.updateFromModel();
 		
+		// create a new generatedItem with the vertex
+		createNewGeneratedItem();
+		
 		// ensure we make it visible in edit area
 		cg.renderEditArea();
+	}
+	
+	/** moves the working vertex to cursors current position */
+	void moveVertex()
+	{
+		// get where we want to add the vertex
+		WorkingVertexModel wvm = cg.workingVertexModel;
+		if(wvm.picked == false)return;
+		
+		// also check current cursor position has nothing under it
+		int wvmx = wvm.x;
+		int wvmy = wvm.y;
+		int wvmz = wvm.z;
+		
+		// get the generatedSISI
+		SharedImmutableSubItem gs = cg.generatedSISI;
+		
+		// return if an existing vertex is at same location
+		ImmutableVertex[] iv = gs.getImmutableVertexes();	
+		int ivl = iv.length;
+		for(int index = 0; index < ivl ; index++)
+		{
+			ImmutableVertex checkVertex = iv[index];
+			if(
+					(((int)checkVertex.is_x) == ((int)wvmx))
+					&&(((int)checkVertex.is_y) == ((int)wvmy))
+					&&(((int)checkVertex.is_z) == ((int)wvmz))
+				)
+			{
+				JOptionPane.showMessageDialog(cg, "A vertex is already there");
+				return;
+			}
+		}
+		
+		saveSISI();
+		
+		ImmutableVertex vertexToMove = iv[wvm.index];
+		
+		vertexToMove.is_x = wvmx;
+		vertexToMove.is_y = wvmy;
+		vertexToMove.is_z = wvmz;
+		
+		// create a new generatedItem with the vertex
+		createNewGeneratedItem();
+		
+		// ensure we make it visible in edit area
+		cg.renderEditArea();
+		
+		
+		
+	}
+	
+	/** removes existing generatedItem and constructs a 
+	 * new one form the generatedSISI
+	 */
+	void createNewGeneratedItem()
+	{
+		cg.viewDirectionTransform.remove(cg.generatedItem);
+        cg.generatedItem = Item.createItem(cg.generatedSISI,cg.viewDirectionTransform);
+        cg.generatedItem.setVisibility(true);
 	}
 	
 	/** Hook for UNDO*/
