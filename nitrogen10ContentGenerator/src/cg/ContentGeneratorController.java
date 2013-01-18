@@ -34,6 +34,18 @@ public class ContentGeneratorController extends AbstractAction
 			System.out.println("moveVertexButton pressed");
 			moveVertex();
 		}
+		
+		if(source == cg.frontViewButton)
+		{
+			System.out.println("frontViewButton pressed");
+			frontView();
+		}
+		
+		if(source == cg.leftViewButton)
+		{
+			System.out.println("leftViewButton pressed");
+			leftView();
+		}
 	}		
 	
 	void updateWorkingVertex()
@@ -228,12 +240,49 @@ public class ContentGeneratorController extends AbstractAction
         cg.generatedItem.setVisibility(true);
 	}
 	
+	void frontView()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+		
+		cgL.viewDirectionTransform.setTransform
+		(
+				1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f
+		 );
+		cgL.viewDirection = ContentGenerator.FRONT;
+		updateCursorFromWorkingVertex();
+		// ensure we make it visible in edit area
+		cgL.renderEditArea();	
+	}
+	
+	void leftView()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+		
+		cgL.viewDirectionTransform.setTransform
+		(
+				0.0f, 0.0f, -1.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				1.0f, 0.0f, 0.0f, 0.0f
+		 );
+		cgL.viewDirection = ContentGenerator.LEFT;
+		updateCursorFromWorkingVertex();
+		// ensure we make it visible in edit area
+		cgL.renderEditArea();	
+	}
+	
 	/** Hook for UNDO*/
 	void saveSISI()
 	{
 		// TO DO
 		return;
 	}
+	
 }
 
 

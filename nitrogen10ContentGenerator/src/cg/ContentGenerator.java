@@ -198,24 +198,34 @@ public class ContentGenerator extends JFrame{
 		// create top box
 		topBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
 		topViewButton = new FixedSizeIconToggleButton(this,"/res/topViewButton.PNG","/res/topViewButtonSelected.PNG");
+		topViewButton.addActionListener(cgc);	
 		topBox.add(topViewButton);
 		topBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
 		topBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
 		topBox.add(Box.createHorizontalGlue());
+		
 		// create mid box
 		frontViewButton = new FixedSizeIconToggleButton(this,"/res/frontViewButton.PNG","/res/frontViewButtonSelected.PNG");
+		frontViewButton.addActionListener(cgc);	
 		midBox.add(frontViewButton);
+		
 		leftViewButton = new FixedSizeIconToggleButton(this,"/res/leftViewButton.PNG","/res/leftViewButtonSelected.PNG");
+		leftViewButton.addActionListener(cgc);
 		midBox.add(leftViewButton);
+		
 		backViewButton = new FixedSizeIconToggleButton(this,"/res/backViewButton.PNG","/res/backViewButtonSelected.PNG");
+		backViewButton.addActionListener(cgc);
 		midBox.add(backViewButton);
+		
 		rightViewButton = new FixedSizeIconToggleButton(this,"/res/rightViewButton.PNG","/res/rightViewButtonSelected.PNG");
+		rightViewButton.addActionListener(cgc);
 		midBox.add(rightViewButton);
 		midBox.add(Box.createHorizontalGlue());		
 		
 		// create bottom box
 		bottomBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
 		bottomViewButton = new FixedSizeIconToggleButton(this,"/res/bottomViewButton.PNG","/res/bottomViewButtonSelected.PNG");
+		bottomViewButton.addActionListener(cgc);
 		bottomBox.add(bottomViewButton);
 		bottomBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
 		bottomBox.add(new FixedSizeButton("/res/greySpacer.PNG"));
