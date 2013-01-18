@@ -46,6 +46,30 @@ public class ContentGeneratorController extends AbstractAction
 			System.out.println("leftViewButton pressed");
 			leftView();
 		}
+		
+		if(source == cg.backViewButton)
+		{
+			System.out.println("backViewButton pressed");
+			backView();
+		}
+		
+		if(source == cg.rightViewButton)
+		{
+			System.out.println("rightViewButton pressed");
+			rightView();
+		}
+		
+		if(source == cg.topViewButton)
+		{
+			System.out.println("topViewButton pressed");
+			topView();
+		}
+		
+		if(source == cg.bottomViewButton)
+		{
+			System.out.println("bottomViewButton pressed");
+			bottomView();
+		}
 	}		
 	
 	void updateWorkingVertex()
@@ -276,6 +300,77 @@ public class ContentGeneratorController extends AbstractAction
 		cgL.renderEditArea();	
 	}
 	
+	void backView()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+		
+		cgL.viewDirectionTransform.setTransform
+		(
+				-1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, -1.0f, 0.0f
+		 );
+		cgL.viewDirection = ContentGenerator.BACK;
+		updateCursorFromWorkingVertex();
+		// ensure we make it visible in edit area
+		cgL.renderEditArea();	
+	}
+	
+	void rightView()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+		
+		cgL.viewDirectionTransform.setTransform
+		(
+				0.0f, 0.0f, 1.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				-1.0f, 0.0f, 0.0f, 0.0f
+		 );
+		cgL.viewDirection = ContentGenerator.RIGHT;
+		updateCursorFromWorkingVertex();
+		// ensure we make it visible in edit area
+		cgL.renderEditArea();	
+	}
+	
+	void topView()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+		
+		cgL.viewDirectionTransform.setTransform
+		(
+				0.0f, 0.0f, -1.0f, 0.0f,
+				-1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f
+		 );
+		cgL.viewDirection = ContentGenerator.TOP;
+		updateCursorFromWorkingVertex();
+		// ensure we make it visible in edit area
+		cgL.renderEditArea();	
+	}
+	
+	void bottomView()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in orthogonal view
+		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+		
+		cgL.viewDirectionTransform.setTransform
+		(
+				0.0f, 0.0f, -1.0f, 0.0f,
+				1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, -1.0f, 0.0f, 0.0f
+		 );
+		cgL.viewDirection = ContentGenerator.BOTTOM;
+		updateCursorFromWorkingVertex();
+		// ensure we make it visible in edit area
+		cgL.renderEditArea();	
+	}
 	/** Hook for UNDO*/
 	void saveSISI()
 	{
