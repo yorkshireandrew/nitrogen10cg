@@ -30,6 +30,31 @@ public class ContentGenerator extends JFrame{
 	static final int CONSTRAINED_BORDER_WIDTH = 10;
 	static final int CONSTRAINED_BORDER_COLOUR = 0xFFFF0000;
 	static final int CURSOR = 50;	// colour change caused by cursor
+
+	// view direction enumeration
+	int viewDirection;
+	static final int FRONT 	= 0;
+	static final int LEFT 	= 1;
+	static final int BACK 	= 2;
+	static final int RIGHT 	= 3;
+	static final int TOP 	= 4;
+	static final int BOTTOM = 5;
+	
+	// view type enumeration
+	int viewType;
+	static final int ORTHOGONAL_PROJECTION 	= 0;
+	static final int PERSPECTIVE 			= 1;
+	static final int TEXTURE_MAP 			= 2;
+
+	// view type enumeration
+	int viewDetail;
+	static final int VERTEXES_ONLY 				= 0;
+	static final int WIREFRAME 					= 1;
+	static final int BACKSIDE_CULLED_WIREFRAME	= 2;	
+	static final int FULLY_RENDERED				= 3;
+	
+	// do we display collision vertexes
+	boolean showCollisionVertexes;
 	
 	// derived constants
 	static final int EDIT_SCREEN_SIZE 	= EDIT_SCREEN_WIDTH * EDIT_SCREEN_HEIGHT;
@@ -67,12 +92,16 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton pickXYZVertexButton;
 	FixedSizeButton pickPolygonButton;
 	
-	/** buttons for selecting view type */
+	/** buttons for selecting view detail */
 	FixedSizeIconToggleButton vertexesOnlyButton;
 	FixedSizeIconToggleButton wireframeOnlyButton;
 	FixedSizeIconToggleButton wireframeOnlyBacksideCulledButton;
 	FixedSizeIconToggleButton fullRenderButton;
 	FixedSizeIconToggleButton showCollisionVertexesButton;
+	ButtonGroup viewDetailButtonGroup;
+	
+	/** buttons for selecting view type */
+	FixedSizeIconToggleButton orthogonalProjectionButton;
 	FixedSizeIconToggleButton perspectiveButton;
 	FixedSizeIconToggleButton textureButton;
 	ButtonGroup viewTypeButtonGroup;
@@ -84,14 +113,6 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton newPolygonDataButton;
 	FixedSizeButton newTextureMapButton;
 	FixedSizeButton newPolygonButton;
-	
-	int viewDirection;
-	static final int FRONT 	= 0;
-	static final int LEFT 	= 1;
-	static final int BACK 	= 2;
-	static final int RIGHT 	= 3;
-	static final int TOP 	= 4;
-	static final int BOTTOM = 5;
 	
 	/** the template models controlled by the template dialog */
 	TemplateModel[] templateModels = new TemplateModel[6];
@@ -152,6 +173,10 @@ public class ContentGenerator extends JFrame{
 		getContentPane().add(outerBox);
 		getContentPane().validate();	
 		nc.addMouseListener(new ContentGeneratorMouseListener(this,cgc));
+	
+		// render edit area
+		cgc.updateCursorFromWorkingVertex();
+		renderEditArea();		
 	}
 	
 	
@@ -216,29 +241,37 @@ public class ContentGenerator extends JFrame{
 	{
 		Box outerBox = new Box(BoxLayout.X_AXIS);
 		
-		vertexesOnlyButton = new FixedSizeIconToggleButton(this,"/res/vertexesOnlyButton.PNG","/res/vertexesOnlySelectedButton.PNG");
-		vertexesOnlyButton.setToolTipText("vertexes only view");
-		outerBox.add(vertexesOnlyButton);
-		
-		wireframeOnlyButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyButton.PNG","/res/wireframeOnlySelectedButton.PNG");
-		wireframeOnlyButton.setToolTipText("full wireframe view");
-		outerBox.add(wireframeOnlyButton);
-		
-		wireframeOnlyBacksideCulledButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyBacksideCulledButton.PNG","/res/wireframeOnlyBacksideCulledSelectedButton.PNG");
-		wireframeOnlyBacksideCulledButton.setToolTipText("backside culled wireframe view");
-		outerBox.add(wireframeOnlyBacksideCulledButton);
-		
-		fullRenderButton = new FixedSizeIconToggleButton(this,"/res/fullRenderButton.PNG","/res/fullRenderSelectedButton.PNG");
-		fullRenderButton.setToolTipText("fully rendered view");
-		outerBox.add(fullRenderButton);
+		// add view type buttons
+		orthogonalProjectionButton = new FixedSizeIconToggleButton(this,"/res/orthogonalProjectionButton.PNG","/res/orthogonalProjectionSelectedButton.PNG");
+		orthogonalProjectionButton.setToolTipText("orthogonal projection view");
+		outerBox.add(orthogonalProjectionButton);
 		
 		perspectiveButton = new FixedSizeIconToggleButton(this,"/res/perspectiveButton.PNG","/res/perspectiveSelectedButton.PNG");
 		perspectiveButton.setToolTipText("perspective view");
 		outerBox.add(perspectiveButton);
 		
 		textureButton = new FixedSizeIconToggleButton(this,"/res/textureButton.PNG","/res/textureSelectedButton.PNG");
-		textureButton.setToolTipText("texture maps view");
+		textureButton.setToolTipText("texture map view");
 		outerBox.add(textureButton);
+		
+		outerBox.add(Box.createHorizontalGlue());
+		
+		// add view detail buttons
+		vertexesOnlyButton = new FixedSizeIconToggleButton(this,"/res/vertexesOnlyButton.PNG","/res/vertexesOnlySelectedButton.PNG");
+		vertexesOnlyButton.setToolTipText("vertexes only");
+		outerBox.add(vertexesOnlyButton);
+		
+		wireframeOnlyButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyButton.PNG","/res/wireframeOnlySelectedButton.PNG");
+		wireframeOnlyButton.setToolTipText("full wireframe");
+		outerBox.add(wireframeOnlyButton);
+		
+		wireframeOnlyBacksideCulledButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyBacksideCulledButton.PNG","/res/wireframeOnlyBacksideCulledSelectedButton.PNG");
+		wireframeOnlyBacksideCulledButton.setToolTipText("backside culled wireframe");
+		outerBox.add(wireframeOnlyBacksideCulledButton);
+		
+		fullRenderButton = new FixedSizeIconToggleButton(this,"/res/fullRenderButton.PNG","/res/fullRenderSelectedButton.PNG");
+		fullRenderButton.setToolTipText("fully rendered");
+		outerBox.add(fullRenderButton);
 		
 		showCollisionVertexesButton = new FixedSizeIconToggleButton(this,"/res/showCollisionVertexesButton.PNG","/res/showCollisionVertexesSelectedButton.PNG");
 		showCollisionVertexesButton.setToolTipText("show collision vertexes");
@@ -246,12 +279,16 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(Box.createHorizontalGlue());
 		
 		viewTypeButtonGroup = new ButtonGroup();
-		viewTypeButtonGroup.add(vertexesOnlyButton);
-		viewTypeButtonGroup.add(wireframeOnlyButton);
-		viewTypeButtonGroup.add(wireframeOnlyBacksideCulledButton);		
-		viewTypeButtonGroup.add(fullRenderButton);
+		viewTypeButtonGroup.add(orthogonalProjectionButton);
 		viewTypeButtonGroup.add(perspectiveButton);	
-		viewTypeButtonGroup.add(textureButton);				
+		viewTypeButtonGroup.add(textureButton);	
+		orthogonalProjectionButton.setSelected(true);
+		
+		viewDetailButtonGroup = new ButtonGroup();
+		viewDetailButtonGroup.add(vertexesOnlyButton);
+		viewDetailButtonGroup.add(wireframeOnlyButton);
+		viewDetailButtonGroup.add(wireframeOnlyBacksideCulledButton);	
+		viewDetailButtonGroup.add(fullRenderButton);
 		vertexesOnlyButton.setSelected(true);
 		
 		container.add(outerBox);	
