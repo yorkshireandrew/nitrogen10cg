@@ -12,7 +12,7 @@ public class PolygonVertexData implements Serializable{
 	float aux2;
 	float aux3;
 	
-	PolygonVertexData(float aux1, float aux2, float aux3)
+	public PolygonVertexData(float aux1, float aux2, float aux3)
 	{
 		this.aux1 = aux1;
 		this.aux2 = aux2;

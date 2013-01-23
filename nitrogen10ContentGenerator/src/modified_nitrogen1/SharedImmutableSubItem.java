@@ -623,4 +623,10 @@ public class SharedImmutableSubItem implements Serializable{
 		if(temp.equals("no")||temp.equals("NO")||temp.equals("false")||temp.equals("FALSE"))return false;
 		throw new NitrogenCreationException(exceptionText + " caused by " + temp + " not equating to a boolean");
 	}
+	
+	// added for content generator
+	public final Map<String,PolygonVertexData> getPolygonVertexDataMap()
+	{
+		return polygonVertexDataMap;
+	}
 }

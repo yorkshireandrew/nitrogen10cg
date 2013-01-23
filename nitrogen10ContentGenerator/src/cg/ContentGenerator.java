@@ -356,7 +356,7 @@ public class ContentGenerator extends JFrame{
 		
 		// new vertex data button
 		newVertexDataButton = new FixedSizeButton("/res/newVertexDataButton.PNG");
-		newVertexDataButton.addActionListener(cgc);
+		newVertexDataButton.addActionListener( new VertexDataToolbarAction(this));
 		newVertexDataButton.setToolTipText("Create a new vertex data datablock");
 		newVertexDataButton.setIcon("/res/newVertexDataButton.PNG");
 		outerBox.add(newVertexDataButton);

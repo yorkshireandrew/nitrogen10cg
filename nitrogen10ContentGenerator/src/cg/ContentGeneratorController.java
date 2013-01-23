@@ -555,3 +555,19 @@ class TemplateMenuItemAction extends AbstractAction
 		td.setVisible(true);
 	}	
 }
+
+/** class to handle Template... menu item */
+class VertexDataToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	VertexDataToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		VertexDataDialog td = new VertexDataDialog(cg);
+		td.setVisible(true);
+	}	
+}
