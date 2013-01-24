@@ -35,6 +35,8 @@ public class ContentGeneratorController extends AbstractAction
 			moveVertex();
 		}
 		
+		
+		// handle view direction buttons
 		if(source == cg.frontViewButton)
 		{
 			System.out.println("frontViewButton pressed");
@@ -71,6 +73,7 @@ public class ContentGeneratorController extends AbstractAction
 			bottomView();
 		}
 		
+		// handle pick buttons
 		if(source == cg.pickFrontVertexButton)
 		{
 			System.out.println("pickFrontVertexButton pressed");
@@ -569,5 +572,20 @@ class VertexDataToolbarAction extends AbstractAction
 	public void actionPerformed(ActionEvent e) {
 		VertexDataDialog td = new VertexDataDialog(cg);
 		td.setVisible(true);
+	}	
+}
+
+class PolygonDataToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	PolygonDataToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		PolygonDataDialog pd = new PolygonDataDialog(cg);
+		pd.setVisible(true);
 	}	
 }

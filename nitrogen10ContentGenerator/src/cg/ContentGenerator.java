@@ -363,7 +363,7 @@ public class ContentGenerator extends JFrame{
 		
 		// new polygon data button
 		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
-		newPolygonDataButton.addActionListener(cgc);
+		newPolygonDataButton.addActionListener( new PolygonDataToolbarAction(this));
 		newPolygonDataButton.setToolTipText("Create a new polygon data datablock");
 		newPolygonDataButton.setIcon("/res/newPolygonDataButton.PNG");
 		outerBox.add(newPolygonDataButton);

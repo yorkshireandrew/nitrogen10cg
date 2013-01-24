@@ -629,4 +629,10 @@ public class SharedImmutableSubItem implements Serializable{
 	{
 		return polygonVertexDataMap;
 	}
+	
+	// added for content generator
+	public final Map<String,int[]> getPolygonDataMap()
+	{
+		return polygonDataMap;
+	}
 }
