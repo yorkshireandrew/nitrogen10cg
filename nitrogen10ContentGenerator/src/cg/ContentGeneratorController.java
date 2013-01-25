@@ -559,7 +559,7 @@ class TemplateMenuItemAction extends AbstractAction
 	}	
 }
 
-/** class to handle Template... menu item */
+/** class to handle vertex data toolbar button */
 class VertexDataToolbarAction extends AbstractAction
 {
 	ContentGenerator cg;
@@ -587,5 +587,21 @@ class PolygonDataToolbarAction extends AbstractAction
 	public void actionPerformed(ActionEvent e) {
 		PolygonDataDialog pd = new PolygonDataDialog(cg);
 		pd.setVisible(true);
+	}	
+}
+
+/** class to handle Template... menu item */
+class TextureMapToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	TextureMapToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		TextureMapDialog tmd = new TextureMapDialog(cg);
+		tmd.setVisible(true);
 	}	
 }

@@ -130,6 +130,8 @@ public class ContentGenerator extends JFrame{
 	
 	ContentGeneratorController cgc;
 	
+	String resourceURL = "C:\\Documents and Settings\\andrew\\My Documents\\bombhead games";
+	
 	ContentGenerator()
 	{
         super("Content Generator");
@@ -384,7 +386,7 @@ public class ContentGenerator extends JFrame{
 		
 		// new texture map button
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
-		newTextureMapButton.addActionListener(cgc);
+		newTextureMapButton.addActionListener(new TextureMapToolbarAction(this));
 		newTextureMapButton.setToolTipText("Create a new texture map reference");
 		newTextureMapButton.setIcon("/res/newTextureMapButton.PNG");
 		outerBox.add(newTextureMapButton);

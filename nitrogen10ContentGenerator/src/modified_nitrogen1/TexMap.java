@@ -15,6 +15,7 @@ import java.awt.Image;
 //import java.awt.Component;
 import java.awt.image.BufferedImage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -46,11 +47,13 @@ public class TexMap implements Serializable{
     	return(new TexMap(st));
     }
 
-    private TexMap(String st) throws NitrogenCreationException
+    /** altered to read files rather than embedded resources */
+    public TexMap(String st) throws NitrogenCreationException
     { 	
-    	URL url = getClass().getResource(st);
-        if(url == null)throw new NitrogenCreationException("TexMap resource " + st + " could not be found");
-    	Image ii = new javax.swing.ImageIcon(getClass().getResource(st)).getImage();
+ //   	URL url = getClass().getResource(st);
+    	File f = new File(st);
+        if(!f.exists())throw new NitrogenCreationException("TexMap resource " + st + " could not be found");
+    	Image ii = new javax.swing.ImageIcon(st).getImage();
         BufferedImage i = new BufferedImage(ii.getWidth(null),ii.getHeight(null),BufferedImage.TYPE_INT_ARGB);
         Graphics2D osg = i.createGraphics();
         osg.drawImage(ii, 0, 0, null);

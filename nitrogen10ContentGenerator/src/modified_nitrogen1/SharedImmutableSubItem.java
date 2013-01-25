@@ -635,4 +635,10 @@ public class SharedImmutableSubItem implements Serializable{
 	{
 		return polygonDataMap;
 	}
+	
+	// added for content generator
+	public final Map<String,TexMap> getTextureMapMap()
+	{
+		return textureMapMap;
+	}
 }
