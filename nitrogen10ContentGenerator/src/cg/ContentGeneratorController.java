@@ -187,42 +187,14 @@ public class ContentGeneratorController extends AbstractAction
 		int wvmy = wvm.y;
 		int wvmz = wvm.z;
 		
-		// get the generatedSISI
-		SharedImmutableSubItem gs = cg.generatedSISI;
-		
-		// return if an existing vertex is at same location
-		ImmutableVertex[] iv = gs.getImmutableVertexes();	
-		int ivl = iv.length;
-		for(int index = 0; index < ivl ; index++)
+		if(isVertexAlreadyThere(wvmx,wvmy,wvmz) != -1)
 		{
-			ImmutableVertex checkVertex = iv[index];
-			if(
-					(((int)checkVertex.is_x) == ((int)wvmx))
-					&&(((int)checkVertex.is_y) == ((int)wvmy))
-					&&(((int)checkVertex.is_z) == ((int)wvmz))
-				)
-			{
-				JOptionPane.showMessageDialog(cg, "A vertex is already there");
-				return;
-			}
+			JOptionPane.showMessageDialog(cg, "A vertex is already there");
+			return;			
 		}
-		
-		saveSISI();
-		
-		ImmutableVertex[] newVertexArray = Arrays.copyOf(iv, (ivl+1));
-		newVertexArray[ivl]= new ImmutableVertex(wvmx,wvmy,wvmz);
-		gs.setImmutableVertexes(newVertexArray);
-		
-		// tell working vertex about it
-		wvm.index = ivl;
-		wvm.picked = true;
-		cg.workingVertexView.updateFromModel();
-		
-		// create a new generatedItem with the vertex
-		createNewGeneratedItem();
-		
-		// ensure we make it visible in edit area
-		cg.renderEditArea();
+
+		saveSISI();	
+		addImmutableVertex(wvmx,wvmy,wvmz);
 	}
 	
 	/** moves the working vertex to cursors current position */
@@ -269,10 +241,7 @@ public class ContentGeneratorController extends AbstractAction
 		createNewGeneratedItem();
 		
 		// ensure we make it visible in edit area
-		cg.renderEditArea();
-		
-		
-		
+		cg.renderEditArea();		
 	}
 	
 	/** removes existing generatedItem and constructs a 
@@ -479,12 +448,68 @@ public class ContentGeneratorController extends AbstractAction
 		updateCursorFromWorkingVertex();
 	}
 	
+	/** returns the index into immutableVertexes if the vertex already exists, else -1 */
+	int isVertexAlreadyThere(int x, int y, int z)
+	{
+		// get the generatedSISI
+		SharedImmutableSubItem gs = cg.generatedSISI;
+		
+		// return if an existing vertex is at same location
+		ImmutableVertex[] iv = gs.getImmutableVertexes();	
+		int ivl = iv.length;
+		for(int index = 0; index < ivl ; index++)
+		{
+			ImmutableVertex checkVertex = iv[index];
+			if(
+					(((int)checkVertex.is_x) == x)
+					&&(((int)checkVertex.is_y) == y)
+					&&(((int)checkVertex.is_z) == z)
+				)
+			{
+				return(index);
+			}
+		}
+		return -1;
+	}
+	
+	void addImmutableVertex(int x, int y, int z)
+	{
+		// get the generatedSISI
+		SharedImmutableSubItem gs = cg.generatedSISI;
+		ImmutableVertex[] iv = gs.getImmutableVertexes();
+		int ivl = iv.length;
+		
+		// update it adding the extra vertex
+		ImmutableVertex[] newVertexArray = Arrays.copyOf(iv, (ivl+1));
+		newVertexArray[ivl]= new ImmutableVertex(x,y,z);
+		gs.setImmutableVertexes(newVertexArray);
+		
+		// if it is at the working vertex then update it
+		WorkingVertexModel wvm = cg.workingVertexModel;
+		
+		if((x == wvm.x) && (y == wvm.y) && (z == wvm.z))
+		{
+			wvm.index = ivl;
+			wvm.picked = true;
+			cg.workingVertexView.updateFromModel();				
+		}
+		
+		// create a new generatedItem including the new vertex
+		createNewGeneratedItem();
+		
+		// ensure we make it visible in edit area
+		cg.renderEditArea();
+		
+
+	}
+	
 	/** Hook for UNDO*/
 	void saveSISI()
 	{
 		// TO DO
 		return;
 	}
+	
 	
 }
 

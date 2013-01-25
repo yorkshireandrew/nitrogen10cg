@@ -10,6 +10,7 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class PolygonVertexView {
 	JTextField indexTextField;
@@ -20,12 +21,13 @@ public class PolygonVertexView {
 	FixedSizeButton moveWorkingToThisButton;
 	
 	ContentGenerator cg;
-	PolygonVertexModel pvgm;
+	PolygonVertexModel pvm;
 	PolygonVertexController polygonVertexController;	
 	
 	PolygonVertexView(ContentGenerator cg, PolygonVertexModel pvm)
 	{
 		polygonVertexController = new PolygonVertexController(cg,this,pvm);
+		this.pvm = pvm;
 		
 		indexTextField = new JTextField();
 		indexTextField.setColumns(4);
@@ -73,6 +75,25 @@ public class PolygonVertexView {
 		outerbox.add(moveWorkingToThisButton);
 		outerbox.add(Box.createHorizontalGlue());
 		container.add(outerbox);
+	}
+	
+	void updateFromModel()
+	{
+		SwingUtilities.invokeLater(
+				new Runnable()
+				{
+					@Override
+					public void run() {
+						System.out.println("pvv.updateFromModel ran");
+						xTextField.setText(Integer.toString(pvm.x));
+						yTextField.setText(Integer.toString(pvm.y));
+						zTextField.setText(Integer.toString(pvm.z));
+						indexTextField.setEditable(true);
+						indexTextField.setText(Integer.toString(pvm.index));
+						indexTextField.setEditable(false);
+					}
+				}
+		);
 	}
 }
 

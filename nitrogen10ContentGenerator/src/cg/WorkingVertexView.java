@@ -127,12 +127,18 @@ public class WorkingVertexView {
 					@Override
 					public void run() {
 						WorkingVertexModel wvm = workingVertexModel;
-						if(wvm.picked)
+						
+						int vertexIndex = cg.cgc.isVertexAlreadyThere(wvm.x, wvm.y, wvm.z);
+						
+						if(vertexIndex != -1)
 						{
+							wvm.index = vertexIndex;
+							wvm.picked = true;
 							indexTextField.setText(Integer.toString(wvm.index));
 						}
 						else
 						{
+							wvm.picked = false;
 							indexTextField.setText("none");
 						}
 						
