@@ -31,34 +31,36 @@ class PolygonVertexController extends AbstractAction
 		if(e.getSource() == polygonVertexView.xTextField)
 		{
 			System.out.println("x text field event");
-			handleTextFieldChangeEvent(e);
+			handleTextFieldChangeEvent();
 		}
 		
 		if(e.getSource() == polygonVertexView.yTextField)
 		{
 			System.out.println("y text field event");
-			handleTextFieldChangeEvent(e);
+			handleTextFieldChangeEvent();
 		}
 		
 		if(e.getSource() == polygonVertexView.zTextField)
 		{
 			System.out.println("z text field event");
-			handleTextFieldChangeEvent(e);
+			handleTextFieldChangeEvent();
 		}
 		
 		if(e.getSource() == polygonVertexView.addButton)
 		{
 			System.out.println("add button event");
+			handleAddButtonEvent();
 		}
 		
 		if(e.getSource() == polygonVertexView.moveWorkingToThisButton)
 		{
 			System.out.println("move working button event");
+			handleMoveWorkingButtonEvent();
 		}		
 		
 	}	
 	
-	void handleTextFieldChangeEvent(ActionEvent e)
+	void handleTextFieldChangeEvent()
 	{
 		int x,y,z;
 		String xString,yString,zString;
@@ -103,6 +105,51 @@ class PolygonVertexController extends AbstractAction
 			pvm.index = index;
 			pvv.updateFromModel();		
 		}
+	}
+	
+	void handleAddButtonEvent()
+	{
+		WorkingVertexModel wvm = cg.workingVertexModel;
+		int x = wvm.x;
+		int y = wvm.y; 
+		int z = wvm.z; 
+		
+		PolygonVertexView pvv = polygonVertexView;
+		PolygonVertexModel pvm = polygonVertexModel;
+		
+		pvm.x = x;
+		pvm.y = y;
+		pvm.z = z;
+		
+		ContentGeneratorController cgcL = cg.cgc;
+		
+		int index = cgcL.isVertexAlreadyThere(x,y,z);
+		
+		if(index == -1)
+		{
+			cgcL.saveSISI();
+			cgcL.addImmutableVertex(x, y, z);
+			pvm.index = cgcL.isVertexAlreadyThere(x,y,z);
+			pvv.updateFromModel();
+		}
+		else
+		{
+			pvm.index = index;
+			pvv.updateFromModel();		
+		}		
+	}
+	
+	void handleMoveWorkingButtonEvent()
+	{
+		WorkingVertexModel wvm = cg.workingVertexModel;
+		PolygonVertexModel pvm = polygonVertexModel;
+		wvm.x = pvm.x;
+		wvm.y = pvm.y;
+		wvm.z = pvm.z;
+		wvm.picked = true;
+		wvm.index = cg.cgc.isVertexAlreadyThere(wvm.x, wvm.y, wvm.z);
+		wvm.workingVertexController.updateViewFromModel();
+//		cg.renderEditArea();
 	}
 	
 
