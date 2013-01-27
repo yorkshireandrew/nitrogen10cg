@@ -96,21 +96,27 @@ public class SharedImmutableSubItem implements Serializable{
 	
 	//*******************************************************
 	// ContentGenerator related Fields
+	// Note these are not saved when the SISI is serialised
+	// 
+	// TO DO - create a class that contains these maps as non-transient and persist that class
+	// when opening and closing this for the ContentGenerator save/load
 	//*******************************************************
 	
 	/** contains named VertexData used for ImmutablePolygon generation */
-    Map<String,PolygonVertexData> polygonVertexDataMap;
+    transient Map<String,PolygonVertexData> polygonVertexDataMap;
     
     /**  contains named polygonData used for ImmutablePolygon generation */
-    Map<String,int[]> polygonDataMap;
+    transient Map<String,int[]> polygonDataMap;
     
     /** contains named textureMap used for ImmutablePolygon generation */
-    Map<String,TexMap> textureMapMap;
-    
-    /** resourcePath 
+    transient Map<String,TexMap> textureMapMap;
     
     /** maps for backsideName */
-    List<String> immutableBacksideNameList;
+    transient List<String> immutableBacksideNameList;
+    
+    /**  maps for ContentGeneratorPolygon, these are used to generate the ImmutablePolygons */
+    transient Map<String,ContentGeneratorPolygon> ContentGeneratorPolygonMap;
+    
     //*******************************************************
 	
 	/** Constructor to initialise an empty SharedImmutableSubItem
@@ -127,6 +133,9 @@ public class SharedImmutableSubItem implements Serializable{
         /** maps for backsideName */
         immutableBacksideNameList = new ArrayList<String>();
         
+        /** The map used to create ImmutablePolygons from the other maps and lists */
+        Map<String,ContentGeneratorPolygon> contentGeneratorPolygonMap = new HashMap<String,ContentGeneratorPolygon>();
+
         // Initialise fields to safe default values
         
         // read bounding radius initially zero
