@@ -176,7 +176,10 @@ public class TextureMapDialog extends JDialog{
 		{
 			try
 			{
-				TexMap newTexMap = new TexMap(fileFullString);
+				// load the texture map from file, but tell it the resource path
+				// that it must use when it is serialised (so it works when referencing resources in a release)
+				TexMap newTexMap = new TexMap(fileFullString,fileString);
+
 				SharedImmutableSubItem sisi = cg.generatedSISI;
 				Map<String,TexMap> textureMapMap = sisi.getTextureMapMap();
 				textureMapMap.put(name,newTexMap);

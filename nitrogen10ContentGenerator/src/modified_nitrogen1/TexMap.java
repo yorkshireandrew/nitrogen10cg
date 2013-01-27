@@ -47,13 +47,30 @@ public class TexMap implements Serializable{
     	return(new TexMap(st));
     }
 
-    /** altered to read files rather than embedded resources */
-    public TexMap(String st) throws NitrogenCreationException
+    /** altered constructor that reads files rather than embedded resources (but acts as though it was from a resource if serialised to disk)*/
+    public TexMap(String fullPath, String resourcePath) throws NitrogenCreationException
     { 	
  //   	URL url = getClass().getResource(st);
-    	File f = new File(st);
-        if(!f.exists())throw new NitrogenCreationException("TexMap resource " + st + " could not be found");
-    	Image ii = new javax.swing.ImageIcon(st).getImage();
+    	File f = new File(fullPath);
+        if(!f.exists())throw new NitrogenCreationException("TexMap resource " + fullPath + " could not be found");
+    	Image ii = new javax.swing.ImageIcon(fullPath).getImage();
+        BufferedImage i = new BufferedImage(ii.getWidth(null),ii.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+        Graphics2D osg = i.createGraphics();
+        osg.drawImage(ii, 0, 0, null);
+        h = i.getHeight();
+        w = i.getWidth();
+        tex = i.getRGB(0, 0, w, h, null, 0, w);
+        
+        // ensure we write the resource path, not the full path
+        // so the load works when the SISI is used the a real environment
+        resourceName = resourcePath;   
+    }
+    
+    private TexMap(String st) throws NitrogenCreationException
+    { 	
+    	URL url = getClass().getResource(st);
+        if(url == null)throw new NitrogenCreationException("TexMap resource " + st + " could not be found");
+    	Image ii = new javax.swing.ImageIcon(getClass().getResource(st)).getImage();
         BufferedImage i = new BufferedImage(ii.getWidth(null),ii.getHeight(null),BufferedImage.TYPE_INT_ARGB);
         Graphics2D osg = i.createGraphics();
         osg.drawImage(ii, 0, 0, null);
