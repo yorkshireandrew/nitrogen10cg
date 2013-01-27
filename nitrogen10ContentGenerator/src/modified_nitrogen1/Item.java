@@ -92,6 +92,9 @@ final public class Item implements Serializable{
 	/** package scope flag so we can tell if the Item was rendered if asked */
 	boolean wasRendered = false;
 	
+	/** hack for ContentGenerator, so we can see if a backside faces the viewer */
+	public Backside testBackside;
+	
 	/** package scope reference for use in factories LLL*/
 	Item nextInList;
 	
@@ -1084,6 +1087,31 @@ final public class Item implements Serializable{
 			}
 		}
 		return retval;
+	}
+	
+	/** Method added so content generator can find out if a backside faces the viewer */
+	/** called to render the Item 
+	 * @param context The NitrogenContext to render the Item in
+	 * @param v11-v34 The orientation matrix computed by the scene graph (12 floating point values)*/
+	void calculateTestBackside(
+
+			NitrogenContext context,
+			// position vector from scene graph
+			float v11, float v12, float v13, float v14,
+			float v21, float v22, float v23, float v24,
+			float v31, float v32, float v33, float v34)
+	{
+		if(testBackside == null) return;
+		System.out.println("computing test backside for "+ name);	
+				
+		testBackside.rotationNeedsUpdate = true;
+		testBackside.translationNeedsUpdate = true;
+
+		testBackside.calculate(
+						context,
+						v11,v12,v13,v14,
+						v21,v22,v23,v24,
+						v31,v32,v33,v34);
 	}
 	
 

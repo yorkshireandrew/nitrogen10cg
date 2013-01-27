@@ -14,7 +14,7 @@ public class ImmutableBackside implements Serializable{
 	// Causes the backside to perform additional calculations used for lighting
 	final boolean calculateLighting;
 	
-	ImmutableBackside(
+	public ImmutableBackside(
 			final float ix,
 			final float iy,
 			final float iz,
@@ -31,4 +31,19 @@ public class ImmutableBackside implements Serializable{
 				this.inz = inz;
 				this.calculateLighting = calculateLighting;
 			}
+	
+	/** used by content generator to obtain a flipped immutable backside */
+	public ImmutableBackside flippedImmutableBackside()
+	{
+		return new ImmutableBackside
+				(
+						ix,
+						iy,
+						iz,
+						-inx,
+						-iny,
+						-inz,
+						calculateLighting						
+						);
+	}
 }

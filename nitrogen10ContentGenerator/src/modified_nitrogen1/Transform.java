@@ -871,4 +871,120 @@ public class Transform implements Serializable{
 				this.a31 = a31; this.a32=a32; this.a33=a33; this.a34=a34;
 				this.setNeedsTotallyUpdating();
 			}
+	
+	final public void calculateTestBacksides(NitrogenContext context){
+		updateViewSpace();
+		
+		// copy this transforms c values locally for speed
+		float n11 = c11;
+		float n12 = c12;
+		float n13 = c13;
+		float n14 = c14;
+		
+		float n21 = c21;
+		float n22 = c22;
+		float n23 = c23;
+		float n24 = c24;
+		
+		float n31 = c31;
+		float n32 = c32;
+		float n33 = c33;
+		float n34 = c34;
+		
+		// first calculate our own child Items testBackides
+		final ItemVector childItemsL = childItems;
+		int childItemsSize = childItemsL.size();
+		for(int i = 0; i < childItemsSize; i++)childItemsL.elementAt(i).calculateTestBackside(context,n11,n12,n13,n14,n21,n22,n23,n24,n31,n32,n33,n34);
+		
+		// now instruct child transforms to calculate themselves and render themselves
+		final TransformVector childTransformsL = childTransforms;
+		if(childTransformsL != null)
+		{
+			int childTransformsSize = childTransformsL.size();
+			for(int i = 0; i < childTransformsSize; i++)childTransformsL.elementAt(i).calculateTestBacksides(context,n11,n12,n13,n14,n21,n22,n23,n24,n31,n32,n33,n34);
+		}
+	}
+	
+	final private void calculateTestBacksides(
+			final NitrogenContext context,
+			final float p11, final float p12, final float p13, final float p14,
+			final float p21, final float p22, final float p23, final float p24,
+			final float p31, final float p32, final float p33, final float p34
+			)
+	{		
+		// avoid doing any work if we can help it!
+		if(numberOfVisibleChildren < 1)return;
+		
+		// copy this transforms a values locally for speed
+		float la11 = a11;
+		float la12 = a12;
+		float la13 = a13;
+		float la14 = a14;
+		
+		float la21 = a21;
+		float la22 = a22;
+		float la23 = a23;
+		float la24 = a24;
+		
+		float la31 = a31;
+		float la32 = a32;
+		float la33 = a33;
+		float la34 = a34;
+		
+		if(rotationNeedsUpdate)
+		{
+			c11 = p11*la11+p12*la21+p13*la31;
+			c12 = p11*la12+p12*la22+p13*la32;
+			c13 = p11*la13+p12*la23+p13*la33;
+
+			c21 = p21*la11+p22*la21+p23*la31;
+			c22 = p21*la12+p22*la22+p23*la32;
+			c23 = p21*la13+p22*la23+p23*la33;
+
+			c31 = p31*la11+p32*la21+p33*la31;
+			c32 = p31*la12+p32*la22+p33*la32;
+			c33 = p31*la13+p32*la23+p33*la33;
+			
+			rotationNeedsUpdate = false;		
+		}
+		if(translationNeedsUpdate)
+		{
+			c14 = p11*la14+p12*la24+p13*la34+p14;
+			c24 = p21*la14+p22*la24+p23*la34+p24;
+			c34 = p31*la14+p32*la24+p33*la34+p34;
+			translationNeedsUpdate = false;
+		}
+
+		// copy this transforms c values locally for speed
+		// note: reusing laxx local variables
+		la11 = c11;
+		la12 = c12;
+		la13 = c13;
+		la14 = c14;
+		
+		la21 = c21;
+		la22 = c22;
+		la23 = c23;
+		la24 = c24;
+		
+		la31 = c31;
+		la32 = c32;
+		la33 = c33;
+		la34 = c34;
+		
+		// first render our own child Items
+		final ItemVector childItemsL = childItems;
+		int childItemsSize = childItemsL.size();
+		for(int i = 0; i < childItemsSize; i++)childItemsL.elementAt(i).calculateTestBackside(context,la11,la12,la13,la14,la21,la22,la23,la24,la31,la32,la33,la34);
+		
+		// now instruct child transforms to calculate themselves and render themselves
+		if(childTransforms != null)
+		{
+			final TransformVector childTransformsL = childTransforms;
+			int childTransformsSize = childTransformsL.size();
+			for(int i = 0; i < childTransformsSize; i++)childTransformsL.elementAt(i).calculateTestBacksides(context,la11,la12,la13,la14,la21,la22,la23,la24,la31,la32,la33,la34);
+		}
+	}
+	
+	
 }

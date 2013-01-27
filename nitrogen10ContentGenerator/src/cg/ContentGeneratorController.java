@@ -499,9 +499,9 @@ public class ContentGeneratorController extends AbstractAction
 		
 		// ensure we make it visible in edit area
 		cg.renderEditArea();
-		
-
 	}
+	
+
 	
 	/** Hook for UNDO*/
 	void saveSISI()
@@ -629,4 +629,26 @@ class TextureMapToolbarAction extends AbstractAction
 		TextureMapDialog tmd = new TextureMapDialog(cg);
 		tmd.setVisible(true);
 	}	
+}
+
+/** class to handle Template... menu item */
+class BacksideToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	BacksideToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		// check a backside can be created using static method
+		if(BacksideDialog.polygonVertexesAreOK(cg))
+		{
+			// A backside can be created so open the dialog
+			BacksideDialog bd = new BacksideDialog(cg);
+			bd.setVisible(true);
+		}	
+	}
 }

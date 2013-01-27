@@ -372,7 +372,7 @@ public class ContentGenerator extends JFrame{
 		
 		// new backside button
 		newBacksideButton = new FixedSizeButton("/res/newBacksideButton.PNG");
-		newBacksideButton.addActionListener(cgc);
+		newBacksideButton.addActionListener(new BacksideToolbarAction(this));
 		newBacksideButton.setToolTipText("Create a new backside, used for culling");
 		newBacksideButton.setIcon("/res/newBacksideButton.PNG");
 		outerBox.add(newBacksideButton);

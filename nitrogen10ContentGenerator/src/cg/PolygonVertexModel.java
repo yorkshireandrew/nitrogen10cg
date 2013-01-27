@@ -4,7 +4,7 @@ public class PolygonVertexModel {
 	int x;
 	int y;
 	int z;
-	int index;
+	int index = -1;
 	String polygonVertexDataName;	
 	PolygonVertexController polygonVertexController;
 }

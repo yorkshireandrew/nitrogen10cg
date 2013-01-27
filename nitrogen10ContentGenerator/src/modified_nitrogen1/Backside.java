@@ -35,7 +35,7 @@ public class Backside implements Serializable{
     transient Backside nextInList;
     
     /** default constructor used by factories to preallocate a Backside */
-    Backside(){}
+    public Backside(){}
 
     /** constructor used by factories to generate new backsides on request*/
     Backside(ImmutableBackside immutableBackside)
@@ -44,7 +44,7 @@ public class Backside implements Serializable{
     }
     
     /** used by factories when re-using a backside */
-    void initializeBackside(ImmutableBackside immutableBackside)
+    public void initializeBackside(ImmutableBackside immutableBackside)
     {
     	linkedImmutableBackside = immutableBackside;
         rotationNeedsUpdate = true;
@@ -117,7 +117,7 @@ public class Backside implements Serializable{
     		}
     
     	/** returns true if the backside is facing the viewer. If the backside might have moved then call the backsides calculate method beforehand. */
-    	final boolean facingViewer(){return value;}
+    	final public boolean facingViewer(){return value;}
     	
     	float calculateLighting(NitrogenContext context)
     	{
