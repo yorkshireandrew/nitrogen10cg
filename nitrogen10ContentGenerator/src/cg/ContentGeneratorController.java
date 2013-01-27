@@ -245,7 +245,7 @@ public class ContentGeneratorController extends AbstractAction
 	}
 	
 	/** removes existing generatedItem and constructs a 
-	 * new one form the generatedSISI
+	 * new one from the generatedSISI
 	 */
 	void createNewGeneratedItem()
 	{
