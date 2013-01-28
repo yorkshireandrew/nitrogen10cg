@@ -1,6 +1,8 @@
 package modified_nitrogen1;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 public class RendererHelper {
 	
@@ -46,5 +48,14 @@ public class RendererHelper {
 			return rendererTriplets.get(name);
 		}
 		else throw new Exception("The RendererTriplet named " + name + " does not exist");
+	}
+	
+	/** added for content generator */
+	public final static String[] getRendererTripletNames()
+	{
+		Set<String> names = rendererTriplets.keySet();
+		String[] nameArray = names.toArray(new String[0]);;
+		Arrays.sort(nameArray);
+		return nameArray;
 	}
 }
