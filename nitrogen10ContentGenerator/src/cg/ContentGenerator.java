@@ -132,7 +132,11 @@ public class ContentGenerator extends JFrame{
 	
 	ContentGeneratorSISI contentGeneratorSISI;
 	
+	// default location of texture maps
 	String resourceURL = "C:\\Documents and Settings\\andrew\\My Documents\\bombhead games";
+	
+	/** variable to hold polygon dialog choices between dialog openings */
+	PolygonDialogModel polygonDialogModel;
 	
 	ContentGenerator()
 	{
@@ -145,6 +149,8 @@ public class ContentGenerator extends JFrame{
         contentGeneratorSISI = new ContentGeneratorSISI();
         
         cgc = new ContentGeneratorController(this);
+        
+        polygonDialogModel = new PolygonDialogModel();
         		
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip
@@ -385,7 +391,7 @@ public class ContentGenerator extends JFrame{
 		
 		// new polygon button
 		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
-		newPolygonButton.addActionListener(cgc);
+		newPolygonButton.addActionListener(new polygonToolbarAction(this));
 		newPolygonButton.setToolTipText("Create a new polygon");
 		newPolygonButton.setIcon("/res/newPolygonButton.PNG");
 		outerBox.add(newPolygonButton);

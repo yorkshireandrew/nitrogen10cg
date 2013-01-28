@@ -659,3 +659,19 @@ class BacksideToolbarAction extends AbstractAction
 		}	
 	}
 }
+
+/** class to handle Template... menu item */
+class polygonToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	polygonToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		PolygonDialog pd = new PolygonDialog(cg);
+		pd.setVisible(true);
+	}	
+}
