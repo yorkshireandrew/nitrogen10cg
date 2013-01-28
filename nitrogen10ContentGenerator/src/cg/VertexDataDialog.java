@@ -146,8 +146,8 @@ public class VertexDataDialog  extends JDialog implements ChangeListener{
 	/** checks the name returning OK if it is not present or user wishes to overwrite*/
 	private boolean nameIsOK(String name)
 	{
-		SharedImmutableSubItem sisi = contentGenerator.generatedSISI;
-		Map<String,PolygonVertexData> polygonVertexDataMap = sisi.getPolygonVertexDataMap();
+		ContentGeneratorSISI cgsisi = contentGenerator.contentGeneratorSISI;
+		Map<String,PolygonVertexData> polygonVertexDataMap = cgsisi.polygonVertexDataMap;
 		
 		if(polygonVertexDataMap.containsKey(name))
 		{
@@ -172,8 +172,8 @@ public class VertexDataDialog  extends JDialog implements ChangeListener{
 	/** checks the name returning OK if it is not present or user wishes to overwrite*/
 	private void addPolygonVertexData(String name, PolygonVertexData pvd)
 	{
-		SharedImmutableSubItem sisi = contentGenerator.generatedSISI;
-		Map<String,PolygonVertexData> polygonVertexDataMap = sisi.getPolygonVertexDataMap();
+		ContentGeneratorSISI cgsisi = contentGenerator.contentGeneratorSISI;
+		Map<String,PolygonVertexData> polygonVertexDataMap = cgsisi.polygonVertexDataMap;
 		
 		polygonVertexDataMap.put(name, pvd);
 	}

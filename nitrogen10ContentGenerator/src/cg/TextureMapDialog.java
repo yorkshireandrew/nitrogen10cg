@@ -180,9 +180,11 @@ public class TextureMapDialog extends JDialog{
 				// that it must use when it is serialised (so it works when referencing resources in a release)
 				TexMap newTexMap = new TexMap(fileFullString,fileString);
 
-				SharedImmutableSubItem sisi = cg.generatedSISI;
-				Map<String,TexMap> textureMapMap = sisi.getTextureMapMap();
+				ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+				Map<String,TexMap> textureMapMap = cgsisi.textureMapMap;
+				Map<String,String> textureMapFullPathMap = cgsisi.textureMapFullPathMap;
 				textureMapMap.put(name,newTexMap);
+				textureMapFullPathMap.put(name, fileFullString);
 				TextureMapDialog.this.setVisible(false);
 				TextureMapDialog.this.dispose();		
 			}
@@ -198,7 +200,8 @@ public class TextureMapDialog extends JDialog{
 	private boolean nameIsOK(String name)
 	{
 		SharedImmutableSubItem sisi = cg.generatedSISI;
-		Map<String,TexMap> textureMapMap = sisi.getTextureMapMap();
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+		Map<String,TexMap> textureMapMap = cgsisi.textureMapMap;
 		
 		if(textureMapMap.containsKey(name))
 		{

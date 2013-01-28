@@ -1,4 +1,4 @@
-package modified_nitrogen1;
+package cg;
 
 public class ContentGeneratorPolygon {
 	
@@ -37,7 +37,4 @@ public class ContentGeneratorPolygon {
 	
 	/** True if the polygon is transparent, and gets rendered during a transparent render pass */
 	boolean isTransparent;
-	
-	
-
 }

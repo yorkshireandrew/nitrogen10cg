@@ -3,6 +3,7 @@ package cg;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -247,10 +248,10 @@ public class BacksideDialog extends JDialog {
 	
 	boolean nameIsOk(String name)
 	{
-		// get the generatedSISI
-		SharedImmutableSubItem gs = cg.generatedSISI;
 		
-		if(gs.getImmutableBacksideNameList().contains(name))
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+		
+		if(cgsisi.immutableBacksideMap.containsKey(name))
 		{
 			return false;
 		}
@@ -262,17 +263,10 @@ public class BacksideDialog extends JDialog {
 	
 	void addImmutableBacksideToSISI(String name, ImmutableBackside ib)
 	{
-		// get the generatedSISI
-		SharedImmutableSubItem gs = cg.generatedSISI;
-		ImmutableBackside[] immutableBacksides = gs.getImmutableBacksides();
-		int ibl = immutableBacksides.length;
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+		Map<String,ImmutableBackside> immutableBacksideMap = cgsisi.immutableBacksideMap;	
 		
-		// update it adding the supplied ImmutableBackside
-		ImmutableBackside[] newImmutableBacksideArray = Arrays.copyOf(immutableBacksides, (ibl+1));
-		newImmutableBacksideArray[ibl]= ib;
-		gs.setImmutableBacksides(newImmutableBacksideArray);
-		
-		// add the supplied name to the list
-		gs.getImmutableBacksideNameList().add(name);
+		immutableBacksideMap.put(name,ib);
+
 	}
 }

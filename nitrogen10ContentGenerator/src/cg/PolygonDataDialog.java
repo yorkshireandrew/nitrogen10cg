@@ -209,8 +209,8 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	/** checks the name returning OK if it is not present or user wishes to overwrite*/
 	private void addPolygonData(String name, int[] data)
 	{
-		SharedImmutableSubItem sisi = contentGenerator.generatedSISI;
-		Map<String,int[]> polygonDataMap = sisi.getPolygonDataMap();	
+		ContentGeneratorSISI cgsisi = contentGenerator.contentGeneratorSISI;
+		Map<String,int[]> polygonDataMap = cgsisi.polygonDataMap;
 		polygonDataMap.put(name, data);
 	}
 	
@@ -218,9 +218,8 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	/** checks the name returning OK if it is not present or user wishes to overwrite*/
 	private boolean nameAlreadyExists(String name)
 	{
-		SharedImmutableSubItem sisi = contentGenerator.generatedSISI;
-		Map<String,int[]> polygonDataMap = sisi.getPolygonDataMap();
-		
+		ContentGeneratorSISI cgsisi = contentGenerator.contentGeneratorSISI;
+		Map<String,int[]> polygonDataMap = cgsisi.polygonDataMap;		
 		if(polygonDataMap.containsKey(name))
 		{
 			existingData = polygonDataMap.get(name);
@@ -232,10 +231,10 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	/** checks the name returning OK if it is not present or user wishes to overwrite*/
 	private boolean nameIsOK(String name)
 	{
-		SharedImmutableSubItem sisi = contentGenerator.generatedSISI;
-		Map<String,int[]> polygonVertexDataMap = sisi.getPolygonDataMap();
-		
-		if(polygonVertexDataMap.containsKey(name))
+		ContentGeneratorSISI cgsisi = contentGenerator.contentGeneratorSISI;
+		Map<String,int[]> polygonDataMap = cgsisi.polygonDataMap;
+				
+		if(polygonDataMap.containsKey(name))
 		{
 			if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
 											this, 
@@ -252,15 +251,6 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 			}
 		}		
 		return true;
-	}
-	
-	/** checks the name returning OK if it is not present or user wishes to overwrite*/
-	private void addPolygonVertexData(String name, PolygonVertexData pvd)
-	{
-		SharedImmutableSubItem sisi = contentGenerator.generatedSISI;
-		Map<String,PolygonVertexData> polygonVertexDataMap = sisi.getPolygonVertexDataMap();
-		
-		polygonVertexDataMap.put(name, pvd);
 	}
 
 	@Override

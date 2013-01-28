@@ -3,6 +3,7 @@ package cg;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -209,15 +210,14 @@ public class ContentGeneratorController extends AbstractAction
 		int wvmy = wvm.y;
 		int wvmz = wvm.z;
 		
-		// get the generatedSISI
-		SharedImmutableSubItem gs = cg.generatedSISI;
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 		
 		// return if an existing vertex is at same location
-		ImmutableVertex[] iv = gs.getImmutableVertexes();	
-		int ivl = iv.length;
+		List<ImmutableVertex> iv = cgsisi.immutableVertexList;
+		int ivl = iv.size();
 		for(int index = 0; index < ivl ; index++)
 		{
-			ImmutableVertex checkVertex = iv[index];
+			ImmutableVertex checkVertex = iv.get(index);
 			if(
 					(((int)checkVertex.is_x) == ((int)wvmx))
 					&&(((int)checkVertex.is_y) == ((int)wvmy))
@@ -231,11 +231,13 @@ public class ContentGeneratorController extends AbstractAction
 		
 		saveSISI();
 		
-		ImmutableVertex vertexToMove = iv[wvm.index];
+		ImmutableVertex vertexToMove = iv.get(wvm.index);
 		
 		vertexToMove.is_x = wvmx;
 		vertexToMove.is_y = wvmy;
 		vertexToMove.is_z = wvmz;
+		
+		updateGeneratesSISIVertexes();
 		
 		// create a new generatedItem with the vertex
 		createNewGeneratedItem();
@@ -451,15 +453,15 @@ public class ContentGeneratorController extends AbstractAction
 	/** returns the index into immutableVertexes if the vertex already exists, else -1 */
 	int isVertexAlreadyThere(int x, int y, int z)
 	{
-		// get the generatedSISI
-		SharedImmutableSubItem gs = cg.generatedSISI;
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+
 		
 		// return if an existing vertex is at same location
-		ImmutableVertex[] iv = gs.getImmutableVertexes();	
-		int ivl = iv.length;
+		List<ImmutableVertex> iv = cgsisi.immutableVertexList;	
+		int ivl = iv.size();
 		for(int index = 0; index < ivl ; index++)
 		{
-			ImmutableVertex checkVertex = iv[index];
+			ImmutableVertex checkVertex = iv.get(index);
 			if(
 					(((int)checkVertex.is_x) == x)
 					&&(((int)checkVertex.is_y) == y)
@@ -474,22 +476,22 @@ public class ContentGeneratorController extends AbstractAction
 	
 	void addImmutableVertex(int x, int y, int z)
 	{
-		// get the generatedSISI
-		SharedImmutableSubItem gs = cg.generatedSISI;
-		ImmutableVertex[] iv = gs.getImmutableVertexes();
-		int ivl = iv.length;
-		
-		// update it adding the extra vertex
-		ImmutableVertex[] newVertexArray = Arrays.copyOf(iv, (ivl+1));
-		newVertexArray[ivl]= new ImmutableVertex(x,y,z);
-		gs.setImmutableVertexes(newVertexArray);
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+		List<ImmutableVertex> ivl = cgsisi.immutableVertexList;
+		List<Integer> ivil = cgsisi.immutableVertexIndexList;
+		ivl.add(new ImmutableVertex(x,y,z));
+		ivil.add(new Integer(-1));	// ensure remains same size
+
+		// 
+		cg.generatedSISI.setImmutableVertexes(ivl.toArray(new ImmutableVertex[0]));
+		updateGeneratesSISIVertexes();
 		
 		// if it is at the working vertex then update it
 		WorkingVertexModel wvm = cg.workingVertexModel;
 		
 		if((x == wvm.x) && (y == wvm.y) && (z == wvm.z))
 		{
-			wvm.index = ivl;
+			wvm.index = ivl.size()-1;
 			wvm.picked = true;
 			cg.workingVertexView.updateFromModel();				
 		}
@@ -501,7 +503,12 @@ public class ContentGeneratorController extends AbstractAction
 		cg.renderEditArea();
 	}
 	
-
+	private void updateGeneratesSISIVertexes()
+	{
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+		List<ImmutableVertex> ivl = cgsisi.immutableVertexList;
+		cg.generatedSISI.setImmutableVertexes(ivl.toArray(new ImmutableVertex[0]));
+	}
 	
 	/** Hook for UNDO*/
 	void saveSISI()

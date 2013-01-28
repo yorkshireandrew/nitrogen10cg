@@ -130,13 +130,19 @@ public class ContentGenerator extends JFrame{
 	
 	ContentGeneratorController cgc;
 	
+	ContentGeneratorSISI contentGeneratorSISI;
+	
 	String resourceURL = "C:\\Documents and Settings\\andrew\\My Documents\\bombhead games";
 	
 	ContentGenerator()
 	{
-        super("Content Generator");
+
+		super("Content Generator");
         setSize(APP_WIDTH,APP_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        //create a blank content
+        contentGeneratorSISI = new ContentGeneratorSISI();
         
         cgc = new ContentGeneratorController(this);
         		
