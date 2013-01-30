@@ -6,6 +6,7 @@ import java.util.Arrays;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import modified_nitrogen1.ImmutablePolygon;
 import modified_nitrogen1.ImmutableVertex;
 import modified_nitrogen1.SharedImmutableSubItem;
 
@@ -13,17 +14,14 @@ class PolygonVertexController extends AbstractAction
 {
 	ContentGenerator cg;
 	PolygonVertexView polygonVertexView;
-	PolygonVertexModel polygonVertexModel;
 	
-	PolygonVertexController(ContentGenerator cg, PolygonVertexView polygonVertexView, PolygonVertexModel polygonVertexModel)
+	PolygonVertexController(ContentGenerator cg, PolygonVertexView polygonVertexView)
 	{
 		super();
 		this.cg 	= cg;
 		this.polygonVertexView 	= polygonVertexView;
-		this.polygonVertexModel	= polygonVertexModel;
+		// note model is initially null
 		
-		// tell the model its controller
-		polygonVertexModel.polygonVertexController = this;
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -66,8 +64,6 @@ class PolygonVertexController extends AbstractAction
 		String xString,yString,zString;
 		
 		PolygonVertexView pvv = polygonVertexView;
-		PolygonVertexModel pvm = polygonVertexModel;
-		
 		
 		xString = pvv.xTextField.getText().trim();
 		yString = pvv.yTextField.getText().trim();
@@ -85,26 +81,7 @@ class PolygonVertexController extends AbstractAction
 			return;	
 		}
 		
-		pvm.x = x;
-		pvm.y = y;
-		pvm.z = z;
-		
-		ContentGeneratorController cgcL = cg.cgc;
-		
-		int index = cgcL.isVertexAlreadyThere(x,y,z);
-		
-		if(index == -1)
-		{
-			cgcL.saveSISI();
-			cgcL.addImmutableVertex(x, y, z);
-			pvm.index = cgcL.isVertexAlreadyThere(x,y,z);
-			pvv.updateFromModel();
-		}
-		else
-		{
-			pvm.index = index;
-			pvv.updateFromModel();		
-		}
+		createOrMoveToVertexAt(x,y,z);
 	}
 	
 	void handleAddButtonEvent()
@@ -114,40 +91,38 @@ class PolygonVertexController extends AbstractAction
 		int y = wvm.y; 
 		int z = wvm.z; 
 		
-		PolygonVertexView pvv = polygonVertexView;
-		PolygonVertexModel pvm = polygonVertexModel;
-		
-		pvm.x = x;
-		pvm.y = y;
-		pvm.z = z;
-		
+		createOrMoveToVertexAt(x, y, z);
+	}
+	
+	void createOrMoveToVertexAt(int x, int y, int z)
+	{
 		ContentGeneratorController cgcL = cg.cgc;
+		ImmutableVertex existing = cgcL.vertexAlreadyThere(x,y,z);
 		
-		int index = cgcL.isVertexAlreadyThere(x,y,z);
-		
-		if(index == -1)
+		if(existing == null)
 		{
 			cgcL.saveSISI();
 			cgcL.addImmutableVertex(x, y, z);
-			pvm.index = cgcL.isVertexAlreadyThere(x,y,z);
-			pvv.updateFromModel();
+			existing = cgcL.vertexAlreadyThere(x,y,z);
+			polygonVertexView.pvm = existing;
+			polygonVertexView.updateFromModel();
 		}
 		else
 		{
-			pvm.index = index;
-			pvv.updateFromModel();		
-		}		
+			polygonVertexView.pvm = existing; // update the views copy of the model
+			polygonVertexView.updateFromModel();		
+		}
 	}
 	
 	void handleMoveWorkingButtonEvent()
 	{
 		WorkingVertexModel wvm = cg.workingVertexModel;
-		PolygonVertexModel pvm = polygonVertexModel;
-		wvm.x = pvm.x;
-		wvm.y = pvm.y;
-		wvm.z = pvm.z;
-		wvm.picked = true;
-		wvm.index = cg.cgc.isVertexAlreadyThere(wvm.x, wvm.y, wvm.z);
+		ImmutableVertex pvm = polygonVertexView.pvm;
+		if(pvm == null)return;
+		wvm.x = (int)pvm.is_x;
+		wvm.y = (int)pvm.is_y;
+		wvm.z = (int)pvm.is_z;
+		wvm.pickedVertex = pvm;
 		wvm.workingVertexController.updateViewFromModel();
 //		cg.renderEditArea();
 	}

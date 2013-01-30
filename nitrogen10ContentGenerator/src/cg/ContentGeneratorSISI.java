@@ -17,8 +17,7 @@ public class ContentGeneratorSISI {
 	
 	List<ImmutableVertex> immutableVertexList;
 	
-	/** indexes of the immutableVertexes in the compacted array */
-	List<Integer> immutableVertexIndexList;
+	List<ImmutableVertex> collisionVertexList;	
 	
 	/** contains named VertexData used for ImmutablePolygon generation */
     Map<String,PolygonVertexData> polygonVertexDataMap;
@@ -39,7 +38,7 @@ public class ContentGeneratorSISI {
     ContentGeneratorSISI()
     {
     	immutableVertexList			= new ArrayList<ImmutableVertex>();
-    	immutableVertexIndexList	= new ArrayList<Integer>(); 
+    	collisionVertexList			= new ArrayList<ImmutableVertex>();
     	
     	polygonVertexDataMap 		= new HashMap<String,PolygonVertexData>();
         polygonDataMap 				= new HashMap<String,int[]>();

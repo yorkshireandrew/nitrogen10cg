@@ -1,14 +1,14 @@
 package cg;
 
+import modified_nitrogen1.ImmutableVertex;
+
 public class PolygonDialogModel {
-	/** index of first vertex of polygon */
-	int c1;	
-	/** index of second vertex of polygon */
-	int c2;	
-	/** index of third vertex of polygon */
-	int c3;	
-	/** index of fourth vertex of polygon */
-	int c4;
+	
+	/** vertexes of the polygon */
+	ImmutableVertex c1;	
+	ImmutableVertex c2;	
+	ImmutableVertex c3;	
+	ImmutableVertex c4;
 	
 	/** string used to reference vertex data to be associated with c1 for this immutable polygon */
 	String pvd_c1_name;

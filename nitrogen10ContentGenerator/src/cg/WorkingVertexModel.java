@@ -4,13 +4,14 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
+import modified_nitrogen1.ImmutableVertex;
+
 public class WorkingVertexModel {
 	WorkingVertexController workingVertexController;
 	int x;
 	int y;
 	int z;
-	int index;
-	boolean picked = false;
+	ImmutableVertex pickedVertex = null;
 	
 	int ref_x;
 	int ref_y;

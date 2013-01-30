@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -11,6 +12,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import modified_nitrogen1.ImmutableVertex;
 
 public class PolygonVertexView {
 	JTextField indexTextField;
@@ -21,14 +24,13 @@ public class PolygonVertexView {
 	FixedSizeButton moveWorkingToThisButton;
 	
 	ContentGenerator cg;
-	PolygonVertexModel pvm;
+	ImmutableVertex pvm;
 	PolygonVertexController polygonVertexController;	
 	
-	PolygonVertexView(ContentGenerator cg, PolygonVertexModel pvm)
+	PolygonVertexView(ContentGenerator cg)
 	{
-		polygonVertexController = new PolygonVertexController(cg,this,pvm);
-		this.pvm = pvm;
-		
+		this.cg =cg;
+		polygonVertexController = new PolygonVertexController(cg, this);
 		indexTextField = new JTextField();
 		indexTextField.setColumns(4);
 		indexTextField.setText("none");
@@ -79,22 +81,48 @@ public class PolygonVertexView {
 	
 	void updateFromModel()
 	{
-		SwingUtilities.invokeLater(
-				new Runnable()
-				{
-					@Override
-					public void run() {
-						System.out.println("pvv.updateFromModel ran");
-						xTextField.setText(Integer.toString(pvm.x));
-						yTextField.setText(Integer.toString(pvm.y));
-						zTextField.setText(Integer.toString(pvm.z));
-						indexTextField.setEditable(true);
-						indexTextField.setText(Integer.toString(pvm.index));
-						indexTextField.setEditable(false);
-					}
-				}
-		);
-	}
+		if(pvm == null)
+		{
+			SwingUtilities.invokeLater(
+					new Runnable()
+					{
+						@Override
+						public void run() {
+							xTextField.setText("");
+							yTextField.setText("");
+							zTextField.setText("");
+							indexTextField.setEditable(true);
+							indexTextField.setText("");
+							indexTextField.setEditable(false);
+						}
+					});
+		}
+		else
+		{
+			SwingUtilities.invokeLater(
+					new Runnable()
+					{
+						@Override
+						public void run() {
+							xTextField.setText(Integer.toString((int)pvm.is_x));
+							yTextField.setText(Integer.toString((int)pvm.is_y));
+							zTextField.setText(Integer.toString((int)pvm.is_z));
+							
+							ContentGenerator cong = cg;
+							ContentGeneratorSISI cgsisi = cong.contentGeneratorSISI;
+							List<ImmutableVertex> ivl = cgsisi.immutableVertexList;			
+							int index = ivl.indexOf(pvm);
+							
+							indexTextField.setEditable(true);
+							indexTextField.setText(Integer.toString(index));
+							indexTextField.setEditable(false);
+						}
+					});
+		}
+	}	
 }
+
+			
+
 
 /** handles action events created by a PolygonVertexGUI */

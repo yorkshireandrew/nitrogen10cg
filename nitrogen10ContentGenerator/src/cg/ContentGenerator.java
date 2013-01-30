@@ -120,7 +120,6 @@ public class ContentGenerator extends JFrame{
 	
 	/** the polygon vertex UI */
 	PolygonVertexView[] 	polygonVertexViews = new PolygonVertexView[4] ;
-	PolygonVertexModel[] 	polygonVertexModels = new PolygonVertexModel[4];
 
 	WorkingVertexView 		workingVertexView;
 	WorkingVertexModel 		workingVertexModel;
@@ -136,7 +135,7 @@ public class ContentGenerator extends JFrame{
 	String resourceURL = "C:\\Documents and Settings\\andrew\\My Documents\\bombhead games";
 	
 	/** variable to hold polygon dialog choices between dialog openings */
-	PolygonDialogModel polygonDialogModel;
+	ContentGeneratorPolygon polygonDialogModel;
 	
 	ContentGenerator()
 	{
@@ -150,7 +149,7 @@ public class ContentGenerator extends JFrame{
         
         cgc = new ContentGeneratorController(this);
         
-        polygonDialogModel = new PolygonDialogModel();
+        polygonDialogModel = new ContentGeneratorPolygon();
         		
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip
@@ -414,8 +413,7 @@ public class ContentGenerator extends JFrame{
 		
 		for(int i = 0 ; i < 4; i++)
 		{		
-			polygonVertexModels[i] = new PolygonVertexModel();
-			polygonVertexViews[i] = new PolygonVertexView(this, polygonVertexModels[i]);	
+			polygonVertexViews[i] = new PolygonVertexView(this);	
 			polygonVertexViews[i].createPolygonGUI(outerBox);
 		}
 
@@ -665,9 +663,9 @@ public class ContentGenerator extends JFrame{
 	
 	void showWorkingVertex()
 	{
-		if(workingVertexModel.picked)
+		if(workingVertexModel.pickedVertex != null)
 		{
-			generatedItem.renderVertex(nc, workingVertexModel.index);
+			generatedItem.renderVertex(nc, contentGeneratorSISI.immutableVertexList.indexOf(workingVertexModel.pickedVertex));
 		}
 	}
 	

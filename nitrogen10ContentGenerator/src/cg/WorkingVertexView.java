@@ -128,19 +128,19 @@ public class WorkingVertexView {
 					public void run() {
 						WorkingVertexModel wvm = workingVertexModel;
 						
-						int vertexIndex = cg.cgc.isVertexAlreadyThere(wvm.x, wvm.y, wvm.z);
+						wvm.pickedVertex = WorkingVertexView.this.cg.cgc.vertexAlreadyThere(wvm.x, wvm.y, wvm.z);
 						
-						if(vertexIndex != -1)
+						if(wvm.pickedVertex != null)
 						{
-							wvm.index = vertexIndex;
-							wvm.picked = true;
-							indexTextField.setText(Integer.toString(wvm.index));
+							int index = cg.contentGeneratorSISI.immutableVertexList.indexOf(wvm.pickedVertex);
+							indexTextField.setText(Integer.toString(index));
 						}
 						else
 						{
-							wvm.picked = false;
 							indexTextField.setText("none");
 						}
+						
+						
 						
 						xTextField.setText(Integer.toString(wvm.x));
 						yTextField.setText(Integer.toString(wvm.y));

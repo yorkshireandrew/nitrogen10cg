@@ -20,6 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import modified_nitrogen1.ImmutableBackside;
@@ -30,7 +31,7 @@ import modified_nitrogen1.RendererHelper;
 public class PolygonDialog extends JDialog implements ActionListener{
 
 	ContentGenerator cg;
-	PolygonDialogModel pdm;
+	ContentGeneratorPolygon model;
 	
 	JComboBox 	polygonNameComboBox;
 	JLabel 		polygonNameLabel = new JLabel("Name ");
@@ -68,7 +69,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	PolygonDialog(ContentGenerator cg)
 	{
 		this.cg = cg;
-		this.pdm = cg.polygonDialogModel;
+		this.model = cg.polygonDialogModel;
 		
 		polygonNameComboBox = new JComboBox(getPolygonNames());
 		polygonNameComboBox.setEditable(true);
@@ -137,8 +138,6 @@ public class PolygonDialog extends JDialog implements ActionListener{
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						PolygonDialog.this.handleOK();
-						PolygonDialog.this.setVisible(false);
-						PolygonDialog.this.dispose();	
 					}			
 				});	
 		
@@ -150,11 +149,71 @@ public class PolygonDialog extends JDialog implements ActionListener{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 	
-	void handleOK()
+	private void handleOK()
 	{
-		// TO DO
 		String name = (String)polygonNameComboBox.getEditor().getItem();
-		cg.contentGeneratorSISI.contentGeneratorPolygonMap.put(name, null);
+		if(!nameIsOK(name))return;
+		
+		// validate the combo boxes
+		if(getString(polygonDataComboBox) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Polygon Data incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(getString(polygonVertexDataComboBox1) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Vertex Data 1 incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(getString(polygonVertexDataComboBox2) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Vertex Data 2 incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(getString(polygonVertexDataComboBox3) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Vertex Data 3 incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(getString(polygonVertexDataComboBox4) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Vertex Data 4 incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(getString(polygonRendererComboBox) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Polygon renderer incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if(getString(polygonBacksideComboBox) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Polygon Backside incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		System.out.println("success!!!!");
+		
+		// update the model
+		model.c1 = cg.polygonVertexViews[0].pvm;  
+		model.c2 = cg.polygonVertexViews[1].pvm;  
+		model.c3 = cg.polygonVertexViews[2].pvm;  
+		model.c4 = cg.polygonVertexViews[3].pvm;  
+		
+		model.polyData_name = getString(polygonDataComboBox);
+		model.pvd_c1_name = getString(polygonVertexDataComboBox1);
+		model.pvd_c2_name = getString(polygonVertexDataComboBox2);
+		model.pvd_c3_name = getString(polygonVertexDataComboBox3);
+		model.pvd_c4_name = getString(polygonVertexDataComboBox4);
+		model.rendererTriplet_name = getString(polygonRendererComboBox);
+		model.backside_name = getString(polygonBacksideComboBox);
+		model.isBacksideCulled = isBacksideCulledCheckBox.isSelected();
+		model.isTransparent = isTransparentCheckBox.isSelected();
+		
+		// add a copy of the model to the polygon map
+		cg.contentGeneratorSISI.contentGeneratorPolygonMap.put(name, new ContentGeneratorPolygon(model));
+		
+		
+		PolygonDialog.this.setVisible(false);
+		PolygonDialog.this.dispose();	
 	}
 
 	@Override
@@ -417,6 +476,49 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	private void fatten(JLabel label)
 	{
 		label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+	}
+	
+	/** checks the name returning OK if it is not present or user wishes to overwrite*/
+	private boolean nameIsOK(String name)
+	{
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+		Map<String,ContentGeneratorPolygon> polygonBacksideMap = cgsisi.contentGeneratorPolygonMap;
+					
+		if(polygonBacksideMap.containsKey(name))
+		{
+			if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+											this, 
+											"The name " + name + " is already in use. Overwrite existing data?", 
+											"Name already exists"
+											,JOptionPane.YES_NO_OPTION)
+			)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}		
+		return true;
+	}
+	
+	/** returns the string in the combo box or null if it does not exist in the dropdown */
+	private String getString(JComboBox combo)
+	{
+		String name = (String)combo.getEditor().getItem();
+		name = name.trim();
+		ComboBoxModel cbm = combo.getModel();
+		int length = cbm.getSize();
+		for(int x = 0; x < length; x++)
+		{
+			if(name.equals((String)cbm.getElementAt(x)))
+			{
+				return name;
+			}
+		}
+		System.out.println(name + " doesn't exist in dropdown");
+		return null;	
 	}
 	
 	

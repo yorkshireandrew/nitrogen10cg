@@ -92,13 +92,9 @@ public class BacksideDialog extends JDialog {
 			dispose();				
 		}
 		
-		// validate the name to ensure its not used twice
+		// validate the name to ensure its not used twice. Unless user is OK with this
 		String name = nameTextField.getText().trim();
-		if(!nameIsOk(name))
-		{
-			JOptionPane.showMessageDialog(this, "The name " + name + " has already been used. Please choose another name.", "Error",JOptionPane.ERROR_MESSAGE);
-			return;		
-		}
+		if(!nameIsOK(name))return;
 		
 		// create an ImmutableBackside
 		ImmutableBackside ib = generateImmutableBackside(cg);
@@ -131,30 +127,24 @@ public class BacksideDialog extends JDialog {
 	static boolean polygonVertexesAreOK(ContentGenerator cg)
 	{
 		final float minDist = 1;
-		PolygonVertexModel[] polygonVertexModels = cg.polygonVertexModels;
-		if(polygonVertexModels.length < 3)
-		{
-			JOptionPane.showMessageDialog(cg, "insufficient polygon vertexes!", "Error",JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
 		
-		PolygonVertexModel pvm1 = polygonVertexModels[0];
-		PolygonVertexModel pvm2 = polygonVertexModels[1];
-		PolygonVertexModel pvm3 = polygonVertexModels[2];
+		ImmutableVertex pvm1 = cg.polygonVertexViews[0].pvm;
+		ImmutableVertex pvm2 = cg.polygonVertexViews[1].pvm;
+		ImmutableVertex pvm3 = cg.polygonVertexViews[2].pvm;
 		
-		if(pvm1.index == -1)
+		if(pvm1 == null)
 		{
 			JOptionPane.showMessageDialog(cg, "first polygon vertex not set. Unable to create a backside", "Error",JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		
-		if(pvm2.index == -1)
+		if(pvm2 == null)
 		{
 			JOptionPane.showMessageDialog(cg, "second polygon vertex not set. Unable to create a backside", "Error",JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 
-		if(pvm3.index == -1)
+		if(pvm3 == null)
 		{
 			JOptionPane.showMessageDialog(cg, "third polygon vertex not set. Unable to create a backside", "Error",JOptionPane.ERROR_MESSAGE);
 			return false;
@@ -181,32 +171,32 @@ public class BacksideDialog extends JDialog {
 		return true;	
 	}
 	
-	private static int distBetween(PolygonVertexModel a, PolygonVertexModel b)
+	private static int distBetween(ImmutableVertex a, ImmutableVertex b)
 	{
-		int dx = a.x - b.x;
-		int dy = a.y - b.y;
-		int dz = a.z - b.z;
-		return (dx*dx + dy*dy + dz*dz);
+		float dx = a.is_x - b.is_x;
+		float dy = a.is_y - b.is_y;
+		float dz = a.is_z - b.is_z;
+		return (int)(dx*dx + dy*dy + dz*dz);
 	}
 	
 	private ImmutableBackside generateImmutableBackside(ContentGenerator cg)
 	{
-		PolygonVertexModel[] polygonVertexModels = cg.polygonVertexModels;		
-		PolygonVertexModel pvm1 = polygonVertexModels[0];
-		PolygonVertexModel pvm2 = polygonVertexModels[1];
-		PolygonVertexModel pvm3 = polygonVertexModels[2];
+				
+		ImmutableVertex pvm1 = cg.polygonVertexViews[0].pvm;
+		ImmutableVertex pvm2 = cg.polygonVertexViews[1].pvm;
+		ImmutableVertex pvm3 = cg.polygonVertexViews[2].pvm;
 		
-		float v1x = (float)pvm1.x;
-		float v1y = (float)pvm1.y;
-		float v1z = (float)pvm1.z;
+		float v1x = pvm1.is_x;
+		float v1y = pvm1.is_y;
+		float v1z = pvm1.is_z;
 		
-		float v2x = (float)pvm2.x;
-		float v2y = (float)pvm2.y;
-		float v2z = (float)pvm2.z;
+		float v2x = pvm2.is_x;
+		float v2y = pvm2.is_y;
+		float v2z = pvm2.is_z;
 		
-		float v3x = (float)pvm3.x;
-		float v3y = (float)pvm3.y;
-		float v3z = (float)pvm3.z;
+		float v3x = pvm3.is_x;
+		float v3y = pvm3.is_y;
+		float v3z = pvm3.is_z;
 		
 		float ux = v2x - v1x;
 		float uy = v2y - v1y; 
@@ -246,20 +236,31 @@ public class BacksideDialog extends JDialog {
 		return retval;
 	}
 	
-	boolean nameIsOk(String name)
+	/** checks the name returning OK if it is not present or user wishes to overwrite*/
+	private boolean nameIsOK(String name)
 	{
-		
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
-		
-		if(cgsisi.immutableBacksideMap.containsKey(name))
+		Map<String,ImmutableBackside> polygonBacksideMap = cgsisi.immutableBacksideMap;
+					
+		if(polygonBacksideMap.containsKey(name))
 		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+			if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+											this, 
+											"The name " + name + " is already in use. Overwrite existing data?", 
+											"Name already exists"
+											,JOptionPane.YES_NO_OPTION)
+			)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}		
+		return true;
 	}
+
 	
 	void addImmutableBacksideToSISI(String name, ImmutableBackside ib)
 	{

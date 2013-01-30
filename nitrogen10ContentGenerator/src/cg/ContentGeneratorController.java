@@ -188,7 +188,7 @@ public class ContentGeneratorController extends AbstractAction
 		int wvmy = wvm.y;
 		int wvmz = wvm.z;
 		
-		if(isVertexAlreadyThere(wvmx,wvmy,wvmz) != -1)
+		if(vertexAlreadyThere(wvmx,wvmy,wvmz) != null)
 		{
 			JOptionPane.showMessageDialog(cg, "A vertex is already there");
 			return;			
@@ -203,7 +203,7 @@ public class ContentGeneratorController extends AbstractAction
 	{
 		// get where we want to add the vertex
 		WorkingVertexModel wvm = cg.workingVertexModel;
-		if(wvm.picked == false)return;
+		if(wvm.pickedVertex == null)return;
 		
 		// also check current cursor position has nothing under it
 		int wvmx = wvm.x;
@@ -212,32 +212,21 @@ public class ContentGeneratorController extends AbstractAction
 		
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 		
-		// return if an existing vertex is at same location
-		List<ImmutableVertex> iv = cgsisi.immutableVertexList;
-		int ivl = iv.size();
-		for(int index = 0; index < ivl ; index++)
+		if(vertexAlreadyThere(wvmx,wvmy,wvmz) != null)
 		{
-			ImmutableVertex checkVertex = iv.get(index);
-			if(
-					(((int)checkVertex.is_x) == ((int)wvmx))
-					&&(((int)checkVertex.is_y) == ((int)wvmy))
-					&&(((int)checkVertex.is_z) == ((int)wvmz))
-				)
-			{
-				JOptionPane.showMessageDialog(cg, "A vertex is already there");
-				return;
-			}
+			JOptionPane.showMessageDialog(cg, "A vertex is already there");
+			return;
 		}
 		
 		saveSISI();
 		
-		ImmutableVertex vertexToMove = iv.get(wvm.index);
+		ImmutableVertex vertexToMove = wvm.pickedVertex;
 		
 		vertexToMove.is_x = wvmx;
 		vertexToMove.is_y = wvmy;
 		vertexToMove.is_z = wvmz;
 		
-		updateGeneratesSISIVertexes();
+		updateGeneratedSISIVertexes();
 		
 		// create a new generatedItem with the vertex
 		createNewGeneratedItem();
@@ -381,11 +370,12 @@ public class ContentGeneratorController extends AbstractAction
 		
 		// return if we did not find a vertex
 		if(i == -1)return;
+		
 		Vertex v = gi.getVertex(i);
+		
 		WorkingVertexModel wvm = cgL.workingVertexModel;
-	
-		wvm.picked = true;
-		wvm.index = i;
+		wvm.pickedVertex = cg.contentGeneratorSISI.immutableVertexList.get(i);
+
 		wvm.x = (int)v.getX();
 		wvm.y = (int)v.getY();
 		wvm.z = (int)v.getZ();
@@ -413,9 +403,8 @@ public class ContentGeneratorController extends AbstractAction
 		if(i == -1)return;
 		Vertex v = gi.getVertex(i);
 		WorkingVertexModel wvm = cgL.workingVertexModel;
-	
-		wvm.picked = true;
-		wvm.index = i;
+		wvm.pickedVertex = cg.contentGeneratorSISI.immutableVertexList.get(i);
+
 		wvm.x = (int)v.getX();
 		wvm.y = (int)v.getY();
 		wvm.z = (int)v.getZ();
@@ -440,8 +429,8 @@ public class ContentGeneratorController extends AbstractAction
 		if(i == -1)return;
 		Vertex v = gi.getVertex(i);
 	
-		wvm.picked = true;
-		wvm.index = i;
+		wvm.pickedVertex = cg.contentGeneratorSISI.immutableVertexList.get(i);
+
 		wvm.x = (int)v.getX();
 		wvm.y = (int)v.getY();
 		wvm.z = (int)v.getZ();
@@ -451,7 +440,7 @@ public class ContentGeneratorController extends AbstractAction
 	}
 	
 	/** returns the index into immutableVertexes if the vertex already exists, else -1 */
-	int isVertexAlreadyThere(int x, int y, int z)
+	ImmutableVertex vertexAlreadyThere(int x, int y, int z)
 	{
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 
@@ -468,31 +457,27 @@ public class ContentGeneratorController extends AbstractAction
 					&&(((int)checkVertex.is_z) == z)
 				)
 			{
-				return(index);
+				return(checkVertex);
 			}
 		}
-		return -1;
+		return null;
 	}
 	
 	void addImmutableVertex(int x, int y, int z)
 	{
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 		List<ImmutableVertex> ivl = cgsisi.immutableVertexList;
-		List<Integer> ivil = cgsisi.immutableVertexIndexList;
-		ivl.add(new ImmutableVertex(x,y,z));
-		ivil.add(new Integer(-1));	// ensure remains same size
+		ImmutableVertex newImmutableVertex = new ImmutableVertex(x,y,z);
+		ivl.add(newImmutableVertex);
 
-		// 
-		cg.generatedSISI.setImmutableVertexes(ivl.toArray(new ImmutableVertex[0]));
-		updateGeneratesSISIVertexes();
+		updateGeneratedSISIVertexes();
 		
-		// if it is at the working vertex then update it
+		// if the added vertex is at the working vertex then update the working vertex
 		WorkingVertexModel wvm = cg.workingVertexModel;
 		
 		if((x == wvm.x) && (y == wvm.y) && (z == wvm.z))
 		{
-			wvm.index = ivl.size()-1;
-			wvm.picked = true;
+			wvm.pickedVertex = newImmutableVertex;
 			cg.workingVertexView.updateFromModel();				
 		}
 		
@@ -503,7 +488,7 @@ public class ContentGeneratorController extends AbstractAction
 		cg.renderEditArea();
 	}
 	
-	private void updateGeneratesSISIVertexes()
+	private void updateGeneratedSISIVertexes()
 	{
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 		List<ImmutableVertex> ivl = cgsisi.immutableVertexList;
