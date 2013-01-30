@@ -23,52 +23,52 @@ import java.util.HashMap;
 public class SharedImmutableSubItem implements Serializable{
 	private static final long serialVersionUID = 4481701769213207490L;
 
-	static final float hysteresis = (float) 1.02;
+	public static final float HYSTERESIS = (float) 1.02;
 	
 	/** The radius of a sphere containing the item completely */
-	float boundingRadius;
+	public float boundingRadius;
 		
 	// *************** VALUES RELATING TO RENDERER SELECTION ************
 	/** Distance at which to switch from using normal renderer to (slower)near renderer e.g. an interpolating renderer */
-	float nearRendererDist;	
+	public float nearRendererDist;	
 	/** Distance at which to switch from using (slower)near renderer to normal renderer*/
-	float nearRendererDistPlus;
+	public float nearRendererDistPlus;
 	
 	/** Distance at which to switch from using (faster)far renderer to normal renderer */
-	float farRendererDist;	
+	public float farRendererDist;	
 	/** Distance at which to switch from using normal renderer to (faster)far renderer e.g. fixed colour renderer */
-	float farRendererDistPlus;
+	public float farRendererDistPlus;
 	
 	/** Distance at which to stop rendering */
-	float farPlane;
+	public float farPlane;
 
 	// ***************** VALUES RELATING TO HLP POLYGON BREAKING ****************
 	/** Distance at which  (slower) high level of perspective (HLP) breaking is enabled*/
-	float hlpBreakingDist;
+	public float hlpBreakingDist;
 	/** Distance at which  (slower) high level of perspective (HLP) breaking is disabled*/	
-	float hlpBreakingDistPlus;
+	public float hlpBreakingDistPlus;
 	
 	// ***************** VALUES RELATING TO BILLBOARD ORIENTATION DISTANCE ****************
 	/** Distance at which (faster) billboard orientation computation is disabled*/
-	float billboardOrientationDist;
+	public float billboardOrientationDist;
 	/** Distance at which (faster) billboard orientation computation is enabled*/	
-	float billboardOrientationDistPlus;
+	public float billboardOrientationDistPlus;
 	
 	// **************** VALUES RELATING TO LEVEL OF DETAIL ***************
 	/** Start index of polygons to render at a typical distance */
-	int normalDetailPolyStart;
+	public int normalDetailPolyStart;
 	/** Start index of polygons to render if the Item is closer than improveDetailDistance */
-	int improvedDetailPolyStart;
+	public int improvedDetailPolyStart;
 	
 	/** End index plus one of polygons to render at a typical distance */
-	int normalDetailPolyFinish;
+	public int normalDetailPolyFinish;
 	/** End index plus one of polygons to render if the Item is closer than improveDetailDistance */
-	int improvedDetailPolyFinish;
+	public int improvedDetailPolyFinish;
 	
 	/** Distance at which to switch to improved detail */
-	float improvedDetailDist;	
+	public float improvedDetailDist;	
 	/** Distance at which to switch to normal detail */
-	float improvedDetailDistPlus;
+	public float improvedDetailDistPlus;
 	
 	//******************** VALUES RELATED TO MISCILLANIOUS ITEM THINGS *********************
 	/** Backside culling should be overridden if the Item collides with the near plane
@@ -76,23 +76,15 @@ public class SharedImmutableSubItem implements Serializable{
 	boolean nearPlaneCrashBacksideOverride = true;
 	
 	/** Polygon data */
-	ImmutablePolygon[] immutablePolygons;
-	ImmutableBackside[] immutableBacksides;
+	public ImmutablePolygon[] immutablePolygons;
+	public ImmutableBackside[] immutableBacksides;
 	
 	/** Vertex Data */
-	ImmutableVertex[] immutableVertexes;
-	
-	public ImmutableVertex[] getImmutableVertexesxxxx() {
-		return immutableVertexes;
-	}
-
-	public void setImmutableVertexes(ImmutableVertex[] immutableVertexes) {
-		this.immutableVertexes = immutableVertexes;
-	}
+	public ImmutableVertex[] immutableVertexes;
 
 	/** Collision Data */
-	boolean hasCollisionVertexes;
-	ImmutableCollisionVertex[] immutableCollisionVertexes;
+	public boolean hasCollisionVertexes;
+	public ImmutableCollisionVertex[] immutableCollisionVertexes;
 	
 
     //*******************************************************
@@ -130,11 +122,11 @@ public class SharedImmutableSubItem implements Serializable{
     	improvedDetailDist = 1E6f; 
     	
     	//calculate hysteresis distances
-		nearRendererDistPlus = nearRendererDist * hysteresis;
-		farRendererDistPlus = farRendererDist * hysteresis;	
-		hlpBreakingDistPlus = hlpBreakingDist * hysteresis;
-		billboardOrientationDistPlus = billboardOrientationDist * hysteresis;   
-		improvedDetailDistPlus = improvedDetailDist * hysteresis;
+		nearRendererDistPlus = nearRendererDist * HYSTERESIS;
+		farRendererDistPlus = farRendererDist * HYSTERESIS;	
+		hlpBreakingDistPlus = hlpBreakingDist * HYSTERESIS;
+		billboardOrientationDistPlus = billboardOrientationDist * HYSTERESIS;   
+		improvedDetailDistPlus = improvedDetailDist * HYSTERESIS;
 		
 		// create zero length arrays
 		// we will fill them later by substituting longer ones
@@ -194,11 +186,11 @@ public class SharedImmutableSubItem implements Serializable{
         	improvedDetailDist = readFloat(in, "unable to find improvedDetailDist loading " + filename);
         	
         	//calculate hysteresis distances from read values
-    		nearRendererDistPlus = nearRendererDist * hysteresis;
-    		farRendererDistPlus = farRendererDist * hysteresis;	
-    		hlpBreakingDistPlus = hlpBreakingDist * hysteresis;
-    		billboardOrientationDistPlus = billboardOrientationDist * hysteresis;   
-    		improvedDetailDistPlus = improvedDetailDist * hysteresis;
+    		nearRendererDistPlus = nearRendererDist * HYSTERESIS;
+    		farRendererDistPlus = farRendererDist * HYSTERESIS;	
+    		hlpBreakingDistPlus = hlpBreakingDist * HYSTERESIS;
+    		billboardOrientationDistPlus = billboardOrientationDist * HYSTERESIS;   
+    		improvedDetailDistPlus = improvedDetailDist * HYSTERESIS;
     		
         	// load all the PolgonVertexData referenced by the SISI polygons
     		System.out.println("now reading polgonVertexData");

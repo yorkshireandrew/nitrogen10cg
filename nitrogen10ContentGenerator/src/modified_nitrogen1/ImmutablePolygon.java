@@ -42,7 +42,7 @@ public class ImmutablePolygon implements Serializable{
 	/** True if the polygon is transparent, and gets rendered during a transparent render pass */
 	boolean isTransparent;
 	
-	ImmutablePolygon(
+	public ImmutablePolygon(
 			int c1,
 			int c2,
 			int c3,

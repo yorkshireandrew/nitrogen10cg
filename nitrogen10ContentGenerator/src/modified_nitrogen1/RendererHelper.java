@@ -41,7 +41,7 @@ public class RendererHelper {
 		rendererTriplets.put(name, rt);
 	}
 	
-	final static RendererTriplet getRendererTriplet(String name) throws Exception
+	public final static RendererTriplet getRendererTriplet(String name) throws Exception
 	{
 		if(rendererTriplets.containsKey(name))
 		{

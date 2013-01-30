@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import modified_nitrogen1.ImmutableBackside;
+import modified_nitrogen1.ImmutableVertex;
 import modified_nitrogen1.NitrogenContext;
 import modified_nitrogen1.PolygonVertexData;
 import modified_nitrogen1.RendererHelper;
@@ -210,10 +211,52 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		
 		// add a copy of the model to the polygon map
 		cg.contentGeneratorSISI.contentGeneratorPolygonMap.put(name, new ContentGeneratorPolygon(model));
-		
+	
+		// update the bounding radius
+		updateBoundingRadius();
 		
 		PolygonDialog.this.setVisible(false);
 		PolygonDialog.this.dispose();	
+	}
+	
+	void updateBoundingRadius()
+	{
+		ImmutableVertex origin = new ImmutableVertex(0,0,0);
+		float present = cg.contentGeneratorSISI.boundingRadius;
+
+		if(model.c1 != null)
+		{
+			float d = distBetween(model.c1, origin);
+			if(d > present)present = d;
+		}
+		
+		if(model.c2 != null)
+		{
+			float d = distBetween(model.c2, origin);
+			if(d > present)present = d;
+		}
+		
+		if(model.c3 != null)
+		{
+			float d = distBetween(model.c3, origin);
+			if(d > present)present = d;
+		}
+		
+		if(model.c4 != null)
+		{
+			float d = distBetween(model.c4, origin);
+			if(d > present)present = d;
+		}
+		
+		cg.contentGeneratorSISI.boundingRadius = present;
+	}
+	
+	private static float distBetween(ImmutableVertex a, ImmutableVertex b)
+	{
+		float dx = a.is_x - b.is_x;
+		float dy = a.is_y - b.is_y;
+		float dz = a.is_z - b.is_z;
+		return (float)Math.sqrt(dx*dx + dy*dy + dz*dz);
 	}
 
 	@Override

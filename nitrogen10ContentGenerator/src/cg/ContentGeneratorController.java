@@ -492,7 +492,7 @@ public class ContentGeneratorController extends AbstractAction
 	{
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 		List<ImmutableVertex> ivl = cgsisi.immutableVertexList;
-		cg.generatedSISI.setImmutableVertexes(ivl.toArray(new ImmutableVertex[0]));
+		cg.generatedSISI.immutableVertexes = ivl.toArray(new ImmutableVertex[0]);
 	}
 	
 	/** Hook for UNDO*/
