@@ -3,8 +3,11 @@ package cg;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import modified_nitrogen1.ImmutableBackside;
 import modified_nitrogen1.ImmutableCollisionVertex;
@@ -173,4 +176,141 @@ public class ContentGeneratorSISI {
     		return null;
     	}  	
     }
+    
+    final private boolean isImmutableVertexUsed(ImmutableVertex iv)
+    {
+    	ContentGeneratorPolygon[] cgps = contentGeneratorPolygonMap.values().toArray(new ContentGeneratorPolygon[0]);
+    	
+    	for(ContentGeneratorPolygon cgp: cgps)
+    	{
+    		if(cgp.c1 == iv)return true;
+    		if(cgp.c2 == iv)return true;
+    		if(cgp.c3 == iv)return true;
+    		if(cgp.c4 == iv)return true;
+    	}
+    	return false;
+    }
+    
+    final private boolean isVertexDataUsed(String name)
+    {
+    	ContentGeneratorPolygon[] cgps = contentGeneratorPolygonMap.values().toArray(new ContentGeneratorPolygon[0]);
+    	
+    	for(ContentGeneratorPolygon cgp: cgps)
+    	{
+    		if(cgp.pvd_c1_name.equals(name))return true;
+    		if(cgp.pvd_c2_name.equals(name))return true;
+    		if(cgp.pvd_c3_name.equals(name))return true;
+    		if(cgp.pvd_c4_name.equals(name))return true;
+    	}
+    	return false;
+    }
+    
+    final private boolean isPolygonDataUsed(String name)
+    {
+    	ContentGeneratorPolygon[] cgps = contentGeneratorPolygonMap.values().toArray(new ContentGeneratorPolygon[0]);
+    	
+    	for(ContentGeneratorPolygon cgp: cgps)
+    	{
+    		if(cgp.polyData_name == null)continue;
+    		if(cgp.polyData_name.equals(name))return true;
+    	}
+    	return false;
+    }
+    
+    final private boolean isTextureMapUsed(String name)
+    {
+    	ContentGeneratorPolygon[] cgps = contentGeneratorPolygonMap.values().toArray(new ContentGeneratorPolygon[0]);
+    	
+    	for(ContentGeneratorPolygon cgp: cgps)
+    	{
+    		if(cgp.textureMap_name == null)continue;
+    		if(cgp.textureMap_name.equals(name))return true;
+    	}
+    	return false;
+    }
+    
+    final private boolean isImmutableBacksideUsed(String name)
+    {
+    	ContentGeneratorPolygon[] cgps = contentGeneratorPolygonMap.values().toArray(new ContentGeneratorPolygon[0]);
+    	
+    	for(ContentGeneratorPolygon cgp: cgps)
+    	{
+    		if(cgp.backside_name == null)continue;
+    		if(cgp.backside_name.equals(name))return true;
+    	}
+    	return false;
+    }
+    
+    final void removeUnusedImmutableVertexes()
+    {
+    	Iterator<ImmutableVertex> it =immutableVertexList.iterator();	
+    	while(it.hasNext())
+    	{
+    		ImmutableVertex iv = it.next();
+    		if(!isImmutableVertexUsed(iv))it.remove();
+    	}
+    }
+    
+    final void removeUnusedVertexData()
+    {
+    	Set<Entry<String,PolygonVertexData>> set = polygonVertexDataMap.entrySet();
+    	
+    	Iterator<Entry<String,PolygonVertexData>> it = set.iterator();
+    	while(it.hasNext())
+    	{
+    		Entry<String,PolygonVertexData> e = it.next();
+    		String name = (String)e.getKey();
+    		if(!isVertexDataUsed(name))it.remove();
+    	}
+    }
+    
+    final void removeUnusedPolygonData()
+    {
+    	Set<Entry<String,int[]>> set = polygonDataMap.entrySet();
+    	
+    	Iterator<Entry<String,int[]>> it = set.iterator();
+    	while(it.hasNext())
+    	{
+    		Entry<String,int[]> e = it.next();
+    		String name = (String)e.getKey();
+    		if(!isPolygonDataUsed(name))it.remove();
+    	}
+    }
+    
+    final void removeUnusedTextureMaps()
+    {
+    	Set<Entry<String,TexMap>> set = textureMapMap.entrySet();
+    	Set<Entry<String,String>> fullPathSet = textureMapFullPathMap.entrySet();
+    	
+    	Iterator<Entry<String,TexMap>> it = set.iterator();
+    	Iterator<Entry<String,String>> rootPathIt = fullPathSet.iterator();
+    	
+    	while(it.hasNext())
+    	{
+    		Entry<String,TexMap> element = it.next();
+    		rootPathIt.next();
+    		
+    		String name = (String)element.getKey();
+    		if(!isTextureMapUsed(name))
+    		{
+    			it.remove();
+    			rootPathIt.remove();
+    		}
+    	}
+    }
+    
+    final void removeUnusedImmutableBacksides()
+    {
+    	Set<Entry<String,ImmutableBackside>> set = immutableBacksideMap.entrySet();
+    	
+    	Iterator<Entry<String,ImmutableBackside>> it = set.iterator();
+    	while(it.hasNext())
+    	{
+    		Entry<String,ImmutableBackside> e = it.next();
+    		String name = (String)e.getKey();
+    		if(!isImmutableBacksideUsed(name))it.remove();
+    	}
+    }
+    
+    
 }
