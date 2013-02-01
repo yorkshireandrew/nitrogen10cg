@@ -39,7 +39,68 @@ public class Renderer_Outline implements Renderer {
         int rec;
         
         // colour
-        int colour = ALPHA & COLOUR;
+        int colour = ALPHA | COLOUR;
+        
+        if(y_counter == y_max)
+        {
+            //***********************************************
+            //****                                       ****
+            //****    START OF CODE TO RENDER A LINE     ****
+            //****                                       ****
+            //***********************************************
+
+            linestart = y_counter * pixelBufferWidth;         // pre-calculate this constant value
+
+            // increment local line start point (st_*) using passed in parameters
+            int ptA = st_x >> SH;
+            
+            st_x    += st_dx; 
+            
+            int ptB = st_x >> SH;
+            
+            if(ptB > ptA)
+            {
+            	for(int x = ptA; x <= ptB; x++)
+            	{
+            		p[linestart + x] = colour;
+            	}
+            }
+            else
+            {
+            	for(int x = ptB; x <= ptA; x++)
+            	{
+            		p[linestart + x] = colour;
+            	}           	
+            }
+
+            // increment local line finish point (fin_*) using passed in parameters
+            int ptC = fin_x >> SH;
+            fin_x    += fin_dx;
+            int ptD = fin_x >> SH;
+            fin_z    += fin_dz;
+            fin_aux1   += fin_daux1;
+            fin_aux2   += fin_daux2;
+            
+            if(ptC < ptD)
+            {
+            	for(int x = ptC; x <= ptD; x++)
+            	{
+            		p[linestart + x] = colour;
+            	}
+            }
+            else
+            {
+            	for(int x = ptD; x <= ptC; x++)
+            	{
+            		p[linestart + x] = colour;
+            	}           	
+            }
+            return;
+        }
+        
+        
+        
+        
         
         while(y_counter < y_max)
         {
@@ -53,45 +114,45 @@ public class Renderer_Outline implements Renderer {
             linestart = y_counter * pixelBufferWidth;         // pre-calculate this constant value
 
             // increment local line start point (st_*) using passed in parameters
-            int ptA = st_x;
+            int ptA = st_x >> SH;
             
-            st_x    += st_dx;  
-            st_z    += st_dz;
-            st_aux1   += st_daux1;
-            st_aux2   += st_daux2;
+            st_x    += st_dx; 
             
-            if(st_dx > 0)
+            int ptB = st_x >> SH;
+            
+            if(ptB > ptA)
             {
-            	for(int x = ptA; x <= st_x; x++)
+            	for(int x = ptA; x <= ptB; x++)
             	{
             		p[linestart + x] = colour;
             	}
             }
             else
             {
-            	for(int x = st_x; x <= ptA; x++)
+            	for(int x = ptB; x <= ptA; x++)
             	{
             		p[linestart + x] = colour;
             	}           	
             }
 
             // increment local line finish point (fin_*) using passed in parameters
-            int ptB = fin_x;
+            int ptC = fin_x >> SH;
             fin_x    += fin_dx;
+            int ptD = fin_x >> SH;
             fin_z    += fin_dz;
             fin_aux1   += fin_daux1;
             fin_aux2   += fin_daux2;
             
-            if(fin_dx > 0)
+            if(ptC < ptD)
             {
-            	for(int x = ptB; x <= fin_x; x++)
+            	for(int x = ptC; x <= ptD; x++)
             	{
             		p[linestart + x] = colour;
             	}
             }
             else
             {
-            	for(int x = fin_x; x <= ptB; x++)
+            	for(int x = ptD; x <= ptC; x++)
             	{
             		p[linestart + x] = colour;
             	}           	

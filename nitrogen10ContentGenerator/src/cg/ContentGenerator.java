@@ -550,7 +550,10 @@ public class ContentGenerator extends JFrame{
 		{
 			// fill the background using template model pixels
 			nc.cls(templateModels[viewDirection].pixels);
-
+			if(viewDetail != VERTEXES_ONLY)
+			{
+				System.out.println("trace my arse");
+			}
 			// call render to update scene graph
 			rootTransform.render(nc);
 		

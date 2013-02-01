@@ -497,6 +497,7 @@ public class ContentGeneratorController extends AbstractAction
 	void updateGeneratedItemAndEditArea()
 	{
 		ContentGenerator cgL = cg;
+		cgL.generatedSISI = cgL.contentGeneratorSISI.generateSISI(); 
 		cgL.viewDirectionTransform.remove(cgL.generatedItem);
         cgL.generatedItem = Item.createItem(cgL.generatedSISI,cgL.viewDirectionTransform);
         cgL.generatedItem.setVisibility(true);

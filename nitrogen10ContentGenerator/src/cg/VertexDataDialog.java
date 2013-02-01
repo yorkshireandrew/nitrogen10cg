@@ -169,7 +169,6 @@ public class VertexDataDialog  extends JDialog implements ChangeListener{
 		return true;
 	}
 	
-	/** checks the name returning OK if it is not present or user wishes to overwrite*/
 	private void addPolygonVertexData(String name, PolygonVertexData pvd)
 	{
 		ContentGeneratorSISI cgsisi = contentGenerator.contentGeneratorSISI;
