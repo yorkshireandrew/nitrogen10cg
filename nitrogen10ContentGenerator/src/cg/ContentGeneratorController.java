@@ -229,21 +229,13 @@ public class ContentGeneratorController extends AbstractAction
 		updateGeneratedSISIVertexes();
 		
 		// create a new generatedItem with the vertex
-		createNewGeneratedItem();
+		updateGeneratedItemAndEditArea();
 		
 		// ensure we make it visible in edit area
 		cg.renderEditArea();		
 	}
 	
-	/** removes existing generatedItem and constructs a 
-	 * new one from the generatedSISI
-	 */
-	void createNewGeneratedItem()
-	{
-		cg.viewDirectionTransform.remove(cg.generatedItem);
-        cg.generatedItem = Item.createItem(cg.generatedSISI,cg.viewDirectionTransform);
-        cg.generatedItem.setVisibility(true);
-	}
+
 	
 	void frontView()
 	{
@@ -482,7 +474,7 @@ public class ContentGeneratorController extends AbstractAction
 		}
 		
 		// create a new generatedItem including the new vertex
-		createNewGeneratedItem();
+		updateGeneratedItemAndEditArea();
 		
 		// ensure we make it visible in edit area
 		cg.renderEditArea();
@@ -502,7 +494,14 @@ public class ContentGeneratorController extends AbstractAction
 		return;
 	}
 	
-	
+	void updateGeneratedItemAndEditArea()
+	{
+		ContentGenerator cgL = cg;
+		cgL.viewDirectionTransform.remove(cgL.generatedItem);
+        cgL.generatedItem = Item.createItem(cgL.generatedSISI,cgL.viewDirectionTransform);
+        cgL.generatedItem.setVisibility(true);
+        cg.renderEditArea();
+	}
 }
 
 
@@ -660,3 +659,80 @@ class polygonToolbarAction extends AbstractAction
 		pd.setVisible(true);
 	}	
 }
+
+class VertexesOnlyToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	VertexesOnlyToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		cg.viewDetail = ContentGenerator.VERTEXES_ONLY;
+		NitrogenContext nc = cg.nc;
+		nc.isPicking = true;
+		RendererTriplet.setPickingRenderer( new Renderer_Null());	
+		nc.contentGeneratorForcesNoCulling = true;
+		cg.renderEditArea();		
+	}	
+}
+
+class FullWireFrameToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	FullWireFrameToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		cg.viewDetail = ContentGenerator.WIREFRAME;
+		NitrogenContext nc = cg.nc;
+		nc.isPicking = true;
+		RendererTriplet.setPickingRenderer( new Renderer_Outline());	
+		nc.contentGeneratorForcesNoCulling = true;
+		cg.renderEditArea();		
+	}	
+}
+
+class BacksideCulledWireFrameToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	BacksideCulledWireFrameToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		cg.viewDetail = ContentGenerator.BACKSIDE_CULLED_WIREFRAME;
+		NitrogenContext nc = cg.nc;
+		nc.isPicking = true;
+		RendererTriplet.setPickingRenderer( new Renderer_Outline());	
+		nc.contentGeneratorForcesNoCulling = false;
+		cg.renderEditArea();		
+	}	
+}
+
+class FullyRenderedToolbarAction extends AbstractAction
+{
+	ContentGenerator cg;
+	FullyRenderedToolbarAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		cg.viewDetail = ContentGenerator.FULLY_RENDERED;
+		NitrogenContext nc = cg.nc;
+		nc.isPicking = false;	
+		nc.contentGeneratorForcesNoCulling = false;
+		cg.renderEditArea();		
+	}	
+}
+
+

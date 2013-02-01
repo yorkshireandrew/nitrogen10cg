@@ -15,7 +15,7 @@ public class RendererTriplet implements Serializable{
 	Renderer midRenderer;
 	Renderer farRenderer;
 	
-	RendererTriplet(Renderer nearRenderer, Renderer midRenderer, Renderer farRenderer)
+	public RendererTriplet(Renderer nearRenderer, Renderer midRenderer, Renderer farRenderer)
 	{
 		this.nearRenderer = nearRenderer;
 		this.midRenderer = midRenderer;
@@ -45,7 +45,7 @@ public class RendererTriplet implements Serializable{
 		}
 	}
 	
-	void setPickingRenderer(Renderer in)
+	final public static void setPickingRenderer(Renderer in)
 	{
 		pickingRenderer = in;
 	}

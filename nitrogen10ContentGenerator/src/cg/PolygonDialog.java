@@ -212,8 +212,17 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		// add a copy of the model to the polygon map
 		cg.contentGeneratorSISI.contentGeneratorPolygonMap.put(name, new ContentGeneratorPolygon(model));
 	
+		int size = cg.contentGeneratorSISI.contentGeneratorPolygonMap.size();
+		
+		// move polygon finish points
+		cg.contentGeneratorSISI.normalDetailPolyFinish = size;
+		cg.contentGeneratorSISI.improvedDetailPolyFinish = size;
+		
 		// update the bounding radius
 		updateBoundingRadius();
+		
+		// update the display
+		cg.cgc.updateGeneratedItemAndEditArea();
 		
 		PolygonDialog.this.setVisible(false);
 		PolygonDialog.this.dispose();	

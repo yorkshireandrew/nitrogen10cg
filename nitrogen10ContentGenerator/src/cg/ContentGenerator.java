@@ -157,6 +157,14 @@ public class ContentGenerator extends JFrame{
         nc.cls(0xFF000000);        
         nc.repaint();
         
+        // initially on ORTHOGONAL_PROJECTION
+    	nc.contentGeneratorForcesNoPerspective = true;
+    	
+    	// initially on VERTEXES_ONLY
+    	nc.contentGeneratorForcesNoCulling = true;
+    	RendererTriplet.setPickingRenderer(new Renderer_Null());
+    	nc.isPicking = true;
+        
         // create templateModels for all six views
         for(int i = 0 ; i < 6 ; i++)
         {
@@ -282,18 +290,22 @@ public class ContentGenerator extends JFrame{
 		
 		// add view detail buttons
 		vertexesOnlyButton = new FixedSizeIconToggleButton(this,"/res/vertexesOnlyButton.PNG","/res/vertexesOnlySelectedButton.PNG");
+		vertexesOnlyButton.setAction(new VertexesOnlyToolbarAction(this));
 		vertexesOnlyButton.setToolTipText("Vertexes only");
 		outerBox.add(vertexesOnlyButton);
 		
 		wireframeOnlyButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyButton.PNG","/res/wireframeOnlySelectedButton.PNG");
+		wireframeOnlyButton.setAction(new FullWireFrameToolbarAction(this));
 		wireframeOnlyButton.setToolTipText("Full wireframe");
 		outerBox.add(wireframeOnlyButton);
 		
 		wireframeOnlyBacksideCulledButton = new FixedSizeIconToggleButton(this,"/res/wireframeOnlyBacksideCulledButton.PNG","/res/wireframeOnlyBacksideCulledSelectedButton.PNG");
+		wireframeOnlyBacksideCulledButton.setAction(new BacksideCulledWireFrameToolbarAction(this));
 		wireframeOnlyBacksideCulledButton.setToolTipText("Backside culled wireframe");
 		outerBox.add(wireframeOnlyBacksideCulledButton);
 		
 		fullRenderButton = new FixedSizeIconToggleButton(this,"/res/fullRenderButton.PNG","/res/fullRenderSelectedButton.PNG");
+		fullRenderButton.setAction(new FullyRenderedToolbarAction(this));	
 		fullRenderButton.setToolTipText("Fully rendered");
 		outerBox.add(fullRenderButton);
 		
@@ -325,25 +337,21 @@ public class ContentGenerator extends JFrame{
 		pickFrontVertexButton = new FixedSizeButton("/res/pickFrontVertexButton.PNG");
 		pickFrontVertexButton.addActionListener(cgc);
 		pickFrontVertexButton.setToolTipText("Pick the for-most vertex under the cursor");
-		pickFrontVertexButton.setIcon("/res/pickFrontVertexButton.PNG");
 		outerBox.add(pickFrontVertexButton);
 		
 		pickBackVertexButton = new FixedSizeButton("/res/pickBackVertexButton.PNG");
 		pickBackVertexButton.addActionListener(cgc);
 		pickBackVertexButton.setToolTipText("Pick the rear-most vertex under the cursor");
-		pickBackVertexButton.setIcon("/res/pickBackVertexButton.PNG");
 		outerBox.add(pickBackVertexButton);
 		
 		pickXYZVertexButton = new FixedSizeButton("/res/pickXYZVertexButton.PNG");
 		pickXYZVertexButton.addActionListener(cgc);
 		pickXYZVertexButton.setToolTipText("Pick the vertex that is closest in XYZ terms to the cursor");
-		pickXYZVertexButton.setIcon("/res/pickXYZVertexButton.PNG");
 		outerBox.add(pickXYZVertexButton);
 			
 		pickPolygonButton = new FixedSizeButton("/res/pickPolygonButton.PNG");
 		pickPolygonButton.addActionListener(cgc);
 		pickPolygonButton.setToolTipText("Pick the polygon under the cursor");
-		pickPolygonButton.setIcon("/res/pickPolygonButton.PNG");
 		outerBox.add(pickPolygonButton);
 		outerBox.add(Box.createHorizontalGlue());
 		container.add(outerBox);	
@@ -356,50 +364,43 @@ public class ContentGenerator extends JFrame{
 		// new vertex button
 		newVertexButton = new FixedSizeButton("/res/newVertexButton.PNG");
 		newVertexButton.addActionListener(cgc);
-		newVertexButton.setToolTipText("Create a new vertex");
-		newVertexButton.setIcon("/res/newVertexButton.PNG");		
+		newVertexButton.setToolTipText("Create a new vertex");	
 		outerBox.add(newVertexButton);
 		
 		// move vertex button
 		moveVertexButton = new FixedSizeButton("/res/moveVertexButton.PNG");
 		moveVertexButton.addActionListener(cgc);
 		moveVertexButton.setToolTipText("Move the selected vertex");
-		moveVertexButton.setIcon("/res/moveVertexButton.PNG");
 		outerBox.add(moveVertexButton);
 		
 		// new vertex data button
 		newVertexDataButton = new FixedSizeButton("/res/newVertexDataButton.PNG");
 		newVertexDataButton.addActionListener( new VertexDataToolbarAction(this));
 		newVertexDataButton.setToolTipText("Create a new vertex data datablock");
-		newVertexDataButton.setIcon("/res/newVertexDataButton.PNG");
 		outerBox.add(newVertexDataButton);
 		
 		// new polygon data button
 		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
 		newPolygonDataButton.addActionListener( new PolygonDataToolbarAction(this));
 		newPolygonDataButton.setToolTipText("Create a new polygon data datablock");
-		newPolygonDataButton.setIcon("/res/newPolygonDataButton.PNG");
 		outerBox.add(newPolygonDataButton);
 		
 		// new backside button
 		newBacksideButton = new FixedSizeButton("/res/newBacksideButton.PNG");
 		newBacksideButton.addActionListener(new BacksideToolbarAction(this));
 		newBacksideButton.setToolTipText("Create a new backside, used for culling");
-		newBacksideButton.setIcon("/res/newBacksideButton.PNG");
 		outerBox.add(newBacksideButton);
 		
 		// new polygon button
 		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
 		newPolygonButton.addActionListener(new polygonToolbarAction(this));
 		newPolygonButton.setToolTipText("Create a new polygon");
-		newPolygonButton.setIcon("/res/newPolygonButton.PNG");
 		outerBox.add(newPolygonButton);
 		
 		// new texture map button
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
 		newTextureMapButton.addActionListener(new TextureMapToolbarAction(this));
 		newTextureMapButton.setToolTipText("Create a new texture map reference");
-		newTextureMapButton.setIcon("/res/newTextureMapButton.PNG");
 		outerBox.add(newTextureMapButton);
 		
 		outerBox.add(Box.createHorizontalGlue());
@@ -544,23 +545,30 @@ public class ContentGenerator extends JFrame{
 	
 	void renderEditArea()
 	{
-		nc.cls(templateModels[viewDirection].pixels);
-		//nc.createTestSquare();
-		rootTransform.render(nc);
 		
-		if(viewDetail == VERTEXES_ONLY)
+		if(viewType == ORTHOGONAL_PROJECTION)
 		{
-			generatedItem.calculateVertexes();
-			generatedItem.renderVertexes(nc);
-		}
+			// fill the background using template model pixels
+			nc.cls(templateModels[viewDirection].pixels);
+
+			// call render to update scene graph
+			rootTransform.render(nc);
 		
-		templateModels[viewDirection].overlayTemplate(
+			if(viewDetail == VERTEXES_ONLY)
+			{
+				generatedItem.calculateVertexes();
+				generatedItem.renderVertexes(nc);
+			}
+		
+			// overlay the template on the rendered item
+			templateModels[viewDirection].overlayTemplate(
 				nc.pix, nc.zbuff);
 		
-		showConstrainedBorder(nc);
-		showCursor(nc,cursor_x,cursor_y);
-		showWorkingVertex();
-		nc.repaint();
+			showConstrainedBorder(nc);
+			showCursor(nc,cursor_x,cursor_y);
+			showWorkingVertex();
+			nc.repaint();
+		}
 	}
 	
 	/** adds the constrained border onto edit area */
