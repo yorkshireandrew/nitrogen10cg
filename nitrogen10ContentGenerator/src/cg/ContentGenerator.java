@@ -446,7 +446,7 @@ public class ContentGenerator extends JFrame{
     file.add(item = new JMenuItem("Save..."));
     item.addActionListener(new SaveMenuItemAction(this));  
     file.add(item = new JMenuItem("Save and clip..."));
-//  item.addActionListener(new mySourceFileListener());  
+    item.addActionListener(new LoadMenuItemAction(this));  
     file.add(item = new JMenuItem("Load..."));
 //  item.addActionListener(new mySourceFileListener());  
     file.add(item = new JMenuItem("Export..."));
@@ -786,26 +786,14 @@ public class ContentGenerator extends JFrame{
 		out.writeObject(polygonVertexViews[2].pvm);
 		out.writeObject(polygonVertexViews[3].pvm);	
 		
+		out.writeObject(workingVertexModel);
+		
+		out.writeObject(resourceURL);
+		
+		out.writeObject(polygonDialogModel);
 		
 		// done this but need to push down because of dependencies
 		out.writeObject(nc);
-			
-		
-		WorkingVertexView 		workingVertexView;
-		WorkingVertexModel 		workingVertexModel;
-		
-		int cursor_x = EDIT_SCREEN_MIDX;
-		int cursor_y = EDIT_SCREEN_MIDY;
-		
-		ContentGeneratorController cgc;
-		
-		ContentGeneratorSISI contentGeneratorSISI;
-		
-		// default location of texture maps
-		String resourceURL = "C:\\Documents and Settings\\andrew\\My Documents\\bombhead games";
-		
-		/** variable to hold polygon dialog choices between dialog openings */
-		ContentGeneratorPolygon polygonDialogModel;	
 	}
 	
 	void readFromFile(ObjectInputStream in) throws IOException
@@ -896,8 +884,21 @@ public class ContentGenerator extends JFrame{
 		polygonVertexViews[2].updateFromModel();
 		polygonVertexViews[3].updateFromModel();
 
+		try {
+			workingVertexModel = (WorkingVertexModel)in.readObject();
+		} catch (ClassNotFoundException e1) {e1.printStackTrace();}
+		workingVertexView.workingVertexModel = workingVertexModel;
+		workingVertexView.workingVertexController.workingVertexModel = workingVertexModel;
+		cgc.updateCursorFromWorkingVertex();
 		
-		
+		try {
+			resourceURL = (String) in.readObject();
+		} catch (ClassNotFoundException e1) {e1.printStackTrace();}
+
+		try {
+			polygonDialogModel = (ContentGeneratorPolygon) in.readObject();
+		} catch (ClassNotFoundException e1) {e1.printStackTrace();}
+
 		
 		// read and set up the the nc 
 		try {

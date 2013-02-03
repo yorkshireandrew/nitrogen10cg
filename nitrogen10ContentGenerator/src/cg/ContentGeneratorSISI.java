@@ -1,5 +1,6 @@
 package cg;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,7 +21,8 @@ import modified_nitrogen1.SharedImmutableSubItem;
 import modified_nitrogen1.TexMap;
 
 /** encapsulates the ContentGenerators perspective of the Items SISI. This is used to create the generatedSISI */
-public class ContentGeneratorSISI {
+public class ContentGeneratorSISI implements Serializable{
+	private static final long serialVersionUID = 9053868722541601300L;
 
 	List<ImmutableVertex> immutableVertexList;
 	

@@ -1,8 +1,11 @@
 package cg;
 
+import java.io.Serializable;
+
 import modified_nitrogen1.ImmutableVertex;
 
-public class ContentGeneratorPolygon {
+public class ContentGeneratorPolygon implements Serializable{
+	private static final long serialVersionUID = -50807080139615148L;
 	
 	// the vertexes - these should also be in the ContentGeneratorSISI
 	ImmutableVertex c1;	

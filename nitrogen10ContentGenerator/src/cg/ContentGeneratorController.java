@@ -3,9 +3,11 @@ package cg;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -802,15 +804,79 @@ class SaveMenuItemAction extends AbstractAction
             {
             	try {
 					output.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            }
+				} catch (IOException e1) {e1.printStackTrace();}
+            }        
+        }	
+	}
+	
+    public String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+            return ext;
+        }
+        return ext;
+    }
+}
 
 
+
+
+class LoadMenuItemAction extends AbstractAction
+{
+	ContentGenerator cg;
+	File initialFile = null;
+	LoadMenuItemAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		final JFileChooser fileChooser = new JFileChooser(initialFile);
+		fileChooser.setFileFilter(new FileFilter()
+		{
+
+			@Override
+			public boolean accept(File f) {
+				String ext = LoadMenuItemAction.this.getExtension(f);
+				if (ext == null)return false;
+				if(ext.equals("ncg"))return true;
+				return false;
+			}
+
+			@Override
+			public String getDescription() {
+				return ".ncg";
+			}			
+		}
+		);
+		int retval = fileChooser.showOpenDialog(cg);
+
+        if (retval == JFileChooser.APPROVE_OPTION) {
+            File loadFile = fileChooser.getSelectedFile();
             
-          
+            ObjectInputStream in = null;
+            try {
+				in = new ObjectInputStream(new FileInputStream(loadFile));
+				cg.readFromFile(in);
+				
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} 
+            finally
+            {
+            	try {
+					in.close();
+				} catch (IOException e1) {e1.printStackTrace();}
+            }        
         }	
 	}
 	
