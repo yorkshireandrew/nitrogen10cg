@@ -5,6 +5,7 @@ import javax.swing.event.*;
 
 import modified_nitrogen1.Item;
 import modified_nitrogen1.ItemFactory_Caching;
+import modified_nitrogen1.NitrogenContext;
 import modified_nitrogen1.NitrogenCreationException;
 import modified_nitrogen1.RendererHelper;
 import modified_nitrogen1.RendererTriplet;
@@ -21,6 +22,8 @@ import java.io.*;
 import modified_nitrogen1.*;
 
 public class ContentGenerator extends JFrame{
+	
+	private static final long serialVersionUID = -3085555225999484235L;
 	
 	// constants
 	static final int APP_WIDTH = 1000;
@@ -441,7 +444,7 @@ public class ContentGenerator extends JFrame{
     
     //
     file.add(item = new JMenuItem("Save..."));
-//  item.addActionListener(new mySourceFileListener());  
+    item.addActionListener(new SaveMenuItemAction(this));  
     file.add(item = new JMenuItem("Save and clip..."));
 //  item.addActionListener(new mySourceFileListener());  
     file.add(item = new JMenuItem("Load..."));
@@ -755,6 +758,159 @@ public class ContentGenerator extends JFrame{
         	RendererHelper.addRendererTriplet("sscr",sscrt);
         }
         catch(Exception e){System.out.println(e.getMessage());}		
+	}
+	
+	void writeToFile(ObjectOutputStream out) throws IOException
+	{
+		
+		out.writeInt(viewDirection);
+		out.writeInt(viewType);
+		out.writeInt(viewDetail);
+		out.writeBoolean(showCollisionVertexes);
+		
+		out.writeObject(rootTransform);
+		out.writeObject(distTransform);
+		out.writeObject(turnTransform);
+		out.writeObject(climbTransform);	
+		out.writeObject(rollTransform);
+		out.writeObject(viewDirectionTransform); 
+		
+		out.writeObject(templateModels);
+		
+		// write this now in case polygonVertexViews depend on it
+		// during loading	
+		out.writeObject(contentGeneratorSISI);
+		
+		out.writeObject(polygonVertexViews[0].pvm);
+		out.writeObject(polygonVertexViews[1].pvm);
+		out.writeObject(polygonVertexViews[2].pvm);
+		out.writeObject(polygonVertexViews[3].pvm);	
+		
+		
+		// done this but need to push down because of dependencies
+		out.writeObject(nc);
+			
+		
+		WorkingVertexView 		workingVertexView;
+		WorkingVertexModel 		workingVertexModel;
+		
+		int cursor_x = EDIT_SCREEN_MIDX;
+		int cursor_y = EDIT_SCREEN_MIDY;
+		
+		ContentGeneratorController cgc;
+		
+		ContentGeneratorSISI contentGeneratorSISI;
+		
+		// default location of texture maps
+		String resourceURL = "C:\\Documents and Settings\\andrew\\My Documents\\bombhead games";
+		
+		/** variable to hold polygon dialog choices between dialog openings */
+		ContentGeneratorPolygon polygonDialogModel;	
+	}
+	
+	void readFromFile(ObjectInputStream in) throws IOException
+	{
+		
+		// read the viewDirection and set the UI
+		viewDirection = in.readInt();
+		frontViewButton.setSelected(false);
+		leftViewButton.setSelected(false);
+		backViewButton.setSelected(false);
+		rightViewButton.setSelected(false);
+		topViewButton.setSelected(false);
+		bottomViewButton.setSelected(false);	
+		if(viewDirection == FRONT) frontViewButton.setSelected(true);
+		if(viewDirection == LEFT) leftViewButton.setSelected(true);
+		if(viewDirection == BACK) backViewButton.setSelected(true);
+		if(viewDirection == RIGHT) rightViewButton.setSelected(true);
+		if(viewDirection == TOP) topViewButton.setSelected(true);
+		if(viewDirection == BOTTOM) bottomViewButton.setSelected(true);
+		
+		// read viewType and set the UI
+		viewType = in.readInt();
+		orthogonalProjectionButton.setSelected(false);
+		perspectiveButton.setSelected(false);
+		textureButton.setSelected(false);		
+		if(viewType == ORTHOGONAL_PROJECTION) orthogonalProjectionButton.setSelected(true);
+		if(viewType == PERSPECTIVE) perspectiveButton.setSelected(true);
+		if(viewType == TEXTURE_MAP) textureButton.setSelected(true);
+
+		// read the viewDetail and set the UI
+		viewDetail = in.readInt(); 	
+		vertexesOnlyButton.setSelected(false);
+		wireframeOnlyButton.setSelected(false);
+		wireframeOnlyBacksideCulledButton.setSelected(false);
+		fullRenderButton.setSelected(false);
+		if(viewDetail == VERTEXES_ONLY)vertexesOnlyButton.setSelected(true);
+		if(viewDetail == WIREFRAME )wireframeOnlyButton.setSelected(true);
+		if(viewDetail == BACKSIDE_CULLED_WIREFRAME )wireframeOnlyBacksideCulledButton.setSelected(true);
+		if(viewDetail == FULLY_RENDERED )fullRenderButton.setSelected(true);		
+		showCollisionVertexes = in.readBoolean();
+		showCollisionVertexesButton.setSelected(showCollisionVertexes);
+	
+		// read the transforms 
+		// TO DO align the perspective UI components
+		try{
+			rootTransform = (Transform)in.readObject();
+			distTransform = (Transform)in.readObject();
+			turnTransform = (Transform)in.readObject();
+			climbTransform = (Transform)in.readObject();
+			rollTransform = (Transform)in.readObject();
+			viewDirectionTransform = (Transform)in.readObject(); 
+		} catch (ClassNotFoundException e) {e.printStackTrace();}	
+		
+		// read the template models
+		// template dialog is created in response to UI 
+		// so it will always be updated to reflect the model
+		try{
+			templateModels = (TemplateModel[]) in.readObject();			
+		} catch (ClassNotFoundException e) {e.printStackTrace();}
+		templateModels[0].setUpTransientFields();
+		templateModels[1].setUpTransientFields();
+		templateModels[2].setUpTransientFields();
+		templateModels[3].setUpTransientFields();
+		templateModels[4].setUpTransientFields();
+		templateModels[5].setUpTransientFields();
+		
+		// read and set up the the ContentGeneratorSISI 
+		try {
+			contentGeneratorSISI = (ContentGeneratorSISI) in.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		generatedSISI = contentGeneratorSISI.generateSISI();
+		generatedItem = Item.createItem(generatedSISI, viewDirectionTransform);
+
+		
+		
+		try {
+			polygonVertexViews[0].pvm =(ImmutableVertex) in.readObject();
+			polygonVertexViews[1].pvm =(ImmutableVertex) in.readObject();
+			polygonVertexViews[2].pvm =(ImmutableVertex) in.readObject();
+			polygonVertexViews[3].pvm =(ImmutableVertex) in.readObject();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}		
+		polygonVertexViews[0].updateFromModel();
+		polygonVertexViews[1].updateFromModel();
+		polygonVertexViews[2].updateFromModel();
+		polygonVertexViews[3].updateFromModel();
+
+		
+		
+		
+		// read and set up the the nc 
+		try {
+			nc = (NitrogenContext) in.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		nc.setUpTransientFields();
+		
+		
+		
+		
+	
 	}
 	
 

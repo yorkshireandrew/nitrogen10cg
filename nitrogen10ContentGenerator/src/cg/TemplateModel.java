@@ -4,12 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import modified_nitrogen1.NitrogenCreationException;
 
-public class TemplateModel {
+public class TemplateModel implements Serializable{
 	
 	int OFF_TEMPLATE_COLOUR = 0xFF000000;
 	int OFF_TEMPLATE_RED = 0;
@@ -24,18 +25,18 @@ public class TemplateModel {
 	int templateScale = 1000;
 	
 	// pixels from file
-	int[] templatePixels;
-	int templateWidth;
-	int templateHeight;
-	int templateSize;
-	boolean fileLoaded = false;
+transient	int[] templatePixels;
+transient	int templateWidth;
+transient	int templateHeight;
+transient	int templateSize;
+transient	boolean fileLoaded = false;
 	
 	
 	// pixels created by rescaling template
-	int[] red;
-	int[] green;
-	int[] blue;
-	int[] pixels;
+transient	int[] red;
+transient	int[] green;
+transient	int[] blue;
+transient	int[] pixels;
 	int editScreenHeight;
 	int editScreenWidth;
 	int editScreenSize;
@@ -222,6 +223,12 @@ public class TemplateModel {
 			
 			pixels[x] = 0xFF000000 | (pixelRed << 16) | (pixelGreen << 8) | pixelBlue;	
 		}
+	}
+	
+	void setUpTransientFields()
+	{
+		loadFile();
+		generatePixels();
 	}
 	
 	

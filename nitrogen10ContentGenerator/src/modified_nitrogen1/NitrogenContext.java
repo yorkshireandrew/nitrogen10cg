@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.MemoryImageSource;
+import java.io.Serializable;
 
 /**
  * 
@@ -21,7 +22,9 @@ import javax.swing.*;
 // import nitrogen1.TexMap;
 // import nitrogen1.Vert;
 
-public class NitrogenContext extends JPanel {
+public class NitrogenContext extends JPanel implements Serializable{
+	private static final long serialVersionUID = -7001666928630703466L;
+
 	public boolean contentGeneratorForcesNoCulling = true;
 	public boolean contentGeneratorForcesNoPerspective = true;
 	
@@ -63,16 +66,16 @@ public class NitrogenContext extends JPanel {
     int midh = h/2;
     
     /** The pixel buffer */
-    public int[] pix;	
+    transient public int[] pix;	
     
     /** The z buffer */
-    public int[] zbuff; 
+    transient public int[] zbuff; 
     
     /** Image that monitors source */
-    Image im; 
+    transient Image im; 
     
     /** A MemoryImageSource that monitors pix */
-    MemoryImageSource source;   
+    transient MemoryImageSource source;   
     
     /** If true only transparent polygons are rendered, otherwise only non-transparent polygons are rendered. Used for double pass rendering where the scene contains transparent polygons */
     boolean transparencyPass = false;
@@ -91,6 +94,20 @@ public class NitrogenContext extends JPanel {
     int clippedPolygonsRendered = 0;
     int polygonRendererCalls = 0;
     long linesRendered = 0;
+    
+    public void setUpTransientFields()
+    {
+        // create array to store pixels
+        s = w * h;
+        pix = new int[s];
+        zbuff = new int[s];
+    	
+    	// create an MemoryImageSource bound to the pixel array
+	    source = new MemoryImageSource(w, h, pix, 0, w);
+	    source.setAnimated(true);           // source will be used for multiframe animation
+	    source.setFullBufferUpdates(true);  // source uses a complete buffer of pixels for updates
+	    im = this.createImage(source);  	// this way of creating a BufferedImage avoids calling toolkit which may need permissions     
+	}
     
     /** Constructs a Nitrogen Context to render things into 
      * 

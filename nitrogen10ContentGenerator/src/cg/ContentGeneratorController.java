@@ -2,12 +2,19 @@ package cg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
+import javax.swing.filechooser.FileFilter;
 
 import modified_nitrogen1.*;
 
@@ -734,6 +741,89 @@ class FullyRenderedToolbarAction extends AbstractAction
 		nc.contentGeneratorForcesNoCulling = false;
 		cg.renderEditArea();		
 	}	
+}
+
+class SaveMenuItemAction extends AbstractAction
+{
+	ContentGenerator cg;
+	File initialFile = null;
+	SaveMenuItemAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		final JFileChooser fileChooser = new JFileChooser(initialFile);
+		fileChooser.setFileFilter(new FileFilter()
+		{
+
+			@Override
+			public boolean accept(File f) {
+				String ext = SaveMenuItemAction.this.getExtension(f);
+				if (ext == null)return false;
+				if(ext.equals("ncg"))return true;
+				return false;
+			}
+
+			@Override
+			public String getDescription() {
+				return ".ncg";
+			}			
+		}
+		);
+		int retval = fileChooser.showSaveDialog(cg);
+
+        if (retval == JFileChooser.APPROVE_OPTION) {
+            File saveFile = fileChooser.getSelectedFile();
+            
+            // add file extension if it is not present          
+            String ext = SaveMenuItemAction.this.getExtension(saveFile);
+            if(ext == null || !ext.equals("ncg"))
+            {
+            	String old = saveFile.getAbsolutePath();
+            	saveFile = new File(old + ".ncg");
+            }
+            
+            ObjectOutputStream output = null;
+            try {
+				output = new ObjectOutputStream(new FileOutputStream(saveFile));
+				cg.writeToFile(output);
+				
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} 
+            finally
+            {
+            	try {
+					output.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+
+
+            
+          
+        }	
+	}
+	
+    public String getExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+            return ext;
+        }
+        return ext;
+    }
 }
 
 

@@ -156,9 +156,7 @@ public class TemplateDialog extends JDialog implements ChangeListener
 			            tm.templateFile = fileChooser.getSelectedFile();
 			            fileNameTextField.setText(tm.templateFile.getName());
 			            fileNameTextField.repaint();
-			            System.out.println("Opening: " + tm.templateFile.getName());
-			            // TO DO cause the model to update
-			            
+			            System.out.println("Opening: " + tm.templateFile.getName());			            
 			            tm.loadFile();
 			            tm.generatePixels();
 			            
