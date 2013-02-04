@@ -758,32 +758,16 @@ class SaveMenuItemAction extends AbstractAction
 	public void actionPerformed(ActionEvent e) 
 	{
 		final JFileChooser fileChooser = new JFileChooser(initialFile);
-		fileChooser.setFileFilter(new FileFilter()
-		{
-
-			@Override
-			public boolean accept(File f) {
-				String ext = SaveMenuItemAction.this.getExtension(f);
-				if (ext == null)return false;
-				if(ext.equals("ncg"))return true;
-				return false;
-			}
-
-			@Override
-			public String getDescription() {
-				return ".ncg";
-			}			
-		}
-		);
+		fileChooser.setFileFilter(new GeneralFileFilter("ncg"));
 		int retval = fileChooser.showSaveDialog(cg);
 
         if (retval == JFileChooser.APPROVE_OPTION) {
             File saveFile = fileChooser.getSelectedFile();
             
-            // add file extension if it is not present          
-            String ext = SaveMenuItemAction.this.getExtension(saveFile);
-            if(ext == null || !ext.equals("ncg"))
+            // add file extension if it is not present
+            if(new GeneralFileFilter("ncg").accept(saveFile) == false)
             {
+            	// it needs an extension adding
             	String old = saveFile.getAbsolutePath();
             	saveFile = new File(old + ".ncg");
             }
@@ -808,19 +792,8 @@ class SaveMenuItemAction extends AbstractAction
             }        
         }	
 	}
-	
-    public String getExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-        if (i > 0 &&  i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
-            return ext;
-        }
-        return ext;
-    }
 }
-
+	
 
 
 
@@ -837,23 +810,8 @@ class LoadMenuItemAction extends AbstractAction
 	public void actionPerformed(ActionEvent e) 
 	{
 		final JFileChooser fileChooser = new JFileChooser(initialFile);
-		fileChooser.setFileFilter(new FileFilter()
-		{
+		fileChooser.setFileFilter(new GeneralFileFilter("ncg"));
 
-			@Override
-			public boolean accept(File f) {
-				String ext = LoadMenuItemAction.this.getExtension(f);
-				if (ext == null)return false;
-				if(ext.equals("ncg"))return true;
-				return false;
-			}
-
-			@Override
-			public String getDescription() {
-				return ".ncg";
-			}			
-		}
-		);
 		int retval = fileChooser.showOpenDialog(cg);
 
         if (retval == JFileChooser.APPROVE_OPTION) {
@@ -879,17 +837,89 @@ class LoadMenuItemAction extends AbstractAction
             }        
         }	
 	}
-	
-    public String getExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-        if (i > 0 &&  i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
-            return ext;
-        }
-        return ext;
-    }
 }
+
+class DeleteUnusedVertexesMenuItemAction extends AbstractAction
+{
+	ContentGenerator cg;
+	DeleteUnusedVertexesMenuItemAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		cg.cgc.saveSISI();
+		cg.contentGeneratorSISI.removeUnusedImmutableVertexes();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}	
+}
+
+class DeleteUnusedStuffMenuItemAction extends AbstractAction
+{
+	ContentGenerator cg;
+	DeleteUnusedStuffMenuItemAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		cg.cgc.saveSISI();
+		
+		cg.contentGeneratorSISI.removeUnusedImmutableBacksides();
+		cg.contentGeneratorSISI.removeUnusedPolygonData();
+		cg.contentGeneratorSISI.removeUnusedTextureMaps();
+		cg.contentGeneratorSISI.removeUnusedVertexData();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}	
+}
+
+
+class ExportMenuItemAction extends AbstractAction
+{
+	ContentGenerator cg;
+	File initialFile = null;
+	ExportMenuItemAction(ContentGenerator cg)
+	{
+		this.cg = cg;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		final JFileChooser fileChooser = new JFileChooser(initialFile);
+		fileChooser.setFileFilter(new GeneralFileFilter("nit"));
+
+		int retval = fileChooser.showSaveDialog(cg);
+
+        if (retval == JFileChooser.APPROVE_OPTION) {
+            File saveFile = fileChooser.getSelectedFile();
+            
+            // add file extension if it is not present
+            if(new GeneralFileFilter("nit").accept(saveFile) == false)
+            {
+            	// it needs an extension adding
+            	String old = saveFile.getAbsolutePath();
+            	saveFile = new File(old + ".nit");
+            }
+            
+        
+            ObjectOutputStream output = null;
+            try {
+				output = new ObjectOutputStream(new FileOutputStream(saveFile));
+				output.writeObject(cg.generatedSISI);
+				
+			} catch (FileNotFoundException e1) {e1.printStackTrace();} 
+            catch (IOException e1) {e1.printStackTrace();} 
+            finally
+            {
+            	try {output.close();}
+				catch (IOException e1) {e1.printStackTrace();}
+            }
+        }
+	}
+
+	}
 
 

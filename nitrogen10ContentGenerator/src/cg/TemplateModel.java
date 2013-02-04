@@ -11,6 +11,7 @@ import java.net.URL;
 import modified_nitrogen1.NitrogenCreationException;
 
 public class TemplateModel implements Serializable{
+	private static final long serialVersionUID = -2449470950754148706L;
 	
 	int OFF_TEMPLATE_COLOUR = 0xFF000000;
 	int OFF_TEMPLATE_RED = 0;
@@ -28,9 +29,7 @@ public class TemplateModel implements Serializable{
 transient	int[] templatePixels;
 transient	int templateWidth;
 transient	int templateHeight;
-transient	int templateSize;
-transient	boolean fileLoaded = false;
-	
+transient	int templateSize;	
 	
 	// pixels created by rescaling template
 transient	int[] red;
@@ -41,26 +40,27 @@ transient	int[] pixels;
 	int editScreenWidth;
 	int editScreenSize;
 	
+	// default constructor
+	TemplateModel()
+	{
+		initialiseTemplateModel();
+	}
 	
-	TemplateModel(ContentGenerator cg)
+	/** initialise fields used by clients to default values*/
+	private void initialiseTemplateModel()
 	{
 		editScreenSize 		= ContentGenerator.EDIT_SCREEN_SIZE;
 		editScreenHeight 	= ContentGenerator.EDIT_SCREEN_HEIGHT;
 		editScreenWidth 	= ContentGenerator.EDIT_SCREEN_WIDTH;
 		
 		// create a load of initially black pixels
-		red 		= new int[editScreenSize];
+		red 			= new int[editScreenSize];
 		green 		= new int[editScreenSize];
 		blue 		= new int[editScreenSize];
-		pixels 		= new int[editScreenSize];
-		
-		for(int i = 0 ; i < editScreenSize; i++)pixels[i] = OFF_TEMPLATE_COLOUR;
+		pixels 		= new int[editScreenSize];		
+		for(int i = 0 ; i < editScreenSize; i++)pixels[i] = OFF_TEMPLATE_COLOUR;	
 	}
 	
-	// default constructor
-	TemplateModel()
-	{
-	}
 	
 	/** Copy constructor. Creates a copy of the state of the passed in prototype for cancel buttons etc */
 	static TemplateModel copy(TemplateModel prototype)
@@ -85,10 +85,14 @@ transient	int[] pixels;
 		this.overlay = savedState.overlay;	
 		this.intensity = savedState.intensity;
 		this.templateScale = savedState.templateScale;
+		this.loadFile();
+		this.generatePixels();
 	}
 	
 	void loadFile()
 	{
+		System.out.println("loadFile called");
+		if(templateFile != null)System.out.println("template file=" + templateFile.getAbsolutePath());
 		if(templateFile == null)
 		{
 			System.out.println("template file null while loading file");
@@ -118,19 +122,14 @@ transient	int[] pixels;
         templateHeight = i.getHeight();
         templateWidth = i.getWidth();
         templatePixels = i.getRGB(0, 0, templateWidth, templateHeight, null, 0, templateWidth);	
-        fileLoaded = true;
-        System.out.println("file Load looks to have worked");
+        System.out.println("load looks to have worked:" + templatePixels.length);
 	}
 	
 	void generatePixels()
 	{
-		if(fileLoaded == false)
+		if(templateFile == null || templatePixels == null)
 		{
-			// create a load of initially black pixels
-			red 		= new int[editScreenSize];
-			green 		= new int[editScreenSize];
-			blue 		= new int[editScreenSize];
-			pixels 		= new int[editScreenSize];
+			initialiseTemplateModel();
 			return;
 		}
 		
@@ -227,6 +226,7 @@ transient	int[] pixels;
 	
 	void setUpTransientFields()
 	{
+		initialiseTemplateModel();
 		loadFile();
 		generatePixels();
 	}

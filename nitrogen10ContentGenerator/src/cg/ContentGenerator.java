@@ -140,6 +140,17 @@ public class ContentGenerator extends JFrame{
 	/** variable to hold polygon dialog choices between dialog openings */
 	ContentGeneratorPolygon polygonDialogModel;
 	
+	/** Box in which right hand controls are held */
+	Box rightHandControls;
+	
+	/** Box which holds edit area (NitrogenContext) so it can be changed by a file load */
+	Box editScreenBox;
+	
+	
+	
+	
+	
+	
 	ContentGenerator()
 	{
 
@@ -171,7 +182,7 @@ public class ContentGenerator extends JFrame{
         // create templateModels for all six views
         for(int i = 0 ; i < 6 ; i++)
         {
-        	templateModels[i] =  new TemplateModel(this);
+        	templateModels[i] =  new TemplateModel();
         }
 		
 		createMenu();
@@ -190,9 +201,13 @@ public class ContentGenerator extends JFrame{
 		// initially rightHandControls are for standard view
 		rightHandControls.add(standardViewControls);
 		
+		// create edit screen box, so nc UI can be replaced by file load
+		editScreenBox = new Box(BoxLayout.X_AXIS);
+		editScreenBox.add(nc);
+		
 		// create whole user interface
 		Box outerBox = new Box(BoxLayout.X_AXIS);
-		outerBox.add(nc);
+		outerBox.add(editScreenBox);
 		outerBox.add(Box.createHorizontalGlue());
 		outerBox.add(rightHandControls);
 		getContentPane().add(outerBox);
@@ -444,13 +459,15 @@ public class ContentGenerator extends JFrame{
     
     //
     file.add(item = new JMenuItem("Save..."));
-    item.addActionListener(new SaveMenuItemAction(this));  
-    file.add(item = new JMenuItem("Save and clip..."));
-    item.addActionListener(new LoadMenuItemAction(this));  
+    item.addActionListener(new SaveMenuItemAction(this));
     file.add(item = new JMenuItem("Load..."));
-//  item.addActionListener(new mySourceFileListener());  
+    item.addActionListener(new LoadMenuItemAction(this)); 
     file.add(item = new JMenuItem("Export..."));
-//  item.addActionListener(new mySourceFileListener());  
+    item.addActionListener(new ExportMenuItemAction(this));  
+    file.add(item = new JMenuItem("Delete unused vertexes"));
+    item.addActionListener(new DeleteUnusedVertexesMenuItemAction(this)); 
+    file.add(item = new JMenuItem("Delete unused stuff")); 
+    item.addActionListener(new DeleteUnusedStuffMenuItemAction(this));
     
     edit.add(item = new JMenuItem("Template..."));
     item.addActionListener(new TemplateMenuItemAction(this));  
@@ -551,6 +568,8 @@ public class ContentGenerator extends JFrame{
 		
 		if(viewType == ORTHOGONAL_PROJECTION)
 		{
+			System.out.println("cg.renderEditArea() nc=" + nc.toString());
+			
 			// fill the background using template model pixels
 			nc.cls(templateModels[viewDirection].pixels);
 			if(viewDetail != VERTEXES_ONLY)
@@ -775,16 +794,26 @@ public class ContentGenerator extends JFrame{
 		out.writeObject(rollTransform);
 		out.writeObject(viewDirectionTransform); 
 		
-		out.writeObject(templateModels);
+		out.writeObject(templateModels[0]);
+		out.writeObject(templateModels[1]);
+		out.writeObject(templateModels[2]);
+		out.writeObject(templateModels[3]);
+		out.writeObject(templateModels[4]);
+		out.writeObject(templateModels[5]);
 		
 		// write this now in case polygonVertexViews depend on it
 		// during loading	
 		out.writeObject(contentGeneratorSISI);
 		
-		out.writeObject(polygonVertexViews[0].pvm);
-		out.writeObject(polygonVertexViews[1].pvm);
-		out.writeObject(polygonVertexViews[2].pvm);
-		out.writeObject(polygonVertexViews[3].pvm);	
+		ImmutableVertex 
+		iv = polygonVertexViews[0].pvm;
+		out.writeObject(iv);
+		iv = polygonVertexViews[1].pvm;
+		out.writeObject(iv);
+		iv = polygonVertexViews[2].pvm;
+		out.writeObject(iv);
+		iv = polygonVertexViews[3].pvm;
+		out.writeObject(iv);	
 		
 		out.writeObject(workingVertexModel);
 		
@@ -850,8 +879,14 @@ public class ContentGenerator extends JFrame{
 		// read the template models
 		// template dialog is created in response to UI 
 		// so it will always be updated to reflect the model
+		templateModels = new TemplateModel[6];
 		try{
-			templateModels = (TemplateModel[]) in.readObject();			
+			templateModels[0] = (TemplateModel) in.readObject();			
+			templateModels[1] = (TemplateModel) in.readObject();			
+			templateModels[2] = (TemplateModel) in.readObject();			
+			templateModels[3] = (TemplateModel) in.readObject();			
+			templateModels[4] = (TemplateModel) in.readObject();			
+			templateModels[5] = (TemplateModel) in.readObject();			
 		} catch (ClassNotFoundException e) {e.printStackTrace();}
 		templateModels[0].setUpTransientFields();
 		templateModels[1].setUpTransientFields();
@@ -868,9 +903,7 @@ public class ContentGenerator extends JFrame{
 		}
 		generatedSISI = contentGeneratorSISI.generateSISI();
 		generatedItem = Item.createItem(generatedSISI, viewDirectionTransform);
-
-		
-		
+	
 		try {
 			polygonVertexViews[0].pvm =(ImmutableVertex) in.readObject();
 			polygonVertexViews[1].pvm =(ImmutableVertex) in.readObject();
@@ -906,7 +939,27 @@ public class ContentGenerator extends JFrame{
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		// attach listener
+		MouseListener[] mouseListeners = nc.getMouseListeners();
+		while(mouseListeners.length > 0)
+		{
+			MouseListener ml = nc.getMouseListeners()[0];
+			if(ml != null)nc.removeMouseListener(ml);
+			mouseListeners = nc.getMouseListeners();
+		}
+
+		nc.addMouseListener(new ContentGeneratorMouseListener(this,cgc));
 		nc.setUpTransientFields();
+		
+		// replace the nc on the UI with the loaded one
+		editScreenBox.removeAll();
+		editScreenBox.add(nc);
+		editScreenBox.validate();
+		
+		cgc.updateGeneratedItemAndEditArea();
+		
+		
 		
 		
 		

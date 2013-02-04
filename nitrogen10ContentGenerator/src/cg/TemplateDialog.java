@@ -2,6 +2,7 @@ package cg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.Box;
@@ -19,6 +20,7 @@ import javax.swing.SpinnerNumberModel;
 // import javax.swing.JFrame;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 
 public class TemplateDialog extends JDialog implements ChangeListener
 {
@@ -127,6 +129,18 @@ public class TemplateDialog extends JDialog implements ChangeListener
 					}			
 				});
 		
+		// OK button is just a close dialog
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(
+				new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						td.setVisible(false);
+						td.dispose();			
+					}			
+				});
+		
 		
 		JButton cancelButton = new JButton("CANCEL");
 		cancelButton.addActionListener(
@@ -143,6 +157,9 @@ public class TemplateDialog extends JDialog implements ChangeListener
 				});
 		
 		final JFileChooser fileChooser = new JFileChooser(tm.templateFile);
+	
+		fileChooser.setFileFilter(new GeneralFileFilter("png","jpg"));
+
 		final JButton fileChooserButton = new JButton("Select File");
 		fileChooserButton.addActionListener(
 				new ActionListener()
@@ -159,7 +176,7 @@ public class TemplateDialog extends JDialog implements ChangeListener
 			            System.out.println("Opening: " + tm.templateFile.getName());			            
 			            tm.loadFile();
 			            tm.generatePixels();
-			            
+			            contentGenerator.renderEditArea(); 		            
 			        } else {
 			        	System.out.println("Open command cancelled by user.");
 			        }
@@ -197,7 +214,10 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		intensityBox.add(intensityLabel);		
 		intensityBox.add(intensitySlider);
 		intensityBox.add(Box.createHorizontalGlue());		
-
+		
+		Box buttonBox = new Box(BoxLayout.X_AXIS);
+		buttonBox.add(okButton);
+		buttonBox.add(cancelButton);
 		
 		// create a dialogBox and add everything to it
 		Box dialog = new Box(BoxLayout.Y_AXIS);	
@@ -213,7 +233,7 @@ public class TemplateDialog extends JDialog implements ChangeListener
 		dialog.add(Box.createVerticalGlue());
 		dialog.add(overlayCheckBox);
 		dialog.add(Box.createVerticalGlue());
-		dialog.add(cancelButton);
+		dialog.add(buttonBox);
 		this.add(dialog);
 		this.setSize(400,250);
 		// this.setModal(true);
@@ -257,20 +277,11 @@ public class TemplateDialog extends JDialog implements ChangeListener
       	    	 System.out.println("intensitySlider = " + tm.intensity);
       	    }
        } 
-  /*     
-       if (evt.getSource() == overlayCheckBox)
-       {
-    	   tm.over = overlayCheckBox.getModel().isSelected();
-    	   System.out.println("overlay checkbox = " + tm.over);
-       }
-       */
     }
     
     void updateContentGenerator()
     {
     	tm.generatePixels();
     	contentGenerator.renderEditArea();    	
-    }
-    
-    
+    }    
 }
