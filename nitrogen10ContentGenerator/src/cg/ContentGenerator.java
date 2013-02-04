@@ -118,6 +118,21 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton newTextureMapButton;
 	FixedSizeButton newPolygonButton;
 	
+	/** sliders for perspective view */
+	JSlider	distSlider;
+	JSlider turnSlider;
+	JSlider climbSlider;
+	JSlider rollSlider;
+	
+	/** buttons for perspective view */
+	JButton setNearRendererDistanceButton;
+	JButton setFarRendererDistanceButton;
+	JButton setImprovedDetailDistanceButton;
+	JButton setHLPBreakingDistanceButton;
+	JButton setBillboardOrientationDistanceButton;
+	JButton setFarPlaneDistanceButton;
+	
+	
 	/** the template models controlled by the template dialog */
 	TemplateModel[] templateModels = new TemplateModel[6];
 	
@@ -139,6 +154,14 @@ public class ContentGenerator extends JFrame{
 	
 	/** variable to hold polygon dialog choices between dialog openings */
 	ContentGeneratorPolygon polygonDialogModel;
+	
+	
+	/** Box in which rightHandControls for orthogonal view type are kept */
+	Box orthogonalViewTypeControls;
+	/** Box in which rightHandControls for perspective view type are kept */
+	Box perspectiveViewTypeControls;
+	/** Box in which rightHandControls for texture map view type are kept */
+	Box textureMapViewTypeControls;
 	
 	/** Box in which right hand controls are held */
 	Box rightHandControls;
@@ -188,18 +211,21 @@ public class ContentGenerator extends JFrame{
 		createMenu();
 		createWorld();
 		
-		// create a box to fill with various RHS controls
-		Box rightHandControls = new Box(BoxLayout.Y_AXIS);
+
 		
 		// create the controls for standard view
-		Box standardViewControls = new Box(BoxLayout.Y_AXIS);
-		createViewButtons(standardViewControls);
-		createWorkingVertexGUI(standardViewControls);
-		createNewPolygonVertexGUI(standardViewControls);
-		standardViewControls.add(Box.createVerticalGlue());
+		createOrthogonalViewControls();
+		
+		// create the controls for perspective view
+		createPerspectiveViewControls();
+		
+		// create a box to fill with various RHS controls
+		rightHandControls = new Box(BoxLayout.Y_AXIS);
 		
 		// initially rightHandControls are for standard view
-		rightHandControls.add(standardViewControls);
+		rightHandControls.add(orthogonalViewTypeControls);
+		
+
 		
 		// create edit screen box, so nc UI can be replaced by file load
 		editScreenBox = new Box(BoxLayout.X_AXIS);
@@ -293,14 +319,17 @@ public class ContentGenerator extends JFrame{
 		
 		// add view type buttons
 		orthogonalProjectionButton = new FixedSizeIconToggleButton(this,"/res/orthogonalProjectionButton.PNG","/res/orthogonalProjectionSelectedButton.PNG");
+		orthogonalProjectionButton.setAction(cgc);
 		orthogonalProjectionButton.setToolTipText("Orthogonal projection view");
 		outerBox.add(orthogonalProjectionButton);
 		
 		perspectiveButton = new FixedSizeIconToggleButton(this,"/res/perspectiveButton.PNG","/res/perspectiveSelectedButton.PNG");
+		perspectiveButton.setAction(cgc);
 		perspectiveButton.setToolTipText("Perspective view");
 		outerBox.add(perspectiveButton);
 		
 		textureButton = new FixedSizeIconToggleButton(this,"/res/textureButton.PNG","/res/textureSelectedButton.PNG");
+		textureButton.setAction(cgc);
 		textureButton.setToolTipText("Texture map view");
 		outerBox.add(textureButton);
 		
@@ -958,13 +987,96 @@ public class ContentGenerator extends JFrame{
 		editScreenBox.validate();
 		
 		cgc.updateGeneratedItemAndEditArea();
-		
-		
-		
-		
-		
-		
+	}
 	
+	void  createOrthogonalViewControls()
+	{	
+		orthogonalViewTypeControls = new Box(BoxLayout.Y_AXIS);
+		createViewButtons(orthogonalViewTypeControls);
+		createWorkingVertexGUI(orthogonalViewTypeControls);
+		createNewPolygonVertexGUI(orthogonalViewTypeControls);
+		orthogonalViewTypeControls.add(Box.createVerticalGlue());
+	}
+	
+	void  createPerspectiveViewControls()
+	{
+		// initialise the distance slider
+		distSlider = new JSlider();
+		distSlider.setModel(new DefaultBoundedRangeModel(1000,1,0,4000));
+		distSlider.setMinorTickSpacing(500);
+		distSlider.setPaintTicks(true);
+		distSlider.addChangeListener(cgc);
+		
+		// initialise the turn slider
+		turnSlider = new JSlider();
+		turnSlider.setModel(new DefaultBoundedRangeModel(0,1,-1800,1800));
+		turnSlider.setMinorTickSpacing(300);
+		turnSlider.setPaintTicks(true);
+		turnSlider.addChangeListener(cgc);
+		
+		// initialise the climb slider
+		climbSlider = new JSlider();
+		climbSlider.setModel(new DefaultBoundedRangeModel(0,1,-1800,1800));
+		climbSlider.setMinorTickSpacing(300);
+		climbSlider.setPaintTicks(true);
+		climbSlider.addChangeListener(cgc);
+		
+		// initialise the roll slider
+		rollSlider = new JSlider();
+		rollSlider.setModel(new DefaultBoundedRangeModel(0,1,-1800,1800));
+		rollSlider.setMinorTickSpacing(300);
+		rollSlider.setPaintTicks(true);
+		rollSlider.addChangeListener(cgc);
+		
+		JLabel distLabel = new JLabel("Distance");
+		JLabel turnLabel = new JLabel("Turn");
+		JLabel climbLabel = new JLabel("Climb");
+		JLabel rollLabel = new JLabel("Roll");
+		
+		setNearRendererDistanceButton 	= new JButton();
+		setNearRendererDistanceButton.setAction(cgc);
+		setNearRendererDistanceButton.setText("Near Render");
+		
+		setFarRendererDistanceButton 	= new JButton();
+		setFarRendererDistanceButton.setAction(cgc);
+		setFarRendererDistanceButton.setText("Far Render");
+		
+		setImprovedDetailDistanceButton = new JButton();
+		setImprovedDetailDistanceButton.setAction(cgc);
+		setImprovedDetailDistanceButton.setText("Level of Detail");
+		
+		setHLPBreakingDistanceButton	= new JButton();
+		setHLPBreakingDistanceButton.setAction(cgc);
+		setHLPBreakingDistanceButton.setText("HLP Breaking");
+		
+		setBillboardOrientationDistanceButton = new JButton();
+		setBillboardOrientationDistanceButton.setAction(cgc);
+		setBillboardOrientationDistanceButton.setText("Billboarding");
+		
+		setFarPlaneDistanceButton 		= new JButton();
+		setFarPlaneDistanceButton.setAction(cgc);
+		setFarPlaneDistanceButton.setText("Far Plane");
+		
+		// add the sliders
+		perspectiveViewTypeControls = Box.createVerticalBox();
+		perspectiveViewTypeControls.add(distLabel);
+		perspectiveViewTypeControls.add(distSlider);
+		perspectiveViewTypeControls.add(turnLabel);
+		perspectiveViewTypeControls.add(turnSlider);
+		perspectiveViewTypeControls.add(climbLabel);
+		perspectiveViewTypeControls.add(climbSlider);
+		perspectiveViewTypeControls.add(rollLabel);
+		perspectiveViewTypeControls.add(rollSlider);
+		perspectiveViewTypeControls.add(Box.createVerticalGlue());
+		
+		// add the buttons
+		perspectiveViewTypeControls.add(setNearRendererDistanceButton);
+		perspectiveViewTypeControls.add(setFarRendererDistanceButton);
+		perspectiveViewTypeControls.add(setImprovedDetailDistanceButton);
+		perspectiveViewTypeControls.add(setHLPBreakingDistanceButton);
+		perspectiveViewTypeControls.add(setBillboardOrientationDistanceButton);
+		perspectiveViewTypeControls.add(setFarPlaneDistanceButton);
+		perspectiveViewTypeControls.add(Box.createVerticalGlue());		
 	}
 	
 

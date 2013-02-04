@@ -539,7 +539,7 @@ public class Transform implements Serializable{
 		
 		a21 = 0.0f;
 		a22 = (float)Math.cos(theta);
-		a23 = (float)-Math.sin(theta);;		
+		a23 = (float)-Math.sin(theta);		
 		
 		a31 = 0.0f;
 		a32 = (float)Math.sin(theta);

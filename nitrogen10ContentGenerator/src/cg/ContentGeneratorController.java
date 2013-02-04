@@ -15,13 +15,15 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.filechooser.FileFilter;
 
 import modified_nitrogen1.*;
 
 
-public class ContentGeneratorController extends AbstractAction
+public class ContentGeneratorController extends AbstractAction implements ChangeListener
 {
 	ContentGenerator cg;
 	
@@ -33,13 +35,14 @@ public class ContentGeneratorController extends AbstractAction
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		if(source == cg.newVertexButton)
+		ContentGenerator cgL = cg;
+		if(source == cgL.newVertexButton)
 		{
 			System.out.println("newVertexButton press");
 			addNewVertex();
 		}
 		
-		if(source == cg.moveVertexButton)
+		if(source == cgL.moveVertexButton)
 		{
 			System.out.println("moveVertexButton pressed");
 			moveVertex();
@@ -47,59 +50,71 @@ public class ContentGeneratorController extends AbstractAction
 		
 		
 		// handle view direction buttons
-		if(source == cg.frontViewButton)
+		if(source == cgL.frontViewButton)
 		{
 			System.out.println("frontViewButton pressed");
 			frontView();
 		}
 		
-		if(source == cg.leftViewButton)
+		if(source == cgL.leftViewButton)
 		{
 			System.out.println("leftViewButton pressed");
 			leftView();
 		}
 		
-		if(source == cg.backViewButton)
+		if(source == cgL.backViewButton)
 		{
 			System.out.println("backViewButton pressed");
 			backView();
 		}
 		
-		if(source == cg.rightViewButton)
+		if(source == cgL.rightViewButton)
 		{
 			System.out.println("rightViewButton pressed");
 			rightView();
 		}
 		
-		if(source == cg.topViewButton)
+		if(source == cgL.topViewButton)
 		{
 			System.out.println("topViewButton pressed");
 			topView();
 		}
 		
-		if(source == cg.bottomViewButton)
+		if(source == cgL.bottomViewButton)
 		{
 			System.out.println("bottomViewButton pressed");
 			bottomView();
 		}
 		
 		// handle pick buttons
-		if(source == cg.pickFrontVertexButton)
+		if(source == cgL.pickFrontVertexButton)
 		{
 			System.out.println("pickFrontVertexButton pressed");
 			pickFrontVertex();
 		}
 		
-		if(source == cg.pickBackVertexButton)
+		if(source == cgL.pickBackVertexButton)
 		{
 			System.out.println("pickBackVertexButton pressed");
 			pickBackVertex();
 		}
 		
-		if(source == cg.pickXYZVertexButton)
+		if(source == cgL.pickXYZVertexButton)
 		{
 			System.out.println("pickXYZVertexButton pressed");
 			pickXYZVertex();
+		}
+		
+		if(source == cgL.orthogonalProjectionButton)
+		{
+			System.out.println("orthogonalProjectionButton pressed");
+			handleOrthogonalViewButton();
+		}
+		
+		if(source == cgL.perspectiveButton)
+		{
+			System.out.println("perspectiveButton pressed");
+			handlePerspectiveViewButton();
 		}
 	}		
 	
@@ -511,6 +526,58 @@ public class ContentGeneratorController extends AbstractAction
         cgL.generatedItem = Item.createItem(cgL.generatedSISI,cgL.viewDirectionTransform);
         cgL.generatedItem.setVisibility(true);
         cg.renderEditArea();
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+		ContentGenerator cgL = cg;
+		
+		if(cg.viewType == ContentGenerator.PERSPECTIVE)
+		{
+			// Listen to changes of perspective sliders
+			if(e.getSource() == cgL.distSlider)
+			{
+				// Logarithmic slider
+				int val = cgL.distSlider.getModel().getValue();
+				double d_val = (double)val;
+				d_val = d_val / 1000;
+				float newdist = (float)Math.pow(10, d_val);
+				newdist = newdist * 50;
+				
+				cg.distTransform.a34 = -newdist;
+				cg.distTransform.setNeedsTranslationUpdating();
+				cg.renderEditArea();
+			}
+			
+			if(e.getSource() == cgL.distSlider)
+			{
+				// Logarithmic slider
+				int val = cgL.distSlider.getModel().getValue();
+				double d_val = (double)val;
+				d_val = d_val / 1000;
+				float newdist = (float)Math.pow(10, d_val);
+				newdist = newdist * 50;
+				
+				cg.distTransform.a34 = -newdist;
+				cg.distTransform.setNeedsTranslationUpdating();
+				cg.renderEditArea();
+			}
+		}
+	}
+	
+	void handleOrthogonalViewButton()
+	{
+		cg.rightHandControls.removeAll();
+		cg.rightHandControls.add(cg.orthogonalViewTypeControls);
+		cg.rightHandControls.revalidate();	
+	}
+	
+	void handlePerspectiveViewButton()
+	{
+		cg.rightHandControls.removeAll();
+		cg.rightHandControls.add(cg.perspectiveViewTypeControls);
+		cg.rightHandControls.revalidate();	
 	}
 }
 
