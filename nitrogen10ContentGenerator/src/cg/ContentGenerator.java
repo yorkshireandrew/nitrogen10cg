@@ -440,7 +440,7 @@ public class ContentGenerator extends JFrame{
 		
 		// new polygon button
 		newPolygonButton = new FixedSizeButton("/res/newPolygonButton.PNG");
-		newPolygonButton.addActionListener(new polygonToolbarAction(this));
+		newPolygonButton.addActionListener(new PolygonToolbarAction(this));
 		newPolygonButton.setToolTipText("Create a new polygon");
 		outerBox.add(newPolygonButton);
 		
