@@ -11,10 +11,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
@@ -115,6 +120,12 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		{
 			System.out.println("perspectiveButton pressed");
 			handlePerspectiveViewButton();
+		}
+		
+		if(source == cgL.textureButton)
+		{
+			System.out.println("textureButton pressed");
+			handleTextureViewButton();
 		}
 	}		
 	
@@ -263,6 +274,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 	
 	void frontView()
 	{
+		System.out.println("frontview called");
 		ContentGenerator cgL = cg;
 		// this button only responds in orthogonal view
 		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
@@ -550,17 +562,24 @@ public class ContentGeneratorController extends AbstractAction implements Change
 				cg.renderEditArea();
 			}
 			
-			if(e.getSource() == cgL.distSlider)
+			if(e.getSource() == cgL.turnSlider)
 			{
-				// Logarithmic slider
-				int val = cgL.distSlider.getModel().getValue();
-				double d_val = (double)val;
-				d_val = d_val / 1000;
-				float newdist = (float)Math.pow(10, d_val);
-				newdist = newdist * 50;
-				
-				cg.distTransform.a34 = -newdist;
-				cg.distTransform.setNeedsTranslationUpdating();
+				int val = cgL.turnSlider.getModel().getValue();
+				cgL.turnTransform.setTurn(val);
+				cg.renderEditArea();
+			}
+			
+			if(e.getSource() == cgL.climbSlider)
+			{
+				int val = cgL.climbSlider.getModel().getValue();
+				cgL.climbTransform.setClimb(val);
+				cg.renderEditArea();
+			}
+			
+			if(e.getSource() == cgL.rollSlider)
+			{
+				int val = cgL.rollSlider.getModel().getValue();
+				cgL.rollTransform.setRoll(val);
 				cg.renderEditArea();
 			}
 		}
@@ -568,16 +587,79 @@ public class ContentGeneratorController extends AbstractAction implements Change
 	
 	void handleOrthogonalViewButton()
 	{
+		cg.viewType = ContentGenerator.ORTHOGONAL_PROJECTION;
 		cg.rightHandControls.removeAll();
 		cg.rightHandControls.add(cg.orthogonalViewTypeControls);
-		cg.rightHandControls.revalidate();	
+		cg.rightHandControls.revalidate();
+		
+		NitrogenContext ncL = cg.nc;		
+		ncL.contentGeneratorForcesNoPerspective = false;
+		cg.renderEditArea();
 	}
 	
 	void handlePerspectiveViewButton()
-	{
+	{		
+		cg.viewType = ContentGenerator.ORTHOGONAL_PROJECTION;
+		System.out.println("perspective button pressed");
+		cg.frontViewButton.setSelected(true);
+		frontView();
+		cg.viewType = ContentGenerator.PERSPECTIVE;
+
 		cg.rightHandControls.removeAll();
 		cg.rightHandControls.add(cg.perspectiveViewTypeControls);
 		cg.rightHandControls.revalidate();	
+		
+		NitrogenContext ncL = cg.nc;
+		ncL.contentGeneratorForcesNoPerspective = false;
+		cg.renderEditArea();	
+		System.out.println("--------------------------");
+	}
+	
+	void handleTextureViewButton()
+	{		
+		cg.viewType = ContentGenerator.TEXTURE_MAP;
+		
+		Map<String,TexMap> texMapMap = cg.contentGeneratorSISI.textureMapMap;
+		if(texMapMap == null)return;
+		
+			// get available textures
+			String[] availableTextures;
+			availableTextures = texMapMap.keySet().toArray(new String[0]);
+			
+			// create combo box
+			JComboBox combo = new JComboBox(availableTextures);
+			combo.setEditable(true);
+			combo.getEditor().setItem("");
+			combo.setMaximumSize(combo.getPreferredSize());
+			combo.addActionListener(this); // listen so we can edit existing polygons
+			cg.textureMapCombo = combo;
+			
+			// rebuild textureMapViewTypeControls
+			cg.textureMapViewTypeControls.removeAll();
+			cg.textureMapViewTypeControls.add(combo);
+			
+			cg.textureMapX = new JTextField(6);
+			cg.textureMapY = new JTextField(6);
+			cg.textureMapX.setMaximumSize(cg.textureMapX.getPreferredSize());
+			cg.textureMapY.setMaximumSize(cg.textureMapY.getPreferredSize());
+			
+			Box whereBox = Box.createHorizontalBox();
+			whereBox.add(cg.textureMapX);
+			whereBox.add(cg.textureMapY);
+			whereBox.add(Box.createHorizontalGlue());
+			
+			cg.textureMapViewTypeControls = Box.createVerticalBox();
+			cg.textureMapViewTypeControls.add(cg.textureMapCombo);
+			cg.textureMapViewTypeControls.add(whereBox);
+			cg.textureMapViewTypeControls.add(Box.createVerticalGlue());
+		
+			// add controls to rightHandControls
+		cg.rightHandControls.removeAll();
+		cg.rightHandControls.add(cg.textureMapViewTypeControls);
+		cg.rightHandControls.revalidate();	
+		
+		// TO DO 
+		cg.renderEditArea();	
 	}
 }
 

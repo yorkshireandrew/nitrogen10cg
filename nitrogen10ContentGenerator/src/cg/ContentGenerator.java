@@ -132,6 +132,10 @@ public class ContentGenerator extends JFrame{
 	JButton setBillboardOrientationDistanceButton;
 	JButton setFarPlaneDistanceButton;
 	
+	/** ListBox for textureMap view */
+	JComboBox textureMapCombo;
+	JTextField textureMapX;
+	JTextField textureMapY;
 	
 	/** the template models controlled by the template dialog */
 	TemplateModel[] templateModels = new TemplateModel[6];
@@ -154,6 +158,7 @@ public class ContentGenerator extends JFrame{
 	
 	/** variable to hold polygon dialog choices between dialog openings */
 	ContentGeneratorPolygon polygonDialogModel;
+	String lastPolygonEdited = "";
 	
 	
 	/** Box in which rightHandControls for orthogonal view type are kept */
@@ -219,14 +224,15 @@ public class ContentGenerator extends JFrame{
 		// create the controls for perspective view
 		createPerspectiveViewControls();
 		
+		// create the controls for textureMap view
+		createTextureMapViewControls();
+		
 		// create a box to fill with various RHS controls
 		rightHandControls = new Box(BoxLayout.Y_AXIS);
 		
 		// initially rightHandControls are for standard view
 		rightHandControls.add(orthogonalViewTypeControls);
-		
-
-		
+			
 		// create edit screen box, so nc UI can be replaced by file load
 		editScreenBox = new Box(BoxLayout.X_AXIS);
 		editScreenBox.add(nc);
@@ -527,84 +533,14 @@ public class ContentGenerator extends JFrame{
 		container.add(retval);	
 	}
 	
-	/*
-	// created for test perposes during early development
-	void generatePixels()
-	{
-		nc.cls(templateModels[viewDirection].pixels);
-		nc.createTestSquare();
-		
-		// test
-        Transform t1	= new 	Transform(
-    			null,
-    			1f, 0f, 0f, 0f,
-    			0f, 1f, 0f, 0f,
-    			0f, 0f, 1f, 0f);
-        
-        Transform t2	= new 	Transform(
-    			t1,
-    			1f, 0f, 0f, 0f,
-    			0f, 1f, 0f, 0f,
-    			0f, 0f, 1f, -20f);
-        
-        // add renderers to RendererHelper
-        Renderer_SimpleTexture str = new Renderer_SimpleTexture();
-        RendererTriplet rt = new RendererTriplet(str);
-        try
-        {
-        	RendererHelper.addRendererTriplet("str",rt);
-        }
-        catch(Exception e){System.out.println(e.getMessage());}
-
-        Renderer_SimpleSingleColour sscr = new Renderer_SimpleSingleColour();           
-        RendererTriplet sscrt = new RendererTriplet(sscr);
-        try
-        {
-        	RendererHelper.addRendererTriplet("sscr",sscrt);
-        }
-        catch(Exception e){System.out.println(e.getMessage());}
-        
-        // create test item         
-        SharedImmutableSubItem testItemSISI = null;        
-        try{
-        	
-        	testItemSISI = new SharedImmutableSubItem("test1.txt");
-        }
-        catch(NitrogenCreationException e)
-        {
-        	e.printStackTrace();           	
-        }
-        
-        Item.setItemFactory(new ItemFactory_Caching());
-        
-        Item i = Item.createItem(testItemSISI,t2);
-        i.setVisibility(true); 
-        t1.render(nc);
-        
-        
-        
-		templateModels[viewDirection].overlayTemplate(
-				nc.pix, nc.zbuff);
-		
-		addConstrainedBorder(nc);
-		addCursor(nc,100,100);
-		nc.repaint();	
-	}
-	*/
-	
 	void renderEditArea()
 	{
 		
 		if(viewType == ORTHOGONAL_PROJECTION)
 		{
-			System.out.println("cg.renderEditArea() nc=" + nc.toString());
-			
 			// fill the background using template model pixels
 			nc.cls(templateModels[viewDirection].pixels);
-			if(viewDetail != VERTEXES_ONLY)
-			{
-				System.out.println("trace my arse");
-			}
+
 			// call render to update scene graph
 			rootTransform.render(nc);
 		
@@ -620,6 +556,24 @@ public class ContentGenerator extends JFrame{
 		
 			showConstrainedBorder(nc);
 			showCursor(nc,cursor_x,cursor_y);
+			showWorkingVertex();
+			nc.repaint();
+		}
+		
+		if(viewType == PERSPECTIVE)
+		{
+			// fill the background using template model pixels
+			nc.cls(0xFF000000);
+	
+			// call render to update scene graph
+			rootTransform.render(nc);
+		
+			if(viewDetail == VERTEXES_ONLY)
+			{
+				generatedItem.calculateVertexes();
+				generatedItem.renderVertexes(nc);
+			}
+
 			showWorkingVertex();
 			nc.repaint();
 		}
@@ -1078,6 +1032,29 @@ public class ContentGenerator extends JFrame{
 		perspectiveViewTypeControls.add(setFarPlaneDistanceButton);
 		perspectiveViewTypeControls.add(Box.createVerticalGlue());		
 	}
+	
+	void createTextureMapViewControls()
+	{
+		textureMapCombo = new JComboBox();
+		textureMapCombo.setMaximumSize(textureMapCombo.getPreferredSize());
+		textureMapCombo.setEnabled(true);
+		
+		textureMapX = new JTextField(6);
+		textureMapY = new JTextField(6);
+		textureMapX.setMaximumSize(textureMapX.getPreferredSize());
+		textureMapY.setMaximumSize(textureMapY.getPreferredSize());
+		
+		Box whereBox = Box.createHorizontalBox();
+		whereBox.add(textureMapX);
+		whereBox.add(textureMapY);
+		whereBox.add(Box.createHorizontalGlue());
+		
+		textureMapViewTypeControls = Box.createVerticalBox();
+		textureMapViewTypeControls.add(textureMapCombo);
+		textureMapViewTypeControls.add(whereBox);
+		textureMapViewTypeControls.add(Box.createVerticalGlue());
+	}
+	
 	
 
 }

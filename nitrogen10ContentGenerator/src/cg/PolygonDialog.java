@@ -33,6 +33,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 
 	ContentGenerator cg;
 	ContentGeneratorPolygon model;
+	String lastPolygonEdited = "";
 	
 	JComboBox 	polygonNameComboBox;
 	JLabel 		polygonNameLabel = new JLabel("Name ");
@@ -70,54 +71,45 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	PolygonDialog(ContentGenerator cg)
 	{
 		this.cg = cg;
-		this.model = cg.polygonDialogModel;
+		this.model = new ContentGeneratorPolygon(cg.polygonDialogModel);
+		this.lastPolygonEdited = cg.lastPolygonEdited;
 		
 		polygonNameComboBox = new JComboBox(getPolygonNames());
 		polygonNameComboBox.setEditable(true);
-		polygonNameComboBox.getEditor().setItem("");	
 		polygonNameComboBox.addActionListener(this); // listen so we can edit existing polygons
 		polygonNameComboBox.setMaximumSize(polygonNameComboBox.getPreferredSize());
 
 		polygonDataComboBox = new JComboBox(getPolygonDataNames());
 		polygonDataComboBox.setEditable(true);
-		polygonDataComboBox.getEditor().setItem(getPolygonDataInitial());	
 		polygonDataComboBox.setMaximumSize(polygonDataComboBox.getPreferredSize());
 		
 		polygonVertexDataComboBox1 = new JComboBox(getPolygonVertexDataNames());
 		polygonVertexDataComboBox1.setEditable(true);
-		polygonVertexDataComboBox1.getEditor().setItem(getPolygonVertexDataInitial1());
 		polygonVertexDataComboBox1.setMaximumSize(polygonVertexDataComboBox1.getPreferredSize());
 
 		polygonVertexDataComboBox2 = new JComboBox(getPolygonVertexDataNames());
 		polygonVertexDataComboBox2.setEditable(true);
-		polygonVertexDataComboBox2.getEditor().setItem(getPolygonVertexDataInitial2());
 		polygonVertexDataComboBox2.setMaximumSize(polygonVertexDataComboBox2.getPreferredSize());
 
 		polygonVertexDataComboBox3 = new JComboBox(getPolygonVertexDataNames());
 		polygonVertexDataComboBox3.setEditable(true);
-		polygonVertexDataComboBox3.getEditor().setItem(getPolygonVertexDataInitial3());
 		polygonVertexDataComboBox3.setMaximumSize(polygonVertexDataComboBox3.getPreferredSize());
 
 		polygonVertexDataComboBox4 = new JComboBox(getPolygonVertexDataNames());
 		polygonVertexDataComboBox4.setEditable(true);
-		polygonVertexDataComboBox4.getEditor().setItem(getPolygonVertexDataInitial4());
 		polygonVertexDataComboBox4.setMaximumSize(polygonVertexDataComboBox4.getPreferredSize());
 		
 		polygonRendererComboBox = new JComboBox(getPolygonRendererTripletNames());
 		polygonRendererComboBox.setEditable(true);
-		polygonRendererComboBox.getEditor().setItem(getPolygonRendererTripletInitial());
 		polygonRendererComboBox.setMaximumSize(polygonRendererComboBox.getPreferredSize());
 
 		isBacksideCulledCheckBox = new JCheckBox("Backside culling ");
-		isBacksideCulledCheckBox.setSelected(cg.polygonDialogModel.isBacksideCulled);
 		
 		polygonBacksideComboBox = new JComboBox(getPolygonImmutableBacksideNames());
 		polygonBacksideComboBox.setEditable(true);
-		polygonBacksideComboBox.getEditor().setItem(getPolygonImmutableBacksideInitial());
 		polygonBacksideComboBox.setMaximumSize(polygonBacksideComboBox.getPreferredSize());
 
 		isTransparentCheckBox = new JCheckBox("Is transparent ");
-		isTransparentCheckBox.setSelected(cg.polygonDialogModel.isTransparent);
 		
 		cancelButton = new JButton("CANCEL");
 		cancelButton.addActionListener(
@@ -141,6 +133,9 @@ public class PolygonDialog extends JDialog implements ActionListener{
 						PolygonDialog.this.handleOK();
 					}			
 				});	
+		
+		// update the dialog to the model
+		updateDialogToModel();
 		
 		this.setSize(450,350);
 		this.setModal(true);
@@ -211,8 +206,11 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		
 		// add a copy of the model to the polygon map
 		cg.contentGeneratorSISI.contentGeneratorPolygonMap.put(name, new ContentGeneratorPolygon(model));
-	
 		int size = cg.contentGeneratorSISI.contentGeneratorPolygonMap.size();
+		
+		// remember the model for next time the dialog gets opened
+		cg.polygonDialogModel = model;
+		cg.lastPolygonEdited = (String)polygonNameComboBox.getEditor().getItem();
 		
 		// move polygon finish points
 		cg.contentGeneratorSISI.normalDetailPolyFinish = size;
@@ -270,8 +268,8 @@ public class PolygonDialog extends JDialog implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("change in polygon name combo");
+		handleNameChangeEvent();		
 	}
 	
 	private void generateContent()
@@ -454,9 +452,9 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		return nameArray;
 	}
 	
-	private String getPolygonDataInitial()
+	private String getPolygonDataFromModel()
 	{
-		String retval = cg.polygonDialogModel.polyData_name;
+		String retval = model.polyData_name;
 		if(retval == null)return("");
 		return retval;
 	}
@@ -471,27 +469,27 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		return nameArray;
 	}
 	
-	private String getPolygonVertexDataInitial1()
+	private String getPolygonVertexDataFromModel1()
 	{
-		String retval = cg.polygonDialogModel.pvd_c1_name;
+		String retval = model.pvd_c1_name;
 		if(retval == null)return("");
 		return retval;
 	}
-	private String getPolygonVertexDataInitial2()
+	private String getPolygonVertexDataFromModel2()
 	{
-		String retval = cg.polygonDialogModel.pvd_c2_name;
+		String retval = model.pvd_c2_name;
 		if(retval == null)return("");
 		return retval;
 	}
-	private String getPolygonVertexDataInitial3()
+	private String getPolygonVertexDataFromModel3()
 	{
-		String retval = cg.polygonDialogModel.pvd_c3_name;
+		String retval = model.pvd_c3_name;
 		if(retval == null)return("");
 		return retval;
 	}
-	private String getPolygonVertexDataInitial4()
+	private String getPolygonVertexDataFromModel4()
 	{
-		String retval = cg.polygonDialogModel.pvd_c4_name;
+		String retval = model.pvd_c4_name;
 		if(retval == null)return("");
 		return retval;
 	}
@@ -501,9 +499,9 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		return RendererHelper.getRendererTripletNames();
 	}
 	
-	private String getPolygonRendererTripletInitial()
+	private String getPolygonRendererTripletFromModel()
 	{
-		String retval = cg.polygonDialogModel.rendererTriplet_name;
+		String retval = model.rendererTriplet_name;
 		if(retval == null)return("");
 		return retval;
 	}
@@ -518,9 +516,9 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		return nameArray;
 	}
 	
-	private String getPolygonImmutableBacksideInitial()
+	private String getPolygonImmutableBacksideFromModel()
 	{
-		String retval = cg.polygonDialogModel.backside_name;
+		String retval = model.backside_name;
 		if(retval == null)return("");
 		return retval;
 	}
@@ -571,6 +569,34 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		}
 		System.out.println(name + " doesn't exist in dropdown");
 		return null;	
+	}
+	
+	private void handleNameChangeEvent()
+	{
+		String currentNameInCombo = (String)polygonNameComboBox.getEditor().getItem();
+		if(!currentNameInCombo.equals(lastPolygonEdited))
+		{
+			if(cg.contentGeneratorSISI.contentGeneratorPolygonMap.containsKey(currentNameInCombo))
+			{
+				model = cg.contentGeneratorSISI.contentGeneratorPolygonMap.get(currentNameInCombo);
+				lastPolygonEdited = currentNameInCombo;
+				updateDialogToModel();
+			}
+		}
+	}
+	
+	private void updateDialogToModel()
+	{
+		polygonNameComboBox.getEditor().setItem(lastPolygonEdited);	
+		polygonDataComboBox.getEditor().setItem(getPolygonDataFromModel());	
+		polygonVertexDataComboBox1.getEditor().setItem(getPolygonVertexDataFromModel1());
+		polygonVertexDataComboBox2.getEditor().setItem(getPolygonVertexDataFromModel2());
+		polygonVertexDataComboBox3.getEditor().setItem(getPolygonVertexDataFromModel3());
+		polygonVertexDataComboBox4.getEditor().setItem(getPolygonVertexDataFromModel4());
+		polygonRendererComboBox.getEditor().setItem(getPolygonRendererTripletFromModel());
+		isBacksideCulledCheckBox.setSelected(model.isBacksideCulled);
+		polygonBacksideComboBox.getEditor().setItem(getPolygonImmutableBacksideFromModel());
+		isTransparentCheckBox.setSelected(model.isTransparent);
 	}
 	
 	
