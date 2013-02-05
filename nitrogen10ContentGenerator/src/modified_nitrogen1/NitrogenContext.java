@@ -59,7 +59,7 @@ public class NitrogenContext extends JPanel implements Serializable{
     /** height in pixels of the NitrogenContext */
     public int h = 0;		// height
     /** Number of pixels in the NitrogenContext */
-    int s = 0;		// size = width * height
+    public int s = 0;		// size = width * height
     /** Middle of width */
     int midw = w/2;
     /** Middle of height */

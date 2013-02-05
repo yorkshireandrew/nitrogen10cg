@@ -29,8 +29,8 @@ public class TexMap implements Serializable{
 	private static Map<String,TexMap> textures;
 	
 	private String resourceName;
-	transient int[] tex;
-    transient int w, h;
+	public transient int[] tex;
+    public transient int w, h;
     
     static{ textures = new HashMap<String,TexMap>();}
     

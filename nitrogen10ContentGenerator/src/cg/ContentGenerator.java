@@ -174,11 +174,10 @@ public class ContentGenerator extends JFrame{
 	/** Box which holds edit area (NitrogenContext) so it can be changed by a file load */
 	Box editScreenBox;
 	
-	
-	
-	
-	
-	
+	int[] textureMapPixels;
+	int textureMapXMax;
+	int textureMapYMax;
+
 	ContentGenerator()
 	{
 
@@ -575,6 +574,21 @@ public class ContentGenerator extends JFrame{
 			}
 
 			showWorkingVertex();
+			nc.repaint();
+		}
+		
+		if(viewType == TEXTURE_MAP)
+		{
+			if(textureMapPixels == null)
+			{
+				nc.cls(0xFF000000);
+			}
+			else
+			{
+				nc.cls(textureMapPixels);
+			}
+			
+			showCursor(nc,cursor_x,cursor_y);
 			nc.repaint();
 		}
 	}

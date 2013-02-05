@@ -39,6 +39,20 @@ class ContentGeneratorMouseListener extends MouseInputAdapter
 				cg.cursor_y = rawY;					
 			}
 		}
+		
+		if(cg.viewType == ContentGenerator.TEXTURE_MAP)
+		{
+			if (cg.textureMapPixels != null)
+			{
+				if(cg.cursor_x >= cg.textureMapXMax)cg.cursor_x = cg.textureMapXMax-1;
+				if(cg.cursor_y >= cg.textureMapYMax)cg.cursor_y = cg.textureMapYMax-1;
+			}
+			
+			cg.textureMapX.setEditable(true);
+			cg.textureMapX.setText("" + cg.cursor_x);
+			cg.textureMapY.setText("" + cg.cursor_y);
+			
+		}
 		cg.renderEditArea();
 		cgc.updateWorkingVertexFromCursor();	
 	}

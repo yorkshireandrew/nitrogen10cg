@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	String lastPolygonEdited = "";
 	
 	JComboBox 	polygonNameComboBox;
-	JLabel 		polygonNameLabel = new JLabel("Name ");
+	JButton 	polygonNameButton;
 	JButton		fillNameButton;
 	
 	// polygon data UI
@@ -74,6 +75,8 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		this.model = new ContentGeneratorPolygon(cg.polygonDialogModel);
 		this.lastPolygonEdited = cg.lastPolygonEdited;
 		
+		polygonNameButton = new JButton("Name");
+		polygonNameButton.addActionListener(this);
 		polygonNameComboBox = new JComboBox(getPolygonNames());
 		polygonNameComboBox.setEditable(true);
 		polygonNameComboBox.addActionListener(this); // listen so we can edit existing polygons
@@ -268,15 +271,46 @@ public class PolygonDialog extends JDialog implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("change in polygon name combo");
-		handleNameChangeEvent();		
+		
+		if(e.getSource() == polygonNameComboBox)
+		{
+			System.out.println("change in polygon name combo");
+			handleNameChangeEvent();		
+		}
+		
+		if(e.getSource() == polygonNameButton)
+		{
+			Map<String,ContentGeneratorPolygon> map = cg.contentGeneratorSISI.contentGeneratorPolygonMap;
+			
+			int max = 0;
+			
+			if(map == null)return;
+			
+			Set<String> keyset = map.keySet();
+			
+			Iterator<String> it = keyset.iterator();
+			
+			while(it.hasNext())
+			{
+				String el = it.next();
+				int val;
+				try{
+					val = Integer.parseInt(el);
+					if(val > max)max = val;
+				}
+				catch(NumberFormatException nfe){}				
+			}
+			max +=1;
+			polygonNameComboBox.getEditor().setItem(Integer.toString(max));	
+		}	
+		
 	}
 	
 	private void generateContent()
 	{
 		
 		Box nameBox = new Box(BoxLayout.X_AXIS);
-		nameBox.add(polygonNameLabel);
+		nameBox.add(polygonNameButton);
 		nameBox.add(polygonNameComboBox);
 		nameBox.add(Box.createHorizontalGlue());
 		
@@ -382,7 +416,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		buttonBox.add(cancelButton);
 		buttonBox.add(Box.createHorizontalGlue());
 		
-		fatten(polygonNameLabel);
+		//fatten(polygonNameButton);
 		fatten(polygonDataLabel);
 		fatten(polygonVertexLabel1);
 		fatten(polygonVertexLabel2);
@@ -394,7 +428,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		GridLayout gridLayout = new GridLayout(10,3);
 		setLayout(gridLayout);
 		
-		add(polygonNameLabel);
+		add(polygonNameButton);
 		add(polygonNameBox);
 		add(new JLabel(""));
 		

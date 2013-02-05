@@ -3,7 +3,9 @@ package cg;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -19,10 +21,10 @@ import modified_nitrogen1.ImmutableBackside;
 import modified_nitrogen1.ImmutableVertex;
 import modified_nitrogen1.SharedImmutableSubItem;
 
-public class BacksideDialog extends JDialog {
+public class BacksideDialog extends JDialog implements ActionListener{
 	
 	JTextField	nameTextField;	
-	JLabel 		nameLabel = new JLabel("name ");
+	JButton 	nameButton; 
 	JCheckBox	calculateLightingCheckBox;
 	JButton		cancelButton;
 	
@@ -31,6 +33,10 @@ public class BacksideDialog extends JDialog {
 	BacksideDialog(ContentGenerator cg)
 	{
 		this.cg = cg;
+		
+		nameButton = new JButton("Name");
+		nameButton.addActionListener(this);
+		
 			
 		nameTextField = new JTextField(null,10);
 		nameTextField.setMaximumSize(nameTextField.getPreferredSize());		
@@ -60,7 +66,7 @@ public class BacksideDialog extends JDialog {
 		calculateLightingCheckBox = new JCheckBox("calculate lighting");
 		
 		Box nameBox = Box.createHorizontalBox();
-		nameBox.add(nameLabel);
+		nameBox.add(nameButton);
 		nameBox.add(nameTextField);
 		
 		Box buttonBox = Box.createHorizontalBox();
@@ -269,5 +275,35 @@ public class BacksideDialog extends JDialog {
 		
 		immutableBacksideMap.put(name,ib);
 
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		if(e.getSource() == nameButton)
+		{
+			Map<String,ImmutableBackside> map = cg.contentGeneratorSISI.immutableBacksideMap;
+			
+			int max = 0;
+			
+			if(map == null)return;
+			
+			Set<String> keyset = map.keySet();
+			
+			Iterator<String> it = keyset.iterator();
+			
+			while(it.hasNext())
+			{
+				String el = it.next();
+				int val;
+				try{
+					val = Integer.parseInt(el);
+					if(val > max)max = val;
+				}
+				catch(NumberFormatException nfe){}				
+			}
+			max +=1;
+			nameTextField.setText(Integer.toString(max));	
+		}	
 	}
 }

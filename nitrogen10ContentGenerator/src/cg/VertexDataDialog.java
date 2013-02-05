@@ -2,7 +2,9 @@ package cg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,7 +20,7 @@ import javax.swing.event.ChangeListener;
 import modified_nitrogen1.PolygonVertexData;
 import modified_nitrogen1.SharedImmutableSubItem;
 
-public class VertexDataDialog  extends JDialog implements ChangeListener{
+public class VertexDataDialog  extends JDialog implements ChangeListener,ActionListener{
 
 	private ContentGenerator contentGenerator;
 	
@@ -27,7 +29,7 @@ public class VertexDataDialog  extends JDialog implements ChangeListener{
 	JTextField aux2TextField;
 	JTextField aux3TextField;
 	
-	JLabel dataNameLabel 			= new JLabel("Name ");
+	JButton dataNameButton 			= new JButton("Name");
 	JLabel aux1Label				= new JLabel("Aux 1");
 	JLabel aux2Label				= new JLabel("Aux 2");
 	JLabel aux3Label				= new JLabel("Aux 3");
@@ -37,6 +39,10 @@ public class VertexDataDialog  extends JDialog implements ChangeListener{
 	{
 		final VertexDataDialog vdd = this;
 		contentGenerator = cg;
+		
+		dataNameButton 			= new JButton("Name");
+		dataNameButton.addActionListener(this);
+		
 			
 		dataNameTextField = new JTextField(null,10);
 		dataNameTextField.setMaximumSize(dataNameTextField.getPreferredSize());		
@@ -71,7 +77,7 @@ public class VertexDataDialog  extends JDialog implements ChangeListener{
 				});	
 				
 		Box nameBox = new Box(BoxLayout.X_AXIS);
-		nameBox.add(dataNameLabel);
+		nameBox.add(dataNameButton);
 		nameBox.add(dataNameTextField);
 		
 		Box aux1Box = new Box(BoxLayout.X_AXIS);
@@ -175,6 +181,38 @@ public class VertexDataDialog  extends JDialog implements ChangeListener{
 		Map<String,PolygonVertexData> polygonVertexDataMap = cgsisi.polygonVertexDataMap;
 		
 		polygonVertexDataMap.put(name, pvd);
+	}
+
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		if(e.getSource() == dataNameButton)
+		{
+			Map<String,PolygonVertexData> map = contentGenerator.contentGeneratorSISI.polygonVertexDataMap;
+			
+			int max = 0;
+			
+			if(map == null)return;
+			
+			Set<String> keyset = map.keySet();
+			
+			Iterator<String> it = keyset.iterator();
+			
+			while(it.hasNext())
+			{
+				String el = it.next();
+				int val;
+				try{
+					val = Integer.parseInt(el);
+					if(val > max)max = val;
+				}
+				catch(NumberFormatException nfe){}				
+			}
+			max +=1;
+			dataNameTextField.setText(Integer.toString(max));	
+		}	
 	}
 
 }

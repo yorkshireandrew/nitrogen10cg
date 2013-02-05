@@ -5,8 +5,10 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -34,7 +36,7 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	List<JTextField> 	dataTextFields;
 	List<JLabel> 		dataLabels;
 	
-	JLabel dataNameLabel 	= new JLabel("Name   ");
+	JButton dataNameButton;
 	JLabel lengthLabel 		= new JLabel("Length ");
 	
 	JButton cancelButton;
@@ -48,6 +50,10 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	{
 		final PolygonDataDialog pdd = this;
 		contentGenerator = cg;
+		
+		dataNameButton 	= new JButton("Name");
+		dataNameButton.addActionListener(this);
+		
 			
 		dataNameTextField = new JTextField(null,10);
 		dataNameTextField.addActionListener(this);
@@ -148,7 +154,7 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	private void generateContent()
 	{
 		Box nameBox = new Box(BoxLayout.X_AXIS);
-		nameBox.add(dataNameLabel);
+		nameBox.add(dataNameButton);
 		nameBox.add(dataNameTextField);
 		
 		Box lengthBox = new Box(BoxLayout.X_AXIS);
@@ -283,5 +289,33 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 				this.repaint();
 			}	
 		}
+		
+		if(e.getSource() == dataNameButton)
+		{
+			Map<String,int[]> map = contentGenerator.contentGeneratorSISI.polygonDataMap;
+			
+			int max = 0;
+			
+			if(map == null)return;
+			
+			Set<String> keyset = map.keySet();
+			
+			Iterator<String> it = keyset.iterator();
+			
+			while(it.hasNext())
+			{
+				String el = it.next();
+				int val;
+				try{
+					val = Integer.parseInt(el);
+					if(val > max)max = val;
+				}
+				catch(NumberFormatException nfe){}				
+			}
+			max +=1;
+			dataNameTextField.setText(Integer.toString(max));	
+		}	
 	}
+	
+
 }

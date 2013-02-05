@@ -127,6 +127,12 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			System.out.println("textureButton pressed");
 			handleTextureViewButton();
 		}
+		
+		if(source == cgL.textureMapCombo)
+		{
+			System.out.println("textureMap combo changed");
+			handleTextureMapCombo();
+		}
 	}		
 	
 	void updateWorkingVertexFromCursor()
@@ -542,7 +548,6 @@ public class ContentGeneratorController extends AbstractAction implements Change
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
 		ContentGenerator cgL = cg;
 		
 		if(cg.viewType == ContentGenerator.PERSPECTIVE)
@@ -660,6 +665,55 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		
 		// TO DO 
 		cg.renderEditArea();	
+	}
+	
+	void handleTextureMapCombo()
+	{
+		System.out.println("texture map combo changed");
+		
+		String name = (String) cg.textureMapCombo.getEditor().getItem();
+		if(name == null)return;
+		TexMap texMap = cg.contentGeneratorSISI.textureMapMap.get(name);
+		if(texMap == null)return;
+		
+		// create texture only if it fits on the screen
+		int h = cg.nc.h;
+		int w = cg.nc.w;
+		
+		int th = texMap.h;
+		int tw = texMap.w;
+		int[] tp = texMap.tex;
+		
+		if(th > h)return;
+		if(tw > w)return;
+			
+		int[] p = new int[cg.nc.s];
+		
+		// create background
+		for(int y = 0; y < h; y++)
+		{
+			int off = y * w;
+			for(int x = 0; x < w; x++)
+			{
+				p[off+x] = 0xFF000000;
+			}
+		}
+		
+		// add texture 
+		for(int y = 0; y < th; y++)
+		{
+			int off = y * w;
+			int toff = y * tw;
+			for(int x = 0; x < tw; x++)
+			{
+				p[off+x] = tp[toff + x];
+			}
+		}
+		
+		cg.textureMapPixels = p;
+		cg.textureMapXMax = tw;
+		cg.textureMapYMax = th;
+		cg.renderEditArea();
 	}
 }
 
