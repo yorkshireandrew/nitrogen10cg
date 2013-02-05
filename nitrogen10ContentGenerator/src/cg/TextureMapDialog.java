@@ -34,6 +34,8 @@ public class TextureMapDialog extends JDialog{
 	
 	TextureMapDialog(ContentGenerator cg)
 	{
+		super(cg);
+		setTitle("Add Texture Map");
 		final TextureMapDialog tmd = this;
 		
 		this.cg = cg;
@@ -150,7 +152,7 @@ public class TextureMapDialog extends JDialog{
 		dialog.add(buttonBox);
 		this.getContentPane().removeAll();
 		this.getContentPane().add(dialog);
-		this.setSize(400,250);
+		this.setSize(250,150);
 		// this.setModal(true);
 		this.validate();
 		this.setLocationRelativeTo(cg);	
@@ -222,3 +224,4 @@ public class TextureMapDialog extends JDialog{
 		return true;
 	}
 }
+

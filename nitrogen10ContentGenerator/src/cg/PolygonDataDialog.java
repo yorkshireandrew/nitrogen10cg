@@ -48,6 +48,9 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	
 	PolygonDataDialog(ContentGenerator cg)
 	{
+		super(cg);
+		setTitle("Polygon Data");
+		
 		final PolygonDataDialog pdd = this;
 		contentGenerator = cg;
 		
@@ -91,7 +94,7 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 					}			
 				});	
 		
-		this.setSize(400,250);
+		this.setSize(220,250);
 		this.setModal(true);
 		this.generateContent();
 		this.validate();

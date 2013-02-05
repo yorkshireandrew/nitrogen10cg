@@ -34,9 +34,12 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 	JLabel aux2Label				= new JLabel("Aux 2");
 	JLabel aux3Label				= new JLabel("Aux 3");
 
+	JButton autoFillButton;
 	
 	VertexDataDialog(ContentGenerator cg)
 	{
+		super(cg);
+		setTitle("Vertex Data");
 		final VertexDataDialog vdd = this;
 		contentGenerator = cg;
 		
@@ -52,6 +55,9 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 		aux2TextField.setMaximumSize(aux2TextField.getPreferredSize());		
 		aux3TextField = new JTextField("0",10);
 		aux3TextField.setMaximumSize(aux3TextField.getPreferredSize());
+		
+		autoFillButton = new JButton("Use TexMap");
+		autoFillButton.addActionListener(this);
 		
 		JButton cancelButton = new JButton("CANCEL");
 		cancelButton.addActionListener(
@@ -98,13 +104,17 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 
 		Box dialog = new Box(BoxLayout.Y_AXIS);
 		dialog.add(nameBox);
+		dialog.add(Box.createVerticalGlue());
 		dialog.add(aux1Box);
 		dialog.add(aux2Box);
 		dialog.add(aux3Box);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(autoFillButton);
+		dialog.add(Box.createVerticalGlue());
 		dialog.add(buttonBox);
 		
 		this.add(dialog);
-		this.setSize(400,250);
+		this.setSize(250,250);
 		this.setModal(true);
 		this.validate();
 		this.setLocationRelativeTo(cg);
@@ -212,7 +222,16 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 			}
 			max +=1;
 			dataNameTextField.setText(Integer.toString(max));	
-		}	
+		}
+		
+		if(e.getSource() == autoFillButton)
+		{
+			if(contentGenerator.textureMapPixels != null)
+			{
+				aux1TextField.setText(contentGenerator.textureMapX.getText());
+				aux2TextField.setText(contentGenerator.textureMapY.getText());
+			}
+		}
 	}
 
 }

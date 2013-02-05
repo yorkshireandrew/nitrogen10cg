@@ -29,6 +29,7 @@ import modified_nitrogen1.ImmutableVertex;
 import modified_nitrogen1.NitrogenContext;
 import modified_nitrogen1.PolygonVertexData;
 import modified_nitrogen1.RendererHelper;
+import modified_nitrogen1.TexMap;
 
 public class PolygonDialog extends JDialog implements ActionListener{
 
@@ -63,6 +64,11 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	JComboBox 	polygonBacksideComboBox;
 	JLabel 		polygonBacksideLabel = new JLabel("Backside ");	
 	
+	// polygon backside UI
+	JComboBox 	textureMapComboBox;
+	JLabel 		textureMapLabel = new JLabel("TextureMap ");
+	JButton		textureMapAutoFillButton;
+	
 	// polygon transparent UI
 	JCheckBox	isTransparentCheckBox;
 	
@@ -71,6 +77,8 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		
 	PolygonDialog(ContentGenerator cg)
 	{
+		super(cg);
+		setTitle("Polygon Dialog");
 		this.cg = cg;
 		this.model = new ContentGeneratorPolygon(cg.polygonDialogModel);
 		this.lastPolygonEdited = cg.lastPolygonEdited;
@@ -112,6 +120,14 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		polygonBacksideComboBox.setEditable(true);
 		polygonBacksideComboBox.setMaximumSize(polygonBacksideComboBox.getPreferredSize());
 
+		textureMapComboBox = new JComboBox(getTextureMapNames());
+		textureMapComboBox.setEditable(true);
+		textureMapComboBox.setMaximumSize(textureMapComboBox.getPreferredSize());
+		
+		textureMapAutoFillButton = new JButton ("Use Tex Map");
+		textureMapAutoFillButton.addActionListener(this);
+		
+		
 		isTransparentCheckBox = new JCheckBox("Is transparent ");
 		
 		cancelButton = new JButton("CANCEL");
@@ -189,6 +205,12 @@ public class PolygonDialog extends JDialog implements ActionListener{
 			JOptionPane.showMessageDialog(cg, "Polygon Backside incorrect", "Error",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		
+		if(getString(textureMapComboBox) == null)
+		{
+			JOptionPane.showMessageDialog(cg, "Texture Map incorrect", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		System.out.println("success!!!!");
 		
 		// update the model
@@ -204,6 +226,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		model.pvd_c4_name = getString(polygonVertexDataComboBox4);
 		model.rendererTriplet_name = getString(polygonRendererComboBox);
 		model.backside_name = getString(polygonBacksideComboBox);
+		model.textureMap_name = getString(textureMapComboBox);
 		model.isBacksideCulled = isBacksideCulledCheckBox.isSelected();
 		model.isTransparent = isTransparentCheckBox.isSelected();
 		
@@ -407,6 +430,10 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		Box polygonBacksideBox = new Box(BoxLayout.X_AXIS);
 		polygonBacksideBox.add(polygonBacksideComboBox);
 		polygonBacksideBox.add(Box.createHorizontalGlue());
+
+		Box textureMapBox = new Box(BoxLayout.X_AXIS);
+		textureMapBox.add(textureMapComboBox);
+		textureMapBox.add(Box.createHorizontalGlue());
 		
 		Box isTransparentBox = new Box(BoxLayout.X_AXIS);
 		isTransparentBox.add(isTransparentCheckBox);
@@ -424,8 +451,9 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		fatten(polygonVertexLabel4);
 		fatten(polygonRendererLabel);
 		fatten(polygonBacksideLabel);
+		fatten(textureMapLabel);
 		
-		GridLayout gridLayout = new GridLayout(10,3);
+		GridLayout gridLayout = new GridLayout(11,3);
 		setLayout(gridLayout);
 		
 		add(polygonNameButton);
@@ -456,6 +484,10 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		add(polygonBacksideLabel);
 		add(polygonBacksideBox);
 		add(isBacksideCulledCheckBox);
+		
+		add(textureMapLabel);
+		add(textureMapBox);
+		add(textureMapAutoFillButton);
 		
 		add(isTransparentBox);
 		add(new JLabel(""));
@@ -550,9 +582,28 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		return nameArray;
 	}
 	
+	
+	
 	private String getPolygonImmutableBacksideFromModel()
 	{
 		String retval = model.backside_name;
+		if(retval == null)return("");
+		return retval;
+	}
+	
+	private String[] getTextureMapNames()
+	{
+		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
+		Map<String,TexMap> polygonDataMap = cgsisi.textureMapMap;
+		Set<String> names = polygonDataMap.keySet();
+		String[] nameArray = names.toArray(new String[0]);
+		Arrays.sort(nameArray);
+		return nameArray;
+	}
+	
+	private String getPolygonTextureMapFromModel()
+	{
+		String retval = model.textureMap_name;
 		if(retval == null)return("");
 		return retval;
 	}
@@ -630,6 +681,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		polygonRendererComboBox.getEditor().setItem(getPolygonRendererTripletFromModel());
 		isBacksideCulledCheckBox.setSelected(model.isBacksideCulled);
 		polygonBacksideComboBox.getEditor().setItem(getPolygonImmutableBacksideFromModel());
+		textureMapComboBox.getEditor().setItem(getPolygonTextureMapFromModel());
 		isTransparentCheckBox.setSelected(model.isTransparent);
 	}
 	

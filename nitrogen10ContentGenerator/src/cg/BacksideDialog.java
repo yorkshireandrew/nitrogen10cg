@@ -32,6 +32,8 @@ public class BacksideDialog extends JDialog implements ActionListener{
 	
 	BacksideDialog(ContentGenerator cg)
 	{
+		super(cg);
+		setTitle("New Backside");
 		this.cg = cg;
 		
 		nameButton = new JButton("Name");
@@ -82,7 +84,7 @@ public class BacksideDialog extends JDialog implements ActionListener{
 		dialog.add(buttonBox);
 		
 		this.add(dialog);
-		this.setSize(400,250);
+		this.setSize(240,120);
 		this.setModal(true);
 		this.validate();
 		this.setLocationRelativeTo(cg);
