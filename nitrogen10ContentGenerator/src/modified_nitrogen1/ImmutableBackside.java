@@ -6,13 +6,13 @@ public class ImmutableBackside implements Serializable{
 	private static final long serialVersionUID = -7547901468152037764L;
 
 	// view-space offset from the Items origin
-	final float ix, iy, iz;
+	public final float ix, iy, iz;
 	
 	// the backsides normal coordinates
-	final float inx, iny, inz;
+	public final float inx, iny, inz;
 	
 	// Causes the backside to perform additional calculations used for lighting
-	final boolean calculateLighting;
+	public final boolean calculateLighting;
 	
 	public ImmutableBackside(
 			final float ix,

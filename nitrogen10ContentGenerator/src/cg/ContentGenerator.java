@@ -515,8 +515,10 @@ public class ContentGenerator extends JFrame{
     edit.add(item = new JMenuItem("Circle..."));
     edit.add(item = new JMenuItem("Remove Polygon"));
     edit.add(item = new JMenuItem("Collision Vertexes..."));
-    edit.add(item = new JMenuItem("Move Origin..."));
+    edit.add(item = new JMenuItem("Move Origin"));
+    item.addActionListener(new MoveOriginMenuItemAction(this));  
     edit.add(item = new JMenuItem("Scale..."));
+    item.addActionListener(new ScaleMenuItemAction(this)); 
     
     my_menu.add(file); 
     my_menu.add(edit);

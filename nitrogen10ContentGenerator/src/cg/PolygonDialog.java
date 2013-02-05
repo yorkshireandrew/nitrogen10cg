@@ -286,7 +286,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		System.out.println("NEW BOUNDING RADIUS" + present);
 	}
 	
-	private static float distBetween(ImmutableVertex a, ImmutableVertex b)
+	static float distBetween(ImmutableVertex a, ImmutableVertex b)
 	{
 		float dx = a.is_x - b.is_x;
 		float dy = a.is_y - b.is_y;
