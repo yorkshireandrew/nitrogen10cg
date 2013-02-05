@@ -256,6 +256,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	{
 		ImmutableVertex origin = new ImmutableVertex(0,0,0);
 		float present = cg.contentGeneratorSISI.boundingRadius;
+		System.out.println("OLD BOUNDING RADIUS" + present);
 
 		if(model.c1 != null)
 		{
@@ -282,6 +283,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		}
 		
 		cg.contentGeneratorSISI.boundingRadius = present;
+		System.out.println("NEW BOUNDING RADIUS" + present);
 	}
 	
 	private static float distBetween(ImmutableVertex a, ImmutableVertex b)

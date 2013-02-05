@@ -15,10 +15,13 @@ import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -133,6 +136,54 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			System.out.println("textureMap combo changed");
 			handleTextureMapCombo();
 		}
+		
+		if(source == cgL.setNearRendererDistanceButton)
+		{
+			handleNearRendererDistanceButton();
+		}
+		if(source == cgL.setNearRendererOffButton)
+		{
+			handleNearRendererOffButton();
+		}
+		if(source == cgL.setNearRendererOnButton)
+		{
+			handleNearRendererOnButton();
+		}
+		
+		if(source == cgL.setFarRendererDistanceButton)
+		{
+			handleFarRendererDistanceButton();
+		}
+		
+		if(source == cgL.setImprovedDetailDistanceButton)
+		{
+			handleImprovedDetailDistanceButton();
+		}
+		
+		if(source == cgL.setHLPBreakingDistanceButton)
+		{
+			handleHLPBreakingDistanceButton();
+		}
+		
+		if(source == cgL.setHLPBreakingOnButton)
+		{
+			handleHLPBreakingOnButton();
+		}
+		
+		if(source == cgL.setHLPBreakingOffButton)
+		{
+			handleHLPBreakingOffButton();
+		}
+		
+		if(source == cgL.setBillboardOrientationDistanceButton)
+		{
+			handleBillboardOrientationDistanceButton();
+		}
+		
+		if(source == cgL.setFarPlaneDistanceButton)
+		{
+			handleFarPlaneDistanceButton();
+		}	
 	}		
 	
 	void updateWorkingVertexFromCursor()
@@ -556,12 +607,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			if(e.getSource() == cgL.distSlider)
 			{
 				// Logarithmic slider
-				int val = cgL.distSlider.getModel().getValue();
-				double d_val = (double)val;
-				d_val = d_val / 1000;
-				float newdist = (float)Math.pow(10, d_val);
-				newdist = newdist * 50;
-				
+				float newdist = distFromSlider();			
 				cg.distTransform.a34 = -newdist;
 				cg.distTransform.setNeedsTranslationUpdating();
 				cg.renderEditArea();
@@ -592,14 +638,55 @@ public class ContentGeneratorController extends AbstractAction implements Change
 	
 	void handleOrthogonalViewButton()
 	{
-		cg.viewType = ContentGenerator.ORTHOGONAL_PROJECTION;
-		cg.rightHandControls.removeAll();
-		cg.rightHandControls.add(cg.orthogonalViewTypeControls);
-		cg.rightHandControls.revalidate();
+		ContentGenerator cgL = cg;
+		cgL.viewType = ContentGenerator.ORTHOGONAL_PROJECTION;
+		cgL.rightHandControls.removeAll();
+		cgL.rightHandControls.add(cg.orthogonalViewTypeControls);
+		cgL.rightHandControls.revalidate();
 		
-		NitrogenContext ncL = cg.nc;		
+		NitrogenContext ncL = cgL.nc;		
 		ncL.contentGeneratorForcesNoPerspective = false;
-		cg.renderEditArea();
+		
+		// set transforms back to default front view
+		cgL.rootTransform.setTransform(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+		
+	    cgL.distTransform.setTransform(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, -500f);
+	    
+	    cgL.turnTransform.setTransform(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+	    
+	    cgL.climbTransform.setTransform(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+	    
+	    cgL.rollTransform.setTransform(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+	    
+	    cgL.viewDirectionTransform.setTransform(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f);
+	    
+	    // ensure perspective sliders are aligned for next visit
+		// initialise the distance slider
+		cgL.distSlider.getModel().setValue(1000);
+		cgL.turnSlider.getModel().setValue(0);
+		cgL.climbSlider.getModel().setValue(0);
+		cgL.rollSlider.getModel().setValue(0);
+		
+		cgL.renderEditArea();
+		cgL.cgc.updateWorkingVertexFromCursor();
 	}
 	
 	void handlePerspectiveViewButton()
@@ -715,6 +802,77 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		cg.textureMapYMax = th;
 		cg.renderEditArea();
 	}
+	
+	private float distFromSlider()
+	{
+		int val = cg.distSlider.getModel().getValue();
+		double d_val = (double)val;
+		d_val = d_val / 1000;
+		float newdist = (float)Math.pow(10, d_val);
+		newdist = newdist * 50;
+		System.out.println("dist=" + newdist);
+		return newdist;
+	}
+	
+	private void handleNearRendererDistanceButton()
+	{
+		cg.contentGeneratorSISI.nearRendererDist = distFromSlider();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleNearRendererOffButton()
+	{
+		cg.contentGeneratorSISI.nearRendererDist = 1f;
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	private void handleNearRendererOnButton()
+	{
+		cg.contentGeneratorSISI.nearRendererDist = 1000000f;
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleFarRendererDistanceButton()
+	{
+		cg.contentGeneratorSISI.farRendererDist = distFromSlider();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleImprovedDetailDistanceButton()
+	{
+		cg.contentGeneratorSISI.improvedDetailDist = distFromSlider();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleHLPBreakingDistanceButton()
+	{
+		cg.contentGeneratorSISI.hlpBreakingDist = distFromSlider();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleHLPBreakingOnButton()
+	{
+		cg.contentGeneratorSISI.hlpBreakingDist = 1f;
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleHLPBreakingOffButton()
+	{
+		cg.contentGeneratorSISI.hlpBreakingDist = 1000000f;
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleBillboardOrientationDistanceButton()
+	{
+		cg.contentGeneratorSISI.billboardOrientationDist = distFromSlider();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handleFarPlaneDistanceButton()
+	{
+		cg.contentGeneratorSISI.farPlane = distFromSlider();
+		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+
 }
 
 

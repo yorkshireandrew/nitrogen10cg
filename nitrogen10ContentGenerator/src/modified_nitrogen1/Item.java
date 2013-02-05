@@ -217,7 +217,11 @@ final public class Item implements Serializable{
 		// far plane cull using the Items own farPlane
 		final float itemDist = -v34;
 		final SharedImmutableSubItem 	sisiL = sisi;
-		if(itemDist > sisiL.farPlane)return;
+		if(itemDist > sisiL.farPlane)
+		{
+			System.out.println("far plane culled by SISI");
+			return;
+		}
 
 		// DEBUG
 		context.itemsRendered++;
@@ -434,7 +438,11 @@ final public class Item implements Serializable{
 		if(dist < context.nearClip)return(true);
 		
 		// far clip
-		if(dist > context.farClip)return(true);
+		if(dist > context.farClip)
+			{
+			System.out.println("far culled by context " + dist);
+			return(true);
+			}
 		
 		// right clip
 		if((x - boundingRadiusCache) > allowedRightness)return (true);
@@ -464,6 +472,10 @@ final public class Item implements Serializable{
 		
 		// calculate pessimistic distance from viewpoint
 		final float dist = -z - sisiBoundingRadius;
+		final float test = -z;
+		System.out.println("dist = " + test);
+		System.out.println("sisiBoundingR = " + sisiBoundingRadius);
+		System.out.println("pess dist = " + dist);
 		final float allowedRightness = context.xClip * dist;
 		final float allowedDownness = context.yClip * dist;	
 		
@@ -513,6 +525,7 @@ final public class Item implements Serializable{
 		{touchedTop = false;}
 			
 		fustrumTouchCount = fustrumTouchCountL;	
+		System.out.println("Fustrum Touch  count" + fustrumTouchCount);
 	}
 	
 	/** Examines rotationNeedsUpdate and translationNeedsUpdate flags then if necessary informs all the Items backsides and vertexs that they have moved 

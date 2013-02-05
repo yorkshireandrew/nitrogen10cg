@@ -124,10 +124,11 @@ public class NitrogenContext extends JPanel implements Serializable{
     	this.yClip = yClip;
     	this.nearClip = nearClip;
     	this.farClip = farClip;
+    	System.out.print("nitrogen context far clip=" + this.farClip);
     	this.midw = (width / 2);
     	this.midh = (height / 2);
-
-    	magnification = ((float)(midw-1)) / yClip;
+    	
+    	magnification = ((float)(midw-1)) / xClip;
     	zk = 0.5f * nearClip * (float)(Integer.MAX_VALUE - 2);
         
     	w = width;

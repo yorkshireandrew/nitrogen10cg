@@ -78,8 +78,10 @@ public class ContentGeneratorSISI implements Serializable{
     	collisionVertexList			= new ArrayList<ImmutableVertex>();   	
     	polygonVertexDataMap 		= new HashMap<String,PolygonVertexData>();
         polygonDataMap 				= new HashMap<String,int[]>();
-        textureMapMap 				= new HashMap<String,TexMap>(); 
-        textureMapFullPathMap 		= new HashMap<String,String>(); 
+        textureMapMap 				= new HashMap<String,TexMap>();
+        textureMapMap.put("null", null);
+        textureMapFullPathMap 		= new HashMap<String,String>();
+        textureMapMap.put("null", null);
         immutableBacksideMap 		= new HashMap<String,ImmutableBackside>(); 
         contentGeneratorPolygonMap 	= new HashMap<String,ContentGeneratorPolygon>();
     }
@@ -90,6 +92,7 @@ public class ContentGeneratorSISI implements Serializable{
     	
     	// initialise fields 
     	retval.boundingRadius 				=  boundingRadius;
+    	System.out.println("generated SISI bounding radius " + retval.boundingRadius);
     	retval.nearRendererDist 			= nearRendererDist;
     	retval.farRendererDist  			= farRendererDist;
     	retval.hlpBreakingDist  			= hlpBreakingDist;

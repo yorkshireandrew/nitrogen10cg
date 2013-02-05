@@ -28,6 +28,7 @@ public class ContentGenerator extends JFrame{
 	// constants
 	static final int APP_WIDTH = 1000;
 	static final int APP_HEIGHT = 650;
+	//static final int EDIT_SCREEN_WIDTH	= 700;
 	static final int EDIT_SCREEN_WIDTH	= 700;
 	static final int EDIT_SCREEN_HEIGHT = 600;
 	static final int CONSTRAINED_BORDER_WIDTH = 10;
@@ -126,9 +127,13 @@ public class ContentGenerator extends JFrame{
 	
 	/** buttons for perspective view */
 	JButton setNearRendererDistanceButton;
+	JButton setNearRendererOnButton;
+	JButton setNearRendererOffButton;
 	JButton setFarRendererDistanceButton;
 	JButton setImprovedDetailDistanceButton;
 	JButton setHLPBreakingDistanceButton;
+	JButton setHLPBreakingOnButton;
+	JButton setHLPBreakingOffButton;
 	JButton setBillboardOrientationDistanceButton;
 	JButton setFarPlaneDistanceButton;
 	
@@ -194,7 +199,9 @@ public class ContentGenerator extends JFrame{
         		
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip
-		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1,1,1, 1000);
+		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1f,0.85f,1, 1000000);
+//		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1,1,1, 1000);
+
         nc.cls(0xFF000000);        
         nc.repaint();
         
@@ -1005,6 +1012,13 @@ public class ContentGenerator extends JFrame{
 		setNearRendererDistanceButton.setAction(cgc);
 		setNearRendererDistanceButton.setText("Near Render");
 		
+		setNearRendererOffButton = new JButton();
+		setNearRendererOffButton.setAction(cgc);
+		setNearRendererOffButton.setText("OFF");
+		setNearRendererOnButton = new JButton();
+		setNearRendererOnButton.setAction(cgc);
+		setNearRendererOnButton.setText("ON");
+		
 		setFarRendererDistanceButton 	= new JButton();
 		setFarRendererDistanceButton.setAction(cgc);
 		setFarRendererDistanceButton.setText("Far Render");
@@ -1016,6 +1030,12 @@ public class ContentGenerator extends JFrame{
 		setHLPBreakingDistanceButton	= new JButton();
 		setHLPBreakingDistanceButton.setAction(cgc);
 		setHLPBreakingDistanceButton.setText("HLP Breaking");
+		setHLPBreakingOffButton = new JButton();
+		setHLPBreakingOffButton.setAction(cgc);
+		setHLPBreakingOffButton.setText("OFF");
+		setHLPBreakingOnButton = new JButton();
+		setHLPBreakingOnButton.setAction(cgc);
+		setHLPBreakingOnButton.setText("ON");
 		
 		setBillboardOrientationDistanceButton = new JButton();
 		setBillboardOrientationDistanceButton.setAction(cgc);
@@ -1037,13 +1057,42 @@ public class ContentGenerator extends JFrame{
 		perspectiveViewTypeControls.add(rollSlider);
 		perspectiveViewTypeControls.add(Box.createVerticalGlue());
 		
+		// create boxes for near render and HLP render
+		Box nearRenderBox = Box.createHorizontalBox();
+		nearRenderBox.add(setNearRendererDistanceButton);
+		nearRenderBox.add(setNearRendererOffButton);
+		nearRenderBox.add(setNearRendererOnButton);
+		nearRenderBox.add(Box.createHorizontalGlue());
+		
+		Box farRenderBox = Box.createHorizontalBox();
+		farRenderBox.add(setFarRendererDistanceButton);
+		farRenderBox.add(Box.createHorizontalGlue());
+		
+		Box improvedBox = Box.createHorizontalBox();
+		improvedBox.add(setImprovedDetailDistanceButton);
+		improvedBox.add(Box.createHorizontalGlue());
+		
+		Box hlpBox = Box.createHorizontalBox();
+		hlpBox.add(setHLPBreakingDistanceButton);
+		hlpBox.add(setHLPBreakingOffButton);
+		hlpBox.add(setHLPBreakingOnButton);
+		hlpBox.add(Box.createHorizontalGlue());
+		
+		Box billboardBox = Box.createHorizontalBox();
+		billboardBox.add(setBillboardOrientationDistanceButton);
+		billboardBox.add(Box.createHorizontalGlue());
+		
+		Box farBox = Box.createHorizontalBox();
+		farBox.add(setFarPlaneDistanceButton);
+		farBox.add(Box.createHorizontalGlue());
+		
 		// add the buttons
-		perspectiveViewTypeControls.add(setNearRendererDistanceButton);
-		perspectiveViewTypeControls.add(setFarRendererDistanceButton);
-		perspectiveViewTypeControls.add(setImprovedDetailDistanceButton);
-		perspectiveViewTypeControls.add(setHLPBreakingDistanceButton);
-		perspectiveViewTypeControls.add(setBillboardOrientationDistanceButton);
-		perspectiveViewTypeControls.add(setFarPlaneDistanceButton);
+		perspectiveViewTypeControls.add(nearRenderBox);
+		perspectiveViewTypeControls.add(farRenderBox);
+		perspectiveViewTypeControls.add(improvedBox);
+		perspectiveViewTypeControls.add(hlpBox);
+		perspectiveViewTypeControls.add(billboardBox);
+		perspectiveViewTypeControls.add(farBox);
 		perspectiveViewTypeControls.add(Box.createVerticalGlue());		
 	}
 	
