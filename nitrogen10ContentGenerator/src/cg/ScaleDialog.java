@@ -86,8 +86,10 @@ public class ScaleDialog extends JDialog implements ActionListener{
 			JOptionPane.showMessageDialog(cg, "Please enter a number", "Error",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-			
-		ContentGeneratorSISI cgSISI = cg.contentGeneratorSISI;
+		
+		ContentGenerator cgL = cg;
+						
+		ContentGeneratorSISI cgSISI = cgL.contentGeneratorSISI;
 		
 		// Move Vertexes
 		List<ImmutableVertex> ivlin = cgSISI.immutableVertexList;
@@ -102,7 +104,8 @@ public class ScaleDialog extends JDialog implements ActionListener{
 					iv_element.is_z * scale
 					);
 			ivlout.add(iv_element_out);
-		}
+		}	
+		updateImmutableVertexReferences(ivlin,ivlout);
 		
 		// Move CollisionVertexes
 		List<ImmutableVertex> ivclin = cgSISI.collisionVertexList;
@@ -144,18 +147,53 @@ public class ScaleDialog extends JDialog implements ActionListener{
 			ibm_out.put(in.getKey(), backsideOut);	
 		}
 		
-		// calculate new bounding radius
 		float boundingRadius = cgSISI.boundingRadius;
-
+		
 		// write back to cgSISI		
 		cgSISI.immutableVertexList = ivlout;
 		cgSISI.collisionVertexList = ivclout;
 		cgSISI.immutableBacksideMap = ibm_out;
-		cgSISI.boundingRadius = boundingRadius;
+		cgSISI.boundingRadius = boundingRadius * scale;
 		
 		// update the display
-		cg.cgc.updateGeneratedItemAndEditArea();
+		cgL.workingVertexModel.pickedVertex = null;
+		cgL.cgc.updateGeneratedItemAndEditArea();
+		
 		this.setVisible(false);
 		this.dispose();	
+	}
+	
+
+	
+	void updateImmutableVertexReferences(List<ImmutableVertex> oldVertexes, List<ImmutableVertex> newVertexes)
+	{
+		ContentGeneratorSISI cgSISI = cg.contentGeneratorSISI;
+		Map<String,ContentGeneratorPolygon> cgcgp_in = cgSISI.contentGeneratorPolygonMap;
+		Map<String,ContentGeneratorPolygon> newPolygons = new HashMap<String,ContentGeneratorPolygon>();
+		
+		Set<Entry<String,ContentGeneratorPolygon>> s = cgcgp_in.entrySet();
+		Iterator<Entry<String,ContentGeneratorPolygon>> cgcgp_in_it = s.iterator();
+		
+		while(cgcgp_in_it.hasNext())
+		{
+			Entry<String,ContentGeneratorPolygon> element = cgcgp_in_it.next();
+			ContentGeneratorPolygon cgp_in = element.getValue();
+			
+			int c1_index = oldVertexes.indexOf(cgp_in.c1);
+			int c2_index = oldVertexes.indexOf(cgp_in.c2);
+			int c3_index = oldVertexes.indexOf(cgp_in.c3);
+			int c4_index = oldVertexes.indexOf(cgp_in.c4);
+			
+			ContentGeneratorPolygon cgp_out = new ContentGeneratorPolygon(cgp_in);
+			
+			cgp_out.c1 = newVertexes.get(c1_index);
+			cgp_out.c2 = newVertexes.get(c2_index);
+			cgp_out.c3 = newVertexes.get(c3_index);
+			cgp_out.c4 = newVertexes.get(c4_index);
+			
+			newPolygons.put(element.getKey(), cgp_out);		
+		}
+		
+		cgSISI.contentGeneratorPolygonMap = newPolygons;
 	}
 }

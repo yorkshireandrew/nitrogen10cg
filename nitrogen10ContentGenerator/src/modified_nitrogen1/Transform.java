@@ -263,6 +263,12 @@ public class Transform implements Serializable{
 		return false;
 	}
 	
+	final public void removeAllItems()
+	{
+		decreaseVisibleChildrenBy(childItems.size());
+		childItems = new ItemVector();
+	}
+	
 	/** package scope method that increases the numberOfVisibleChildren in this transform
 	 *  as well as any above it in the scene graph, by n
 	 * @param n How much to increase the count by

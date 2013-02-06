@@ -793,6 +793,9 @@ public class ContentGenerator extends JFrame{
 		out.writeInt(viewDetail);
 		out.writeBoolean(showCollisionVertexes);
 		
+		// Item gets constructed and added during loading
+		viewDirectionTransform.remove(generatedItem);
+		
 		out.writeObject(rootTransform);
 		out.writeObject(distTransform);
 		out.writeObject(turnTransform);
@@ -907,6 +910,7 @@ public class ContentGenerator extends JFrame{
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		
 		generatedSISI = contentGeneratorSISI.generateSISI();
 		generatedItem = Item.createItem(generatedSISI, viewDirectionTransform);
 	
