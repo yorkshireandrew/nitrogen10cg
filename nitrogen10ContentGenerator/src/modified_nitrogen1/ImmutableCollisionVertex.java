@@ -16,15 +16,15 @@ public final class ImmutableCollisionVertex implements Serializable{
 	
 	// Item-space coordinates
 	/** Item space x coordinate. The containing Items orientation transform gets applied to the (usually fixed) Item space coordinates of the vertex in order to generate the vertex's view-space coordinates. */
-	float is_x;
+	public float is_x;
 	/** Item space y coordinate. */
-	float is_y;
+	public float is_y;
 	/** Item space z coordinate. */
-	float is_z;
+	public float is_z;
 	/** Radius of collision */
-	float radius;
+	public float radius;
     
-    ImmutableCollisionVertex(
+    public ImmutableCollisionVertex(
     		float is_x,
     		float is_y,
     		float is_z,
@@ -35,6 +35,14 @@ public final class ImmutableCollisionVertex implements Serializable{
     	this.is_y = is_y;
     	this.is_z = is_z;
     	this.radius = radius;
+    }
+    
+    public ImmutableCollisionVertex(ImmutableCollisionVertex source)
+    {
+    	this.is_x = source.is_x;
+    	this.is_y = source.is_y;
+    	this.is_z = source.is_z;
+    	this.radius = source.radius;   	
     }
 
 

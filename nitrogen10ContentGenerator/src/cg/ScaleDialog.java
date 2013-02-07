@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import modified_nitrogen1.ImmutableBackside;
+import modified_nitrogen1.ImmutableCollisionVertex;
 import modified_nitrogen1.ImmutableVertex;
 
 public class ScaleDialog extends JDialog implements ActionListener{
@@ -108,16 +109,17 @@ public class ScaleDialog extends JDialog implements ActionListener{
 		updateImmutableVertexReferences(ivlin,ivlout);
 		
 		// Move CollisionVertexes
-		List<ImmutableVertex> ivclin = cgSISI.collisionVertexList;
-		List<ImmutableVertex> ivclout = new ArrayList<ImmutableVertex>();
-		Iterator<ImmutableVertex> ivcin_it = ivclin.iterator();
+		List<ImmutableCollisionVertex> ivclin = cgSISI.collisionVertexList;
+		List<ImmutableCollisionVertex> ivclout = new ArrayList<ImmutableCollisionVertex>();
+		Iterator<ImmutableCollisionVertex> ivcin_it = ivclin.iterator();
 		while(ivcin_it.hasNext())
 		{
-			ImmutableVertex ivc_element = ivcin_it.next();
-			ImmutableVertex ivc_element_out = new ImmutableVertex(
+			ImmutableCollisionVertex ivc_element = ivcin_it.next();
+			ImmutableCollisionVertex ivc_element_out = new ImmutableCollisionVertex(
 					ivc_element.is_x * scale,
 					ivc_element.is_y * scale,
-					ivc_element.is_z * scale
+					ivc_element.is_z * scale,
+					ivc_element.radius * scale
 					);
 			ivclout.add(ivc_element_out);
 		}

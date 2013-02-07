@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import modified_nitrogen1.ImmutableBackside;
+import modified_nitrogen1.ImmutableCollisionVertex;
 import modified_nitrogen1.ImmutableVertex;
 
 public class MoveOriginMenuItemAction implements ActionListener {
@@ -49,16 +50,17 @@ public class MoveOriginMenuItemAction implements ActionListener {
 		updateImmutableVertexReferences(ivlin,ivlout);
 		
 		// Move CollisionVertexes
-		List<ImmutableVertex> ivclin = cgSISI.collisionVertexList;
-		List<ImmutableVertex> ivclout = new ArrayList<ImmutableVertex>();
-		Iterator<ImmutableVertex> ivcin_it = ivclin.iterator();
+		List<ImmutableCollisionVertex> ivclin = cgSISI.collisionVertexList;
+		List<ImmutableCollisionVertex> ivclout = new ArrayList<ImmutableCollisionVertex>();
+		Iterator<ImmutableCollisionVertex> ivcin_it = ivclin.iterator();
 		while(ivcin_it.hasNext())
 		{
-			ImmutableVertex ivc_element = ivcin_it.next();
-			ImmutableVertex ivc_element_out = new ImmutableVertex(
+			ImmutableCollisionVertex ivc_element = ivcin_it.next();
+			ImmutableCollisionVertex ivc_element_out = new ImmutableCollisionVertex(
 					ivc_element.is_x - x,
 					ivc_element.is_y - y,
-					ivc_element.is_z - z
+					ivc_element.is_z - z,
+					ivc_element.radius
 					);
 			ivclout.add(ivc_element_out);
 		}

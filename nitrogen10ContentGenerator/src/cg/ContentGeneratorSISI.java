@@ -26,7 +26,7 @@ public class ContentGeneratorSISI implements Serializable{
 
 	List<ImmutableVertex> immutableVertexList;
 	
-	List<ImmutableVertex> collisionVertexList;	
+	List<ImmutableCollisionVertex> collisionVertexList;	
 	
 	/** contains named VertexData used for ImmutablePolygon generation */
     Map<String,PolygonVertexData> polygonVertexDataMap;
@@ -75,7 +75,7 @@ public class ContentGeneratorSISI implements Serializable{
     ContentGeneratorSISI()
     {
     	immutableVertexList			= new ArrayList<ImmutableVertex>();
-    	collisionVertexList			= new ArrayList<ImmutableVertex>();   	
+    	collisionVertexList			= new ArrayList<ImmutableCollisionVertex>();   	
     	polygonVertexDataMap 		= new HashMap<String,PolygonVertexData>();
         polygonDataMap 				= new HashMap<String,int[]>();
         textureMapMap 				= new HashMap<String,TexMap>();
