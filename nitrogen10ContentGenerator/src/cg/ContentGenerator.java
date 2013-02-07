@@ -511,10 +511,12 @@ public class ContentGenerator extends JFrame{
     item.addActionListener(new DeleteUnusedStuffMenuItemAction(this));
     
     edit.add(item = new JMenuItem("Template..."));
-    item.addActionListener(new TemplateMenuItemAction(this));  
+    item.addActionListener(new TemplateMenuItemAction(this));
     edit.add(item = new JMenuItem("Circle..."));
     edit.add(item = new JMenuItem("Remove Polygon"));
     edit.add(item = new JMenuItem("Collision Vertexes..."));
+    edit.add(item = new JMenuItem("Near and Far Polygons..."));
+    item.addActionListener(new NearFarMenuItemAction(this));  
     edit.add(item = new JMenuItem("Move Origin"));
     item.addActionListener(new MoveOriginMenuItemAction(this));  
     edit.add(item = new JMenuItem("Scale..."));
