@@ -147,13 +147,26 @@ public class ScaleDialog extends JDialog implements ActionListener{
 			ibm_out.put(in.getKey(), backsideOut);	
 		}
 		
-		float boundingRadius = cgSISI.boundingRadius;
+		// get distances
+		float boundingRadius = cgSISI.boundingRadius;	
+		float billboardOrientationDist = cgSISI.billboardOrientationDist;
+		float nearRendererDist = cgSISI.nearRendererDist;
+		float farRendererDist = cgSISI.farRendererDist;
+		float hlpBreakingDist = cgSISI.hlpBreakingDist;	
+		float farPlane = cgSISI.farPlane;
 		
 		// write back to cgSISI		
 		cgSISI.immutableVertexList = ivlout;
 		cgSISI.collisionVertexList = ivclout;
 		cgSISI.immutableBacksideMap = ibm_out;
+		
+		// write back to cgSISI scaled distances
 		cgSISI.boundingRadius = boundingRadius * scale;
+		cgSISI.billboardOrientationDist = billboardOrientationDist * scale;
+		cgSISI.nearRendererDist = nearRendererDist * scale;
+		cgSISI.farRendererDist = farRendererDist * scale;
+		cgSISI.hlpBreakingDist = hlpBreakingDist * scale;	
+		cgSISI.farPlane = farPlane;
 		
 		// update the display
 		cgL.workingVertexModel.pickedVertex = null;
