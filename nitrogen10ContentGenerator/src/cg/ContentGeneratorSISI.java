@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -83,8 +84,10 @@ public class ContentGeneratorSISI implements Serializable{
         textureMapFullPathMap 		= new HashMap<String,String>();
         textureMapMap.put("null", null);
         immutableBacksideMap 		= new HashMap<String,ImmutableBackside>(); 
-        contentGeneratorPolygonMap 	= new HashMap<String,ContentGeneratorPolygon>();
-    }
+  
+        // its important we preserve the order in polygon map
+        contentGeneratorPolygonMap 	= new LinkedHashMap<String,ContentGeneratorPolygon>();
+ }
     
     SharedImmutableSubItem generateSISI()
     {
@@ -120,13 +123,16 @@ public class ContentGeneratorSISI implements Serializable{
     	int immutableBacksideLength = immutableBacksidesL.length;
     	int immutablePolygonSize = contentGeneratorPolygonMap.size();
     	ImmutablePolygon[] immutablePolygonsL = new ImmutablePolygon[immutablePolygonSize];
-    	ContentGeneratorPolygon[] cgps = contentGeneratorPolygonMap.values().toArray(new ContentGeneratorPolygon[0]);
     	List<ImmutableVertex> immutableVertexListL = immutableVertexList;
     	Map<String,PolygonVertexData> polygonVertexDataMapL = polygonVertexDataMap;
+    	
+    	Iterator<Entry<String,ContentGeneratorPolygon>> it = contentGeneratorPolygonMap.entrySet().iterator();
     	try{
-	    	for(int x = 0; x < immutablePolygonSize; x++)
+    		int index = 0;
+	    	while(it.hasNext())
 	    	{
-	    		ContentGeneratorPolygon cgp = cgps[x];
+	    		// some funny reversing going on so this indexing corrects it
+	    		ContentGeneratorPolygon cgp = it.next().getValue();
 	    		int c1 = immutableVertexListL.indexOf(cgp.c1);
 	    		int c2 = immutableVertexListL.indexOf(cgp.c2);
 	    		int c3 = immutableVertexListL.indexOf(cgp.c3);
@@ -167,7 +173,8 @@ public class ContentGeneratorSISI implements Serializable{
 				cgp.isBacksideCulled,
 				cgp.isTransparent);
 	    		
-	    		immutablePolygonsL[x] = element;
+	    		immutablePolygonsL[index] = element;
+	    		index++;
 	    	}
 	    	
 	    	retval.immutablePolygons = immutablePolygonsL;

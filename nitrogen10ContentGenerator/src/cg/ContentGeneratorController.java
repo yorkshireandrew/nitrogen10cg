@@ -184,6 +184,11 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		{
 			handleFarPlaneDistanceButton();
 		}	
+		
+		if(source == cgL.pickPolygonButton)
+		{
+			handlePickPolygonButton();
+		}	
 	}		
 	
 	void updateWorkingVertexFromCursor()
@@ -721,7 +726,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			// create combo box
 			JComboBox combo = new JComboBox(availableTextures);
 			combo.setEditable(true);
-			combo.getEditor().setItem("");
+			combo.getEditor().setItem(cg.selectedTextureMap);
 			combo.setMaximumSize(combo.getPreferredSize());
 			combo.addActionListener(this); // listen so we can edit existing polygons
 			cg.textureMapCombo = combo;
@@ -800,6 +805,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		cg.textureMapPixels = p;
 		cg.textureMapXMax = tw;
 		cg.textureMapYMax = th;
+		cg.selectedTextureMap = name;
 		cg.renderEditArea();
 	}
 	
@@ -871,6 +877,57 @@ public class ContentGeneratorController extends AbstractAction implements Change
 	{
 		cg.contentGeneratorSISI.farPlane = distFromSlider();
 		cg.cgc.updateGeneratedItemAndEditArea();
+	}
+	
+	private void handlePickPolygonButton()
+	{
+		// save state
+		Renderer originalPickingRenderer = RendererTriplet.getPickingRenderer();
+		NitrogenContext cgnc = cg.nc;
+		boolean originalIsPicking = cgnc.isPicking;
+		// do picking
+		
+		System.out.println("******************************");
+		System.out.println("******************************");
+		System.out.println("******************************");
+		System.out.println("picking a polygon");
+		System.out.println("******************************");
+		System.out.println("******************************");
+		System.out.println("******************************");
+		
+		cgnc.pickDetected = false;
+		cgnc.pickX = cg.cursor_x;
+		cgnc.pickY = cg.cursor_y;
+		System.out.println("pick point " + cgnc.pickX + "," +cgnc.pickY);
+		cgnc.isPicking = true;
+		cgnc.pickedPolygon = -1;
+		RendererTriplet.setPickingRenderer( new Renderer_Picking());
+		cg.rootTransform.render(cgnc);
+		boolean pickDetected = cgnc.pickDetected;
+		int pickedPolygon = cgnc.pickedPolygon; 
+		
+		// return state
+		RendererTriplet.setPickingRenderer(originalPickingRenderer);
+		cgnc.isPicking = originalIsPicking;
+//		cg.rootTransform.render(cgnc);
+		
+		if(pickDetected)
+		{
+			// we found a polygon
+			System.out.println("******************************");
+			System.out.println("found polygon "+ pickedPolygon);
+			System.out.println("******************************");
+
+			PolygonDialog pd = new PolygonDialog(cg);
+			pd.pickPolygon(pickedPolygon);
+			pd.setVisible(true);		
+		}
+		else
+		{
+			System.out.println("******************************");
+			System.out.println("***** FAILED TO DETECT A PICK ******");
+			System.out.println("******************************");
+		}
 	}
 
 }

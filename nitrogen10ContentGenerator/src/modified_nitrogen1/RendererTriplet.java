@@ -50,6 +50,11 @@ public class RendererTriplet implements Serializable{
 		pickingRenderer = in;
 	}
 	
+	final public static Renderer getPickingRenderer()
+	{
+		return pickingRenderer;
+	}
+	
 	
 
 }

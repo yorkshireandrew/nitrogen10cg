@@ -88,6 +88,9 @@ public class NitrogenContext extends JPanel implements Serializable{
     public int pickX;
     public int pickY;
     
+    public int currentPolygon;
+    public int pickedPolygon;
+    
     /** Stuff added for performance evaluation */
     int itemsRendered = 0;
     int polygonsRendered = 0;

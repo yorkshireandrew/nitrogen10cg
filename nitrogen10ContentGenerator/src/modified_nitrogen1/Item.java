@@ -329,6 +329,10 @@ final public class Item implements Serializable{
 		
 		for(int x = polyStart; x < polyFinish; x++)
 		{
+			// added for Content Generator 
+			context.currentPolygon = x;
+			System.out.println("set current polygon to " + context.currentPolygon);
+			
 			//DEBUG
 			System.out.println("--- ******************---");			
 			System.out.println("--- RENDERING POLYGON ---"+x);

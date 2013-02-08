@@ -211,7 +211,7 @@ final class PolygonClipper {
 					if(isVertexCulled(vertex2, context, pass))clipCase |= TWO;
 					if(isVertexCulled(vertex3, context, pass))clipCase |= FOUR;
 					if(isVertexCulled(vertex4, context, pass))clipCase |= EIGHT;
-					
+					/*
 					System.out.println("CLIP POLYGON");
 					System.out.println("PASS:"+pass);
 					System.out.println("CLIPCASE:"+clipCase);
@@ -219,7 +219,7 @@ final class PolygonClipper {
 				    System.out.println("vert 2 = " + (vertex2.vs_x / -vertex2.vs_z) + "," + (vertex2.vs_y / -vertex2.vs_z));	    
 				    System.out.println("vert 3 = " + (vertex3.vs_x / -vertex3.vs_z) + "," + (vertex3.vs_y / -vertex3.vs_z));	    
 				    System.out.println("vert 4 = " + (vertex4.vs_x / -vertex4.vs_z) + "," + (vertex4.vs_y / -vertex4.vs_z));
-
+					*/
 					
 					
 					switch(clipCase)

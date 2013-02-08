@@ -339,6 +339,12 @@ public class PolygonDialog extends JDialog implements ActionListener{
 			handleDeletePolygonEvent();		
 		}
 		
+		if(e.getSource() == textureMapAutoFillButton)
+		{
+			if(cg.selectedTextureMap == null)return;
+			textureMapComboBox.getEditor().setItem(cg.selectedTextureMap);
+		}
+		
 	}
 	
 
@@ -653,6 +659,12 @@ public class PolygonDialog extends JDialog implements ActionListener{
 			
 			
 		}
+	}
+	
+	void pickPolygon(int index)
+	{
+		String name = (String)polygonNameComboBox.getItemAt(index);
+		polygonNameComboBox.getEditor().setItem(name);
 	}
 	
 	

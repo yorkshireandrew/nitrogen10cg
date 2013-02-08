@@ -122,12 +122,16 @@ public class Renderer_Picking implements Renderer{
 		                // *******************************************
 		            	if(srl_st_x == contextPickX)
 		            	{
-			                srl_z2 = (int)(srl_z >> SH);
+			                System.out.println("XY hit");
+		            		srl_z2 = (int)(srl_z >> SH);
 			                index = (linestart + srl_st_x);
 		
 			                if(srl_z2 >= z[index])
 			                {
+			                	System.out.println("It is closer");
+			                	System.out.println("Setting picked Polygon to current Polygon " + context.currentPolygon);
 			                	context.pickedItem = context.currentItem;
+			                	context.pickedPolygon = context.currentPolygon;
 			                	context.pickDetected = true;
 			                    z[index] = srl_z2;
 			                    //p[index] = (int)(0xFF000000 + (srl_z2));    // test

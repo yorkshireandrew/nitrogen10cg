@@ -27,12 +27,13 @@ final class PolygonRenderer {
 			)
 	{
 	    context.polygonRendererCalls++;
+	    /*
 		System.out.println("PolygonRenderer called");
 	    System.out.println("vert a = " + a. vs_x + "," + a.vs_y + "," + a.vs_z );	    
 	    System.out.println("vert b = " + b. vs_x + "," + b.vs_y + "," + b.vs_z );	    
 	    System.out.println("vert c = " + c. vs_x + "," + c.vs_y + "," + c.vs_z );	    
 	    System.out.println("vert d = " + d. vs_x + "," + d.vs_y + "," + d.vs_z );
-	    
+	    */
 	    if(context.debug){
 	    	System.out.println("debug on");
 	    }
@@ -41,12 +42,12 @@ final class PolygonRenderer {
 	    b.calculateScreenSpaceCoordinate(context);
 	    c.calculateScreenSpaceCoordinate(context);
 	    d.calculateScreenSpaceCoordinate(context);
-	    
+	    /*
 	    System.out.println("vert a = " + a.sx + "," + a.sy );	    
 	    System.out.println("vert b = " + b.sx + "," + b.sy );	    
 	    System.out.println("vert c = " + c.sx + "," + c.sy );	    
 	    System.out.println("vert d = " + d.sx + "," + d.sy );	    
-
+		*/
 			
 		// create local copies of y coordinates for sorting
 	    int ay = a.sy;
@@ -353,12 +354,13 @@ final class PolygonRenderer {
 		/** case where  a <  b <  c <  d */
 		final private static void plotCase1(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
 	    {
+			/*
 			System.out.println(" plot case 1 where vert a < vert b < vert c < vert d");
 		    System.out.println("vert a = " + a.sx + "," + a.sy );	    
 		    System.out.println("vert b = " + b.sx + "," + b.sy );	    
 		    System.out.println("vert c = " + c.sx + "," + c.sy );	    
 		    System.out.println("vert d = " + d.sx + "," + d.sy );	    
-
+			*/
 			// these values localised first to catch degenerate polygons early
 	        int ay = a.sy;
 	        int dy = d.sy;
@@ -713,12 +715,13 @@ final class PolygonRenderer {
 		/** case where a < b < d < c */
 	    final private static void plotCase2(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
 	    {
-			System.out.println("plot case 2 where vert a < vert b < vert d < vert c");
+			/*
+	    	System.out.println("plot case 2 where vert a < vert b < vert d < vert c");
 		    System.out.println("vert a = " + a.sx + "," + a.sy );	    
 		    System.out.println("vert b = " + b.sx + "," + b.sy );	    
 		    System.out.println("vert c = " + c.sx + "," + c.sy );	    
 		    System.out.println("vert d = " + d.sx + "," + d.sy );	 
-		    
+		    */
 	    	// these values localised first to catch degenerate polygons early
 	        int ay = a.sy;
 	        int cy = c.sy;
@@ -1102,12 +1105,13 @@ final class PolygonRenderer {
 	    /** plot case 3 a < d < b < c */
 	    private static final void plotCase3(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
 	    {
-			System.out.println("plot case 3 where vert a < vert d < vert b < vert c");
+			/*
+	    	System.out.println("plot case 3 where vert a < vert d < vert b < vert c");
 		    System.out.println("vert a = " + a.sx + "," + a.sy );	    
 		    System.out.println("vert b = " + b.sx + "," + b.sy );	    
 		    System.out.println("vert c = " + c.sx + "," + c.sy );	    
 		    System.out.println("vert d = " + d.sx + "," + d.sy );	 
-		    
+		    */
 		    // these values localised first to catch degenerate polygons early
 	        int ay = a.sy;
 	        int cy = c.sy;
@@ -1489,12 +1493,13 @@ final class PolygonRenderer {
 	    /** plot case 4 a < d < c < b */	    
 	    final private static void plotCase4(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
 	    {
-			System.out.println(" plot case 4 where vert a < vert d < vert c < vert b");
+			/*
+	    	System.out.println(" plot case 4 where vert a < vert d < vert c < vert b");
 		    System.out.println("vert a = " + a.sx + "," + a.sy );	    
 		    System.out.println("vert b = " + b.sx + "," + b.sy );	    
 		    System.out.println("vert c = " + c.sx + "," + c.sy );	    
 		    System.out.println("vert d = " + d.sx + "," + d.sy );	 
-	    	
+	    	*/
 	    	// these values localised first to catch degenerate polygons early
 	        int ay = a.sy;
 	        int by = b.sy;
@@ -1844,8 +1849,7 @@ final class PolygonRenderer {
 	    }
 	    
 	   static final public void renderDebugTrapezoid(
-
-	            // line start point
+			   // line start point
 	            int st_x,   long st_z,
 	            int st_aux1,
 	            int st_aux2,

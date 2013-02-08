@@ -182,6 +182,8 @@ public class ContentGenerator extends JFrame{
 	int[] textureMapPixels;
 	int textureMapXMax;
 	int textureMapYMax;
+	
+	String selectedTextureMap="";
 
 	ContentGenerator()
 	{
