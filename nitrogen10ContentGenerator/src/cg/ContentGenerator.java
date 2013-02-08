@@ -369,6 +369,7 @@ public class ContentGenerator extends JFrame{
 		outerBox.add(fullRenderButton);
 		
 		showCollisionVertexesButton = new FixedSizeIconToggleButton(this,"/res/showCollisionVertexesButton.PNG","/res/showCollisionVertexesSelectedButton.PNG");
+		showCollisionVertexesButton.setAction(new ShowCollisionVertexesToolbarAction(this));
 		showCollisionVertexesButton.setToolTipText("Show collision vertexes");
 		outerBox.add(showCollisionVertexesButton);
 		outerBox.add(Box.createHorizontalGlue());
@@ -553,7 +554,12 @@ public class ContentGenerator extends JFrame{
 			nc.cls(templateModels[viewDirection].pixels);
 
 			// call render to update scene graph
+			nc.transparencyPass = false;
 			rootTransform.render(nc);
+			nc.transparencyPass = true;
+			rootTransform.render(nc);
+			nc.transparencyPass = false;
+			
 		
 			if(viewDetail == VERTEXES_ONLY)
 			{
@@ -568,6 +574,10 @@ public class ContentGenerator extends JFrame{
 			showConstrainedBorder(nc);
 			showCursor(nc,cursor_x,cursor_y);
 			showWorkingVertex();
+			if(showCollisionVertexes)
+			{
+				showCollisionVertexes();
+			}
 			nc.repaint();
 		}
 		
@@ -1125,6 +1135,14 @@ public class ContentGenerator extends JFrame{
 		textureMapViewTypeControls.add(textureMapCombo);
 		textureMapViewTypeControls.add(whereBox);
 		textureMapViewTypeControls.add(Box.createVerticalGlue());
+	}
+	
+	void showCollisionVertexes()
+	{
+		ContentGeneratorSISI cgSISI = contentGeneratorSISI;
+		generatedItem.setNeedsTotallyUpdating();
+		generatedItem.calculateCollisionVertexes();
+		generatedItem.renderCollisionVertexes(nc);	
 	}
 	
 	

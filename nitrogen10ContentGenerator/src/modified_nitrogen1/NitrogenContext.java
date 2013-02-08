@@ -78,7 +78,7 @@ public class NitrogenContext extends JPanel implements Serializable{
     transient MemoryImageSource source;   
     
     /** If true only transparent polygons are rendered, otherwise only non-transparent polygons are rendered. Used for double pass rendering where the scene contains transparent polygons */
-    boolean transparencyPass = false;
+    public boolean transparencyPass = false;
     
     /** Stuff added for picking */
     public boolean isPicking = false;
@@ -229,8 +229,6 @@ public Dimension getMaximumSize()
     //System.out.printf("getMaximumSize");
     return new Dimension(w,h);
 }
-
-
 
 public void zeroPerformanceCounts()
 {

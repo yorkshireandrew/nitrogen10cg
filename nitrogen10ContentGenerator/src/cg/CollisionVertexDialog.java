@@ -98,7 +98,8 @@ public class CollisionVertexDialog  extends JDialog implements ChangeListener{
 						contentGenerator.contentGeneratorSISI.hasCollisionVertexes = initialHasCollisionVertexes;
 						contentGenerator.contentGeneratorSISI.collisionVertexList = initialCollisionVertexList;
 						CollisionVertexDialog.this.setVisible(false);
-						CollisionVertexDialog.this.dispose();			
+						CollisionVertexDialog.this.dispose();
+						contentGenerator.cgc.updateGeneratedItemAndEditArea();
 					}			
 				});	
 		
@@ -114,7 +115,7 @@ public class CollisionVertexDialog  extends JDialog implements ChangeListener{
 				});	
 		
 		this.setSize(500,300);
-		this.setModal(true);
+		this.setModal(false); // do not set modal as we need to change view directions
 		this.generateContent();
 		this.validate();
 		this.setLocationRelativeTo(cg);

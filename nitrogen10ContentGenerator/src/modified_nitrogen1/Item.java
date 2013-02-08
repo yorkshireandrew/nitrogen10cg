@@ -20,6 +20,10 @@ final public class Item implements Serializable{
 	static final int MID_RENDERER = 1;
 	static final int FAR_RENDERER = 2;
 	
+	// used for drawing collision vertexes
+	static final float[] sinTable;
+	static final float[] cosTable;
+	
 	/** Class used to encapsulate polygon clipping */
 	static final PolygonClipper polygonClipper = new PolygonClipper();
 
@@ -48,7 +52,7 @@ final public class Item implements Serializable{
 	/** The Items collision vertexes 
 	 *serialisation is controlled by writeObject & readObject*/
 	private boolean hasCollisionVertexes;
-	private transient Vertex collisionVertexes[];
+	public transient Vertex collisionVertexes[];
 	
 	// ************************************************
 	// ********************** FLAGS *******************
@@ -97,6 +101,18 @@ final public class Item implements Serializable{
 	
 	/** package scope reference for use in factories LLL*/
 	Item nextInList;
+	
+	/** initialise static sin and cosine tables */
+	static{
+		sinTable = new float[360];
+		cosTable = new float[360];
+		for(int i = 0; i < 360; i++)
+		{
+			double theta = (Math.PI / 180)*(double)i;
+			sinTable[i] = (float)Math.sin(theta);
+			cosTable[i] = (float)Math.cos(theta);
+		}
+	}
 	
     /** default constructor used by factories to preallocate an Item */
     Item(){} 
@@ -728,7 +744,7 @@ final public class Item implements Serializable{
 	 */
 	final public boolean wasRendered(){return wasRendered;}
 	
-	final private void calculateCollisionVertexes()
+	final public void calculateCollisionVertexes()
 	{
 		if(!hasCollisionVertexes)return;
 		if(rotationNeedsUpdate || translationNeedsUpdate)
@@ -924,6 +940,8 @@ final public class Item implements Serializable{
 				vertexesL[i].calculateViewSpaceCoordinates(pc11,pc12,pc13,pc14,pc21,pc22,pc23,pc24,pc31,pc32,pc33,pc34);
 			}
 	}
+	
+
 	
 	/** ContentGenerator calls this to display all the Item Vertexes */
 	final public void renderVertexes(NitrogenContext nc)
@@ -1127,5 +1145,35 @@ final public class Item implements Serializable{
 						v31,v32,v33,v34);
 	}
 	
-
+	public void renderCollisionVertexes(NitrogenContext nc)
+	{
+		final int colour = 0xFFFF0000;	//red
+		
+		if(!hasCollisionVertexes)return;
+		if(collisionVertexes == null)return;
+		
+		Vertex[] collisionVertexesL =  collisionVertexes;
+		int length = collisionVertexesL.length;
+		
+		for(int x = 0; x < length; x++)
+		{
+			Vertex v = collisionVertexesL[x];
+			
+			// enforce near clip plane to prevent divide by zero
+			if(-v.vs_z < nc.nearClip) continue;
+			
+			v.rotationNeedsUpdate = true;
+			v.translationNeedsUpdate = true;		
+			v.calculateScreenSpaceCoordinate(nc);
+			
+			for(int i = 0; i < 360; i++)
+			{
+				float dx = v.radius * sinTable[i];
+				float dy = v.radius * cosTable[i];
+				int scr_x = v.sx + (int)dx;
+				int scr_y = v.sy + (int)dy;
+				renderPixel(nc,scr_x,scr_y,colour);
+			}
+		}		
+	}
 }
