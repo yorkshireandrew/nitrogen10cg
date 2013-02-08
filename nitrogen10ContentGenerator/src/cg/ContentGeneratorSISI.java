@@ -131,7 +131,6 @@ public class ContentGeneratorSISI implements Serializable{
     		int index = 0;
 	    	while(it.hasNext())
 	    	{
-	    		// some funny reversing going on so this indexing corrects it
 	    		ContentGeneratorPolygon cgp = it.next().getValue();
 	    		int c1 = immutableVertexListL.indexOf(cgp.c1);
 	    		int c2 = immutableVertexListL.indexOf(cgp.c2);
@@ -175,7 +174,7 @@ public class ContentGeneratorSISI implements Serializable{
 	    		
 	    		immutablePolygonsL[index] = element;
 	    		index++;
-	    	}
+	    	}	    	
 	    	
 	    	retval.immutablePolygons = immutablePolygonsL;
 	    	return retval;

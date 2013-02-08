@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -644,12 +645,19 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	void handleDeletePolygonEvent()
 	{
 		String currentNameInCombo = (String)polygonNameComboBox.getEditor().getItem();
-
+		ContentGeneratorSISI cgSISI = cg.contentGeneratorSISI;
 		Map<String,ContentGeneratorPolygon> cgpMap = cg.contentGeneratorSISI.contentGeneratorPolygonMap;
 		if(cgpMap.containsKey(currentNameInCombo))
 		{
-			cgpMap.remove(currentNameInCombo);
+			// cg.contentGeneratorSISI.contentGeneratorPolygonMap = LinkedHashMapRemover.remove((LinkedHashMap<String,ContentGeneratorPolygon>)cgpMap,currentNameInCombo);
+			cgSISI.contentGeneratorPolygonMap.remove(currentNameInCombo);
 			
+			// adjust polygon start/finish
+			cgSISI.normalDetailPolyStart = 0;
+			cgSISI.improvedDetailPolyFinish = 0;
+			cgSISI.normalDetailPolyFinish = cgSISI.contentGeneratorPolygonMap.size();
+			cgSISI.improvedDetailPolyFinish = cgSISI.contentGeneratorPolygonMap.size();	
+	
 			// update the display
 			cg.cgc.updateGeneratedItemAndEditArea();
 			
