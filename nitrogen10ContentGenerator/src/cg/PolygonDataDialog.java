@@ -1,6 +1,7 @@
 
 package cg;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -41,6 +43,13 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 	
 	JButton cancelButton;
 	JButton okButton;
+	
+	// colour chooser stuff
+	JTextField	redTextField;
+	JTextField	greenTextField;
+	JTextField	blueTextField;
+	JTextField 	integerColourTextField;
+	FixedSizeButton colourChooserButton;
 	
 	int length = 0;
 	
@@ -94,6 +103,24 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 					}			
 				});	
 		
+		redTextField = new JTextField(4);
+		redTextField.setMaximumSize(redTextField.getPreferredSize());
+		greenTextField = new JTextField(4);
+		greenTextField.setMaximumSize(greenTextField.getPreferredSize());
+		blueTextField = new JTextField(4);
+		blueTextField.setMaximumSize(blueTextField.getPreferredSize());
+		integerColourTextField = new JTextField(10);
+		integerColourTextField.setMaximumSize(redTextField.getPreferredSize());
+		colourChooserButton = new FixedSizeButton("/res/colourChooserButton.PNG");
+		
+		colourChooserButton.addActionListener(
+				new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						PolygonDataDialog.this.handleColourChooserButton();	
+					}			
+				});	
 		this.setSize(220,250);
 		this.setModal(true);
 		this.generateContent();
@@ -176,12 +203,22 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 			dataElementBox.add(dataTextFields.get(x));
 			dataBox.add(dataElementBox);
 		}	
+		
+		Box colourBox = new Box(BoxLayout.X_AXIS);
+		colourBox.add(redTextField);
+		colourBox.add(greenTextField);
+		colourBox.add(blueTextField);
+		colourBox.add(integerColourTextField);
+		colourBox.add(colourChooserButton);
 
 		Box dialog = new Box(BoxLayout.Y_AXIS);
 		dialog.add(nameBox);
 		dialog.add(lengthBox);
 		dialog.add(dataBox);
 		dialog.add(buttonBox);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(colourBox);
+		
 		this.getContentPane().removeAll();
 		this.getContentPane().add(dialog);
 	}
@@ -209,7 +246,7 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 			JOptionPane.showMessageDialog(this, "A numeric value is incorrectly formatted", "Error",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+		contentGenerator.cgc.saveSISI();
 		addPolygonData(name,data);
 		this.setVisible(false);
 		this.dispose();		
@@ -319,6 +356,22 @@ public class PolygonDataDialog  extends JDialog implements ChangeListener, Actio
 			dataNameTextField.setText(Integer.toString(max));	
 		}	
 	}
+
 	
+	void handleColourChooserButton()
+	{
+		Color c = JColorChooser.showDialog(this, "Colour Picker", contentGenerator.colourChoosen);
+
+		if(c != null)
+		{
+			redTextField.setText(Integer.toString(c.getRed()));
+			greenTextField.setText(Integer.toString(c.getGreen()));
+			blueTextField.setText(Integer.toString(c.getBlue()));
+			int v = (c.getRed() << 16) + (c.getGreen() << 8) + c.getBlue();
+			integerColourTextField.setText(Integer.toString(v));
+			contentGenerator.colourChoosen = c;
+		}
+	
+	}
 
 }

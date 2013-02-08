@@ -156,6 +156,7 @@ public class NearFarDialog extends JDialog implements ActionListener{
 			return;
 		}
 		
+		cg.cgc.saveSISI();
 		cgSISI.normalDetailPolyStart 	= normStart;
 		cgSISI.normalDetailPolyFinish 	= normFinish;
 		cgSISI.improvedDetailPolyStart 	= impStart;

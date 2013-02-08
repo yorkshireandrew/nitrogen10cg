@@ -980,6 +980,7 @@ final public class Item implements Serializable{
 		final int colour = 0xFFFF0000;	//red
 		Vertex[] vertexesL = vertexes;
 		Vertex vertex;
+		if(index < 0)return;
 		if(index >= vertexesL.length) return;
 		vertex = vertexesL[index];
 		

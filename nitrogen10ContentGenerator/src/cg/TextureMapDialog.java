@@ -32,13 +32,14 @@ public class TextureMapDialog extends JDialog{
 	JButton cancelButton;
 	JButton okButton;
 	
-	TextureMapDialog(ContentGenerator cg)
+	TextureMapDialog(final ContentGenerator cg)
 	{
 		super(cg);
 		setTitle("Add Texture Map");
 		final TextureMapDialog tmd = this;
 		
 		this.cg = cg;
+		cg.cgc.saveSISI();
 				
 		final JFileChooser pathChooser = new JFileChooser(cg.resourceURL);
 		pathChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -119,6 +120,7 @@ public class TextureMapDialog extends JDialog{
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						cg.contentGeneratorSISI = cg.undoStack.pop();
 						TextureMapDialog.this.setVisible(false);
 						TextureMapDialog.this.dispose();			
 					}			

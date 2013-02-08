@@ -48,6 +48,11 @@ public class CollisionVertexDialog  extends JDialog implements ChangeListener{
 		contentGenerator = cg;		
 		ContentGeneratorSISI cgSISI = cg.contentGeneratorSISI;
 		
+		cg.cgc.saveSISI();
+		
+		// Should not need to deep clone anymore as we are using undo stack
+		
+		/*
 		// deep copy the present collision vertex state in case we cancel
 		// this dialog makes immediately copies changes in the dialog to  
 		// the content generators contentGeneratorSISI.collisonVertexList
@@ -62,6 +67,7 @@ public class CollisionVertexDialog  extends JDialog implements ChangeListener{
 			}
 		}
 			
+			*/
 		// calculate size of existing collision vertexes
 		length  = 0;
 		if(cgSISI.hasCollisionVertexes)
@@ -95,8 +101,10 @@ public class CollisionVertexDialog  extends JDialog implements ChangeListener{
 				{
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						contentGenerator.contentGeneratorSISI.hasCollisionVertexes = initialHasCollisionVertexes;
-						contentGenerator.contentGeneratorSISI.collisionVertexList = initialCollisionVertexList;
+				//		contentGenerator.contentGeneratorSISI.hasCollisionVertexes = initialHasCollisionVertexes;
+				//		contentGenerator.contentGeneratorSISI.collisionVertexList = initialCollisionVertexList;
+				
+						contentGenerator.contentGeneratorSISI = contentGenerator.undoStack.pop();
 						CollisionVertexDialog.this.setVisible(false);
 						CollisionVertexDialog.this.dispose();
 						contentGenerator.cgc.updateGeneratedItemAndEditArea();

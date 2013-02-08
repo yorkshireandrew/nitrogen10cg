@@ -10,6 +10,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import modified_nitrogen1.ImmutableVertex;
+
 public class WorkingVertexView {
 	ContentGenerator cg;
 	WorkingVertexModel workingVertexModel;
@@ -128,20 +130,26 @@ public class WorkingVertexView {
 					public void run() {
 						WorkingVertexModel wvm = workingVertexModel;
 						
-						wvm.pickedVertex = WorkingVertexView.this.cg.cgc.vertexAlreadyThere(wvm.x, wvm.y, wvm.z);
+						ImmutableVertex vertexUnder = WorkingVertexView.this.cg.cgc.vertexAlreadyThere(wvm.x, wvm.y, wvm.z);
+						
+						if(vertexUnder != null)
+						{
+							wvm.pickedVertex = WorkingVertexView.this.cg.cgc.vertexAlreadyThere(wvm.x, wvm.y, wvm.z);
+							int index = cg.contentGeneratorSISI.immutableVertexList.indexOf(wvm.pickedVertex);
+							indexTextField.setText(Integer.toString(index));
+							cg.generatedItem.renderVertex(cg.nc, index);
+						}
 						
 						if(wvm.pickedVertex != null)
 						{
 							int index = cg.contentGeneratorSISI.immutableVertexList.indexOf(wvm.pickedVertex);
-							indexTextField.setText(Integer.toString(index));
+							indexTextField.setText(Integer.toString(index));	
 						}
 						else
 						{
 							indexTextField.setText("none");
 						}
-						
-						
-						
+									
 						xTextField.setText(Integer.toString(wvm.x));
 						yTextField.setText(Integer.toString(wvm.y));
 						zTextField.setText(Integer.toString(wvm.z));

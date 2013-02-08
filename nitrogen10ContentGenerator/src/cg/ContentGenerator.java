@@ -184,7 +184,13 @@ public class ContentGenerator extends JFrame{
 	int textureMapYMax;
 	
 	String selectedTextureMap="";
+	
+	Color colourChoosen;
+	
+	transient FixedSizeStack<ContentGeneratorSISI> undoStack;
 
+	FixedSizeButton undoButton;
+	
 	ContentGenerator()
 	{
 
@@ -222,6 +228,8 @@ public class ContentGenerator extends JFrame{
         }
 		
 		createMenu();
+		
+		undoStack = new FixedSizeStack<ContentGeneratorSISI>(20);
 		createWorld();
 		
 
@@ -256,7 +264,10 @@ public class ContentGenerator extends JFrame{
 	
 		// render edit area
 		cgc.updateCursorFromWorkingVertex();
-		renderEditArea();		
+		renderEditArea();	
+		
+		// crate colour chooser
+		colourChoosen = Color.white;
 	}
 	
 	
@@ -415,6 +426,11 @@ public class ContentGenerator extends JFrame{
 		pickPolygonButton.addActionListener(cgc);
 		pickPolygonButton.setToolTipText("Pick the polygon under the cursor");
 		outerBox.add(pickPolygonButton);
+		
+		undoButton = new FixedSizeButton("/res/undoButton.PNG");
+		undoButton.addActionListener(cgc);
+		undoButton.setToolTipText("undo");
+		outerBox.add(undoButton);
 		outerBox.add(Box.createHorizontalGlue());
 		container.add(outerBox);	
 	}
@@ -516,7 +532,6 @@ public class ContentGenerator extends JFrame{
     edit.add(item = new JMenuItem("Template..."));
     item.addActionListener(new TemplateMenuItemAction(this));
     edit.add(item = new JMenuItem("Circle..."));
-    edit.add(item = new JMenuItem("Remove Polygon"));
     edit.add(item = new JMenuItem("Collision Vertexes..."));
     item.addActionListener(new CollisionVertexesMenuItemAction(this)); 
     edit.add(item = new JMenuItem("Near and Far Polygons..."));

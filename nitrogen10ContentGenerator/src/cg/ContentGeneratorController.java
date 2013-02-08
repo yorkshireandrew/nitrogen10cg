@@ -189,6 +189,11 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		{
 			handlePickPolygonButton();
 		}	
+		
+		if(source == cgL.undoButton)
+		{
+			handleUndoButton();
+		}	
 	}		
 	
 	void updateWorkingVertexFromCursor()
@@ -306,8 +311,6 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		int wvmx = wvm.x;
 		int wvmy = wvm.y;
 		int wvmz = wvm.z;
-		
-		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 		
 		if(vertexAlreadyThere(wvmx,wvmy,wvmz) != null)
 		{
@@ -588,7 +591,17 @@ public class ContentGeneratorController extends AbstractAction implements Change
 	/** Hook for UNDO*/
 	void saveSISI()
 	{
-		// TO DO
+		if(cg.undoStack != null)
+		{
+			try {
+				cg.undoStack.push(DeepCloner.clone(cg.contentGeneratorSISI));
+				cg.undoButton.setEnabled(true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 		return;
 	}
 	
@@ -650,7 +663,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		cgL.rightHandControls.revalidate();
 		
 		NitrogenContext ncL = cgL.nc;		
-		ncL.contentGeneratorForcesNoPerspective = false;
+		ncL.contentGeneratorForcesNoPerspective = true;
 		
 		// set transforms back to default front view
 		cgL.rootTransform.setTransform(
@@ -927,6 +940,31 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			System.out.println("******************************");
 			System.out.println("***** FAILED TO DETECT A PICK ******");
 			System.out.println("******************************");
+		}
+	}
+	
+	private void handleUndoButton()
+	{
+		if(cg.undoStack == null)return;
+		if(cg.undoStack.empty())
+		{
+			cg.undoButton.setEnabled(false);
+			return;
+		}
+		cg.contentGeneratorSISI = cg.undoStack.pop();
+		
+		cg.cgc.updateGeneratedItemAndEditArea();
+		cg.workingVertexModel.pickedVertex = null;
+		cg.workingVertexView.updateFromModel();
+		cg.polygonVertexViews[0].updateFromModel();
+		cg.polygonVertexViews[1].updateFromModel();
+		cg.polygonVertexViews[2].updateFromModel();
+		cg.polygonVertexViews[3].updateFromModel();
+		
+		if(cg.undoStack.empty())
+		{
+			cg.undoButton.setEnabled(false);
+			return;
 		}
 	}
 

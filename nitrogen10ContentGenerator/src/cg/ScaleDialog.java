@@ -88,6 +88,8 @@ public class ScaleDialog extends JDialog implements ActionListener{
 			return;
 		}
 		
+		cg.cgc.saveSISI();
+		
 		ContentGenerator cgL = cg;
 						
 		ContentGeneratorSISI cgSISI = cgL.contentGeneratorSISI;

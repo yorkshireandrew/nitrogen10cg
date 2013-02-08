@@ -26,6 +26,9 @@ public class MoveOriginMenuItemAction implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ContentGenerator cgL = cg;
+		
+		cg.cgc.saveSISI();
+		
 		WorkingVertexModel wvm = cgL.workingVertexModel;
 		float x = wvm.x;
 		float y = wvm.y;

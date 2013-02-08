@@ -1,5 +1,6 @@
 package cg;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,6 +37,13 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 	JLabel aux3Label				= new JLabel("Aux 3");
 
 	JButton autoFillButton;
+	
+	// colour chooser stuff
+	JTextField	redTextField;
+	JTextField	greenTextField;
+	JTextField	blueTextField;
+	JTextField 	integerColourTextField;
+	FixedSizeButton colourChooserButton;
 	
 	VertexDataDialog(ContentGenerator cg)
 	{
@@ -78,10 +87,30 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 				{
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						vdd.handleOK();	
+						VertexDataDialog.this.handleOK();	
 					}			
 				});	
-				
+		
+		redTextField = new JTextField(4);
+		redTextField.setMaximumSize(redTextField.getPreferredSize());
+		greenTextField = new JTextField(4);
+		greenTextField.setMaximumSize(greenTextField.getPreferredSize());
+		blueTextField = new JTextField(4);
+		blueTextField.setMaximumSize(blueTextField.getPreferredSize());
+		integerColourTextField = new JTextField(10);
+		integerColourTextField.setMaximumSize(redTextField.getPreferredSize());
+		colourChooserButton = new FixedSizeButton("/res/colourChooserButton.PNG");
+
+		colourChooserButton.addActionListener(
+				new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						VertexDataDialog.this.handleColourChooserButton();	
+					}			
+				});			
+		
+		
 		Box nameBox = new Box(BoxLayout.X_AXIS);
 		nameBox.add(dataNameButton);
 		nameBox.add(dataNameTextField);
@@ -101,6 +130,13 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 		Box buttonBox = new Box(BoxLayout.X_AXIS);
 		buttonBox.add(OKButton);
 		buttonBox.add(cancelButton);
+		
+		Box colourBox = new Box(BoxLayout.X_AXIS);
+		colourBox.add(redTextField);
+		colourBox.add(greenTextField);
+		colourBox.add(blueTextField);
+		colourBox.add(integerColourTextField);
+		colourBox.add(colourChooserButton);
 
 		Box dialog = new Box(BoxLayout.Y_AXIS);
 		dialog.add(nameBox);
@@ -112,6 +148,8 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 		dialog.add(autoFillButton);
 		dialog.add(Box.createVerticalGlue());
 		dialog.add(buttonBox);
+		dialog.add(Box.createVerticalGlue());
+		dialog.add(colourBox);
 		
 		this.add(dialog);
 		this.setSize(250,250);
@@ -152,7 +190,7 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 			JOptionPane.showMessageDialog(this, "A numeric value is incorrectly formatted", "Error",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+		contentGenerator.cgc.saveSISI();
 		PolygonVertexData pvd = new PolygonVertexData(aux1,aux2,aux3);
 		addPolygonVertexData(name,pvd);
 		this.setVisible(false);
@@ -232,6 +270,22 @@ public class VertexDataDialog  extends JDialog implements ChangeListener,ActionL
 				aux2TextField.setText(contentGenerator.textureMapY.getText());
 			}
 		}
+	}
+	
+	void handleColourChooserButton()
+	{
+		Color c = JColorChooser.showDialog(this, "Colour Picker", contentGenerator.colourChoosen);
+
+		if(c != null)
+		{
+			redTextField.setText(Integer.toString(c.getRed()));
+			greenTextField.setText(Integer.toString(c.getGreen()));
+			blueTextField.setText(Integer.toString(c.getBlue()));
+			int v = (c.getRed() << 16) + (c.getGreen() << 8) + c.getBlue();
+			integerColourTextField.setText(Integer.toString(v));
+			contentGenerator.colourChoosen = c;
+		}
+	
 	}
 
 }

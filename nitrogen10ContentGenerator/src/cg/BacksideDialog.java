@@ -113,6 +113,8 @@ public class BacksideDialog extends JDialog implements ActionListener{
 		cg.generatedItem.testBackside = testBackside;
 		cg.rootTransform.calculateTestBacksides(cg.nc);
 		
+		cg.cgc.saveSISI();
+		
 		if(testBackside.facingViewer())
 		{
 			System.out.println("Test Backside facing viewer");

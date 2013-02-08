@@ -63,7 +63,6 @@ public class PolygonVertexView {
 		moveWorkingToThisButton = new FixedSizeButton("/res/moveToVertexButton.PNG");
 		moveWorkingToThisButton.setAction(polygonVertexController);	
 		moveWorkingToThisButton.setIcon("/res/moveToVertexButton.PNG");
-
 	}
 	
 	void createPolygonGUI(Container container)
@@ -81,8 +80,28 @@ public class PolygonVertexView {
 	
 	void updateFromModel()
 	{
-		if(pvm == null)
+		int index = -1;
+		
+		if(pvm != null)
 		{
+			ContentGenerator cgL = cg;
+			ContentGeneratorSISI cgSISI = cgL.contentGeneratorSISI;
+			List<ImmutableVertex> ivl = cgSISI.immutableVertexList;
+			
+			index = ivl.indexOf(pvm);
+			
+			// ok see if we can find an equal vertex 
+			if(index == -1)
+			{
+				pvm = cg.cgc.vertexAlreadyThere((int)pvm.is_x, (int)pvm.is_y, (int)pvm.is_z);
+				index = ivl.indexOf(pvm);
+			}
+			System.out.println("index = " + index);
+		}
+		
+		if(index == -1)
+		{
+			pvm = null;
 			SwingUtilities.invokeLater(
 					new Runnable()
 					{
@@ -96,33 +115,25 @@ public class PolygonVertexView {
 							indexTextField.setEditable(false);
 						}
 					});
+			return;			
 		}
-		else
-		{
-			SwingUtilities.invokeLater(
-					new Runnable()
-					{
-						@Override
-						public void run() {
+		
+		final int finalIndex = index;
+		SwingUtilities.invokeLater(
+				new Runnable()
+				{
+					@Override
+					public void run() {
+						
 							xTextField.setText(Integer.toString((int)pvm.is_x));
 							yTextField.setText(Integer.toString((int)pvm.is_y));
 							zTextField.setText(Integer.toString((int)pvm.is_z));
-							
-							ContentGenerator cong = cg;
-							ContentGeneratorSISI cgsisi = cong.contentGeneratorSISI;
-							List<ImmutableVertex> ivl = cgsisi.immutableVertexList;			
-							int index = ivl.indexOf(pvm);
-							
+
 							indexTextField.setEditable(true);
-							indexTextField.setText(Integer.toString(index));
+							indexTextField.setText(Integer.toString(finalIndex));
 							indexTextField.setEditable(false);
 						}
-					});
-		}
-	}	
+		});
+	}
 }
 
-			
-
-
-/** handles action events created by a PolygonVertexGUI */

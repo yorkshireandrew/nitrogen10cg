@@ -216,7 +216,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 			JOptionPane.showMessageDialog(cg, "Texture Map incorrect", "Error",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		System.out.println("success!!!!");
+		cg.cgc.saveSISI();
 		
 		// update the model
 		model.c1 = cg.polygonVertexViews[0].pvm;  
@@ -406,7 +406,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		fatten(polygonBacksideLabel);
 		fatten(textureMapLabel);
 		
-		GridLayout gridLayout = new GridLayout(14,3);
+		GridLayout gridLayout = new GridLayout(16,3);
 		setLayout(gridLayout);
 		
 		add(polygonNameButton);
@@ -415,6 +415,10 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		
 		add(polygonDataLabel);
 		add(polygonDataBox);
+		add(new JLabel(""));
+		
+		add(new JLabel(""));
+		add(new JLabel(""));
 		add(new JLabel(""));
 		
 		add(polygonVertexLabel1);
@@ -428,6 +432,10 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		add(new JLabel(""));
 		add(polygonVertexLabel4);
 		add(polygonVertexDataBox4);
+		add(new JLabel(""));
+		
+		add(new JLabel(""));
+		add(new JLabel(""));
 		add(new JLabel(""));
 		
 		add(polygonRendererLabel);
