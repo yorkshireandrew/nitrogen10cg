@@ -41,6 +41,8 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	JButton 	polygonNameButton;
 	JButton		fillNameButton;
 	
+	JButton		deletePolygonButton;
+	
 	// polygon data UI
 	JComboBox 	polygonDataComboBox;
 	JLabel 		polygonDataLabel = new JLabel("Polygon Data ");
@@ -127,8 +129,10 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		textureMapAutoFillButton = new JButton ("Use Tex Map");
 		textureMapAutoFillButton.addActionListener(this);
 		
-		
 		isTransparentCheckBox = new JCheckBox("Is transparent ");
+		
+		deletePolygonButton = new JButton("DELETE");
+		deletePolygonButton.addActionListener(this);
 		
 		cancelButton = new JButton("CANCEL");
 		cancelButton.addActionListener(
@@ -329,75 +333,15 @@ public class PolygonDialog extends JDialog implements ActionListener{
 			polygonNameComboBox.getEditor().setItem(Integer.toString(max));	
 		}	
 		
+		if(e.getSource() == deletePolygonButton)
+		{
+			System.out.println("delete polygon pressed");
+			handleDeletePolygonEvent();		
+		}
+		
 	}
 	
-	private void generateContent()
-	{
-		
-		Box nameBox = new Box(BoxLayout.X_AXIS);
-		nameBox.add(polygonNameButton);
-		nameBox.add(polygonNameComboBox);
-		nameBox.add(Box.createHorizontalGlue());
-		
-		Box polygonDataBox = new Box(BoxLayout.X_AXIS);
-		polygonDataBox.add(polygonDataLabel);
-		polygonDataBox.add(polygonDataComboBox);
-		polygonDataBox.add(Box.createHorizontalGlue());
-		
-		Box polygonVertexDataBox1 = new Box(BoxLayout.X_AXIS);
-		polygonVertexDataBox1.add(polygonVertexLabel1);
-		polygonVertexDataBox1.add(polygonVertexDataComboBox1);
-		polygonVertexDataBox1.add(Box.createHorizontalGlue());
-		
-		Box polygonVertexDataBox2 = new Box(BoxLayout.X_AXIS);
-		polygonVertexDataBox2.add(polygonVertexLabel2);
-		polygonVertexDataBox2.add(polygonVertexDataComboBox2);
-		polygonVertexDataBox2.add(Box.createHorizontalGlue());
-		
-		Box polygonVertexDataBox3 = new Box(BoxLayout.X_AXIS);
-		polygonVertexDataBox3.add(polygonVertexLabel3);
-		polygonVertexDataBox3.add(polygonVertexDataComboBox3);
-		polygonVertexDataBox3.add(Box.createHorizontalGlue());
-		
-		Box polygonVertexDataBox4 = new Box(BoxLayout.X_AXIS);
-		polygonVertexDataBox4.add(polygonVertexLabel4);
-		polygonVertexDataBox4.add(polygonVertexDataComboBox4);
-		polygonVertexDataBox4.add(Box.createHorizontalGlue());
-		
-		Box polygonRendererBox = new Box(BoxLayout.X_AXIS);
-		polygonRendererBox.add(polygonRendererLabel);
-		polygonRendererBox.add(polygonRendererComboBox);
-		polygonRendererBox.add(Box.createHorizontalGlue());
-		
-		Box polygonBacksideBox = new Box(BoxLayout.X_AXIS);
-		polygonBacksideBox.add(polygonBacksideLabel);
-		polygonBacksideBox.add(polygonBacksideComboBox);
-		polygonBacksideBox.add(isBacksideCulledCheckBox);
-		polygonBacksideBox.add(Box.createHorizontalGlue());
-		
-		Box buttonBox = new Box(BoxLayout.X_AXIS);
-		buttonBox.add(okButton);
-		buttonBox.add(cancelButton);
-		buttonBox.add(Box.createHorizontalGlue());
-		
-		Box polygonVertexDataOuterBox = new Box(BoxLayout.Y_AXIS);
-		polygonVertexDataOuterBox.add(polygonVertexDataBox1);
-		polygonVertexDataOuterBox.add(polygonVertexDataBox2);
-		polygonVertexDataOuterBox.add(polygonVertexDataBox3);
-		polygonVertexDataOuterBox.add(polygonVertexDataBox4);
-		polygonVertexDataOuterBox.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		
-		Box dialog = new Box(BoxLayout.Y_AXIS);
-		dialog.add(nameBox);
-		dialog.add(polygonDataBox);
-		dialog.add(polygonVertexDataOuterBox);
-		dialog.add(polygonRendererBox);
-		dialog.add(polygonBacksideBox);
-		dialog.add(isTransparentCheckBox);
-		dialog.add(buttonBox);
-		this.getContentPane().removeAll();
-		this.getContentPane().add(dialog);
-	}
+
 	
 	private void generateContent2()
 	{			
@@ -455,7 +399,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		fatten(polygonBacksideLabel);
 		fatten(textureMapLabel);
 		
-		GridLayout gridLayout = new GridLayout(11,3);
+		GridLayout gridLayout = new GridLayout(14,3);
 		setLayout(gridLayout);
 		
 		add(polygonNameButton);
@@ -493,6 +437,10 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		
 		add(isTransparentBox);
 		add(new JLabel(""));
+		add(new JLabel(""));
+		
+		add(new JLabel(""));
+		add(deletePolygonButton);
 		add(new JLabel(""));
 		
 		add(buttonBox);
@@ -685,6 +633,26 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		polygonBacksideComboBox.getEditor().setItem(getPolygonImmutableBacksideFromModel());
 		textureMapComboBox.getEditor().setItem(getPolygonTextureMapFromModel());
 		isTransparentCheckBox.setSelected(model.isTransparent);
+	}
+	
+	void handleDeletePolygonEvent()
+	{
+		String currentNameInCombo = (String)polygonNameComboBox.getEditor().getItem();
+
+		Map<String,ContentGeneratorPolygon> cgpMap = cg.contentGeneratorSISI.contentGeneratorPolygonMap;
+		if(cgpMap.containsKey(currentNameInCombo))
+		{
+			cgpMap.remove(currentNameInCombo);
+			
+			// update the display
+			cg.cgc.updateGeneratedItemAndEditArea();
+			
+			// close the dialog. a re-open will cause name combo to be refreshed
+			PolygonDialog.this.setVisible(false);
+			PolygonDialog.this.dispose();	
+			
+			
+		}
 	}
 	
 	
