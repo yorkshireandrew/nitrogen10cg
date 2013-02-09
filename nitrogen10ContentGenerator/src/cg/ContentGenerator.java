@@ -3,23 +3,14 @@ package cg;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import modified_nitrogen1.Item;
-import modified_nitrogen1.ItemFactory_Caching;
-import modified_nitrogen1.NitrogenContext;
-import modified_nitrogen1.NitrogenCreationException;
-import modified_nitrogen1.RendererHelper;
-import modified_nitrogen1.RendererTriplet;
-import modified_nitrogen1.Renderer_SimpleSingleColour;
-import modified_nitrogen1.Renderer_SimpleTexture;
-import modified_nitrogen1.SharedImmutableSubItem;
-import modified_nitrogen1.Transform;
+import com.bombheadgames.nitrogen1.*;
+
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.io.*;
 
-import modified_nitrogen1.*;
 
 public class ContentGenerator extends JFrame{
 	

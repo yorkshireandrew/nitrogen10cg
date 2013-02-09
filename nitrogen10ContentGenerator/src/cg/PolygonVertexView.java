@@ -13,7 +13,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import modified_nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen1.ImmutableVertex;
+
 
 public class PolygonVertexView {
 	JTextField indexTextField;

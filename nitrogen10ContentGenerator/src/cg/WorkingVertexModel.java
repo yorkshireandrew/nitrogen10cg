@@ -5,7 +5,8 @@ import java.io.Serializable;
 
 import javax.swing.AbstractAction;
 
-import modified_nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen1.ImmutableVertex;
+
 
 public class WorkingVertexModel implements Serializable{
 	private static final long serialVersionUID = 3688807584246986775L;

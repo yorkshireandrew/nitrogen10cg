@@ -19,8 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import modified_nitrogen1.PolygonVertexData;
-import modified_nitrogen1.SharedImmutableSubItem;
+import com.bombheadgames.nitrogen1.PolygonVertexData;
+import com.bombheadgames.nitrogen1.SharedImmutableSubItem;
+
 
 public class VertexDataDialog  extends JDialog implements ChangeListener,ActionListener{
 

@@ -8,7 +8,8 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import modified_nitrogen1.NitrogenCreationException;
+import com.bombheadgames.nitrogen1.NitrogenCreationException;
+
 
 public class TemplateModel implements Serializable{
 	private static final long serialVersionUID = -2449470950754148706L;

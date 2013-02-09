@@ -11,15 +11,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import modified_nitrogen1.ImmutableBackside;
-import modified_nitrogen1.ImmutableCollisionVertex;
-import modified_nitrogen1.ImmutablePolygon;
-import modified_nitrogen1.ImmutableVertex;
-import modified_nitrogen1.PolygonVertexData;
-import modified_nitrogen1.RendererHelper;
-import modified_nitrogen1.RendererTriplet;
-import modified_nitrogen1.SharedImmutableSubItem;
-import modified_nitrogen1.TexMap;
+import com.bombheadgames.nitrogen1.ImmutableBackside;
+import com.bombheadgames.nitrogen1.ImmutableCollisionVertex;
+import com.bombheadgames.nitrogen1.ImmutablePolygon;
+import com.bombheadgames.nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen1.PolygonVertexData;
+import com.bombheadgames.nitrogen1.RendererHelper;
+import com.bombheadgames.nitrogen1.RendererTriplet;
+import com.bombheadgames.nitrogen1.SharedImmutableSubItem;
+import com.bombheadgames.nitrogen1.TexMap;
+
 
 /** encapsulates the ContentGenerators perspective of the Items SISI. This is used to create the generatedSISI */
 public class ContentGeneratorSISI implements Serializable{

@@ -10,9 +10,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import modified_nitrogen1.ImmutableBackside;
-import modified_nitrogen1.ImmutableCollisionVertex;
-import modified_nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen1.ImmutableBackside;
+import com.bombheadgames.nitrogen1.ImmutableCollisionVertex;
+import com.bombheadgames.nitrogen1.ImmutableVertex;
+
 
 public class MoveOriginMenuItemAction implements ActionListener {
 	

@@ -28,7 +28,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.filechooser.FileFilter;
 
-import modified_nitrogen1.*;
+import com.bombheadgames.nitrogen1.*;
+
 
 
 public class ContentGeneratorController extends AbstractAction implements ChangeListener

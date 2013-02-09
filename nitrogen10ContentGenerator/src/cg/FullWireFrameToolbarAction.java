@@ -4,9 +4,10 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import modified_nitrogen1.NitrogenContext;
-import modified_nitrogen1.RendererTriplet;
-import modified_nitrogen1.Renderer_Outline;
+import com.bombheadgames.nitrogen1.NitrogenContext;
+import com.bombheadgames.nitrogen1.RendererTriplet;
+import com.bombheadgames.nitrogen1.Renderer_Outline;
+
 
 class FullWireFrameToolbarAction extends AbstractAction
 {

@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import modified_nitrogen1.ImmutableBackside;
-import modified_nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen1.ImmutableBackside;
+import com.bombheadgames.nitrogen1.ImmutableVertex;
+
 
 public class NearFarMenuItemAction implements ActionListener {
 

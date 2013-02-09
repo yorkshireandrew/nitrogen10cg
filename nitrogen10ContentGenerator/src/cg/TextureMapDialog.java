@@ -13,9 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import modified_nitrogen1.NitrogenCreationException;
-import modified_nitrogen1.SharedImmutableSubItem;
-import modified_nitrogen1.TexMap;
+import com.bombheadgames.nitrogen1.NitrogenCreationException;
+import com.bombheadgames.nitrogen1.SharedImmutableSubItem;
+import com.bombheadgames.nitrogen1.TexMap;
+
 
 public class TextureMapDialog extends JDialog{
 

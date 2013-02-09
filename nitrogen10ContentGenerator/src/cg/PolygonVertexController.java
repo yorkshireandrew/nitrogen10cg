@@ -6,9 +6,10 @@ import java.util.Arrays;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import modified_nitrogen1.ImmutablePolygon;
-import modified_nitrogen1.ImmutableVertex;
-import modified_nitrogen1.SharedImmutableSubItem;
+import com.bombheadgames.nitrogen1.ImmutablePolygon;
+import com.bombheadgames.nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen1.SharedImmutableSubItem;
+
 
 class PolygonVertexController extends AbstractAction
 {
