@@ -1,6 +1,12 @@
 package cg;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,10 +17,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import com.bombheadgames.nitrogen1.ImmutableBackside;
 import com.bombheadgames.nitrogen1.ImmutableCollisionVertex;
 import com.bombheadgames.nitrogen1.ImmutablePolygon;
 import com.bombheadgames.nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen1.NitrogenCreationException;
 import com.bombheadgames.nitrogen1.PolygonVertexData;
 import com.bombheadgames.nitrogen1.RendererHelper;
 import com.bombheadgames.nitrogen1.RendererTriplet;
@@ -37,7 +46,7 @@ public class ContentGeneratorSISI implements Serializable{
     Map<String,int[]> polygonDataMap;
     
     /** contains named textureMap used for ImmutablePolygon generation */
-    Map<String,TexMap> textureMapMap;
+    Map<String,ContentGeneratorTextureMap> textureMapMap;
     Map<String,String> textureMapFullPathMap;
     
     /** maps for backsideName */
@@ -80,7 +89,7 @@ public class ContentGeneratorSISI implements Serializable{
     	collisionVertexList			= new ArrayList<ImmutableCollisionVertex>();   	
     	polygonVertexDataMap 		= new HashMap<String,PolygonVertexData>();
         polygonDataMap 				= new HashMap<String,int[]>();
-        textureMapMap 				= new HashMap<String,TexMap>();
+        textureMapMap 				= new HashMap<String,ContentGeneratorTextureMap>();
         textureMapMap.put("null", null);
         textureMapFullPathMap 		= new HashMap<String,String>();
         textureMapMap.put("null", null);
@@ -156,7 +165,7 @@ public class ContentGeneratorSISI implements Serializable{
 	    			}
 	    		}
 	    		
-	    		TexMap textureMap = textureMapMap.get(cgp.textureMap_name);
+	    		TexMap textureMap = textureMapMap.get(cgp.textureMap_name).textureMap;
 	    		ImmutablePolygon element = new ImmutablePolygon(
 				c1,
 				c2,
@@ -291,15 +300,15 @@ public class ContentGeneratorSISI implements Serializable{
     
     final void removeUnusedTextureMaps()
     {
-    	Set<Entry<String,TexMap>> set = textureMapMap.entrySet();
+    	Set<Entry<String,ContentGeneratorTextureMap>> set = textureMapMap.entrySet();
     	Set<Entry<String,String>> fullPathSet = textureMapFullPathMap.entrySet();
     	
-    	Iterator<Entry<String,TexMap>> it = set.iterator();
+    	Iterator<Entry<String,ContentGeneratorTextureMap>> it = set.iterator();
     	Iterator<Entry<String,String>> rootPathIt = fullPathSet.iterator();
     	
     	while(it.hasNext())
     	{
-    		Entry<String,TexMap> element = it.next();
+    		Entry<String,ContentGeneratorTextureMap> element = it.next();
     		rootPathIt.next();
     		
     		String name = (String)element.getKey();
@@ -324,5 +333,66 @@ public class ContentGeneratorSISI implements Serializable{
     	}
     }
     
-    
+    /** read object called during un-serialisation, implemented to load texture maps */
+    final private void readObject(ContentGenerator cg, ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+    	in.defaultReadObject();
+    	
+    	Iterator<Entry<String,ContentGeneratorTextureMap>> it = textureMapMap.entrySet().iterator();
+    	
+    	boolean hasChoosen = false;
+    	boolean useContentGeneratorPath = false;
+    	
+    	try{
+    	
+    	while(it.hasNext())
+    	{
+    		Entry<String,ContentGeneratorTextureMap> ent = it.next();
+    		
+    		ContentGeneratorTextureMap cgtm = ent.getValue();
+    		
+    		if(cgtm.path.equals(cg.resourceURL))
+    		{
+    			cgtm.textureMap = new TexMap(cgtm.path, cgtm.file);
+    		}
+    		else
+    		{
+    			// ok path of ContentGeneratorTextureMap differs from ContentGenerator resourcePath
+    			
+    			if(!hasChoosen)
+    			{
+    				if(JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
+							cg, 
+							"Loading " + cgtm.file + " texture map. The path differ from ContentGenerators resource path .Override and use ContentGenerators resource path?", 
+							"TextureMap path difference"
+							,JOptionPane.YES_NO_OPTION)
+							)
+    				{
+    					hasChoosen = true;
+    					useContentGeneratorPath = true;
+    				}
+    				else
+    				{
+    					hasChoosen = true;
+    					useContentGeneratorPath = false;  					
+    				}
+    			}// end of !hasChoosen if
+    			
+    			if(useContentGeneratorPath)
+    			{
+    				cgtm.textureMap = new TexMap(cg.resourceURL, cgtm.file);
+    			}
+    			else
+    			{
+    				cgtm.textureMap = new TexMap(cgtm.path, cgtm.file);
+    			}
+    		}// end of path checking if-else
+    	}//end of while	
+    	
+    	}
+    	catch(NitrogenCreationException nce)
+    	{
+    		JOptionPane.showMessageDialog(cg, "Nitrogen creation exception loading a texture map " + nce.getMessage() , "Error",JOptionPane.ERROR_MESSAGE);
+    	}
+    }    
 }

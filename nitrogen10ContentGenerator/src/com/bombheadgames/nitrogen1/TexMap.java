@@ -23,6 +23,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import cg.ContentGenerator;
+
 public class TexMap implements Serializable{
 	private static final long serialVersionUID = 3915774142992302906L;
 
@@ -33,6 +35,8 @@ public class TexMap implements Serializable{
     public transient int w, h;
     
     static{ textures = new HashMap<String,TexMap>();}
+    
+    TexMap(){}
     
     final static TexMap getTexture(String st) throws NitrogenCreationException
     {
@@ -48,12 +52,12 @@ public class TexMap implements Serializable{
     }
 
     /** altered constructor that reads files rather than embedded resources (but acts as though it was from a resource if serialised to disk)*/
-    public TexMap(String fullPath, String resourcePath) throws NitrogenCreationException
+    public TexMap(String resourcePathx, String filex) throws NitrogenCreationException
     { 	
- //   	URL url = getClass().getResource(st);
-    	File f = new File(fullPath);
-        if(!f.exists())throw new NitrogenCreationException("TexMap resource " + fullPath + " could not be found");
-    	Image ii = new javax.swing.ImageIcon(fullPath).getImage();
+    	String fileName = resourcePathx + filex;
+    	File f = new File(fileName);
+        if(!f.exists())throw new NitrogenCreationException("TexMap resource " + fileName + " could not be found");
+    	Image ii = new javax.swing.ImageIcon(fileName).getImage();
         BufferedImage i = new BufferedImage(ii.getWidth(null),ii.getHeight(null),BufferedImage.TYPE_INT_ARGB);
         Graphics2D osg = i.createGraphics();
         osg.drawImage(ii, 0, 0, null);
@@ -61,9 +65,10 @@ public class TexMap implements Serializable{
         w = i.getWidth();
         tex = i.getRGB(0, 0, w, h, null, 0, w);
         
-        // ensure we write the resource path, not the full path
-        // so the load works when the SISI is used the a real environment
-        resourceName = resourcePath;   
+        // In order to refer to (jar file) resources instead of files 
+        // (for live environment)ensure we write the file string in unix, 
+        // without the file path that ContentGenerator adds to the start
+        resourceName = toUnix(filex);   
     }
     
     private TexMap(String st) throws NitrogenCreationException
@@ -134,6 +139,24 @@ public class TexMap implements Serializable{
     	// create a new empty hashmap
     	textures = new HashMap<String,TexMap>();
     }
+    
+    private String toUnix(String in)
+    {
+    	String retval = in.replace('\\', '/');
+    	return retval;
+    }
+   
+    /*
+	public static void main(String[] args) {
+		TexMap t = new TexMap();
+		String st = " this\\is\\some\\windows\\path /but/this/is/unix";
+		System.out.println(st);
+		String aft = t.toUnix(st);
+		System.out.println(aft);		
+	}
+	*/
+    
+    
 
 
 }

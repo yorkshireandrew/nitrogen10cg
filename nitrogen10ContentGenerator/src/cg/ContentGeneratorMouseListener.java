@@ -4,6 +4,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.event.MouseInputAdapter;
 
+import com.bombheadgames.nitrogen1.NitrogenContext;
+
 /** class to handle mouse clicks on the edit area */
 class ContentGeneratorMouseListener extends MouseInputAdapter
 {
@@ -21,39 +23,58 @@ class ContentGeneratorMouseListener extends MouseInputAdapter
 		super.mouseMoved(e);
 		if(e.getComponent() == cg.nc)
 		{
-			System.out.println("mouseClicked over nc");
-			System.out.println("raw: x=" + e.getX() + ", y=" + e.getY());
 			int rawX = e.getX();
 			int rawY = e.getY();
-			if(rawY < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
+			
+			if(cg.viewType == ContentGenerator.ORTHOGONAL_PROJECTION)
 			{
-				cg.cursor_x = rawX;
+				if(rawY < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
+				{
+					cg.cursor_x = rawX;
+				}
+				else if(rawX < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
+				{
+					cg.cursor_y = rawY;
+				}
+				else
+				{
+					cg.cursor_x = rawX;
+					cg.cursor_y = rawY;					
+				}
 			}
-			else if(rawX < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
-			{
-				cg.cursor_y = rawY;
-			}
-			else
-			{
-				cg.cursor_x = rawX;
-				cg.cursor_y = rawY;					
-			}
-		}
 		
-		if(cg.viewType == ContentGenerator.TEXTURE_MAP)
-		{
-			if (cg.textureMapPixels != null)
+			if(cg.viewType == ContentGenerator.TEXTURE_MAP)
 			{
-				if(cg.cursor_x >= cg.textureMapXMax)cg.cursor_x = cg.textureMapXMax-1;
-				if(cg.cursor_y >= cg.textureMapYMax)cg.cursor_y = cg.textureMapYMax-1;
+				
+				
+				if (cg.textureMapPixels != null)
+				{
+					if(rawX >= cg.textureMapXMax)rawX = cg.textureMapXMax-1;
+					if(rawY >= cg.textureMapYMax)rawY = cg.textureMapYMax-1;
+				}
+				
+				cg.cursor_x = rawX;
+				cg.cursor_y = rawY;	
+				
+				cg.textureMapX.setEditable(true);
+				cg.textureMapY.setEditable(true);			
+				cg.textureMapX.setText("" + cg.cursor_x);
+				cg.textureMapY.setText("" + cg.cursor_y);
+				cg.textureMapX.setEditable(false);
+				cg.textureMapY.setEditable(false);
+				
+				int dx = cg.cursor_x - cg.textureRefX;
+				int dy = cg.cursor_y - cg.textureRefY;
+				
+				cg.textureMapDX.setEditable(true);
+				cg.textureMapDY.setEditable(true);
+				cg.textureMapDX.setText("" + dx);
+				cg.textureMapDY.setText("" + dy);
+				cg.textureMapDX.setEditable(false);
+				cg.textureMapDY.setEditable(false);				
 			}
-			
-			cg.textureMapX.setEditable(true);
-			cg.textureMapX.setText("" + cg.cursor_x);
-			cg.textureMapY.setText("" + cg.cursor_y);
-			
+			cg.renderEditArea();
+			cgc.updateWorkingVertexFromCursor();	
 		}
-		cg.renderEditArea();
-		cgc.updateWorkingVertexFromCursor();	
 	}
 }

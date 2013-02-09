@@ -27,7 +27,7 @@ public class TextureMapDialog extends JDialog{
 	final ContentGenerator cg;
 	
 	String fileString;
-	String fileFullString;
+//	String fileFullString;
 	boolean filePicked = false;
 	
 	JButton cancelButton;
@@ -95,17 +95,14 @@ public class TextureMapDialog extends JDialog{
 			            if(full.startsWith(TextureMapDialog.this.cg.resourceURL))
 			            {
 			            	fileString = full.substring(TextureMapDialog.this.cg.resourceURL.length());
-			            	fileFullString = full;
+//			            	fileFullString = full;
 			            	filePicked = true;
 			            }
 			            else
 			            {
 			            	JOptionPane.showMessageDialog(TextureMapDialog.this, "The file is not under the set path", "Error",JOptionPane.ERROR_MESSAGE);
 			            	filePicked = false;
-			            }
-//			            tm.loadFile();
-	//		            tm.generatePixels();
-			            
+			            }			            
 			        } else {
 			        	System.out.println("Open command cancelled by user.");
 			        }
@@ -181,15 +178,14 @@ public class TextureMapDialog extends JDialog{
 		{
 			try
 			{
-				// load the texture map from file, but tell it the resource path
-				// that it must use when it is serialised (so it works when referencing resources in a release)
-				TexMap newTexMap = new TexMap(fileFullString,fileString);
+				// load the texture map from file
+				// fileString is used to create a unix style resourceURL in the TexMap itself
+				TexMap newTexMap = new TexMap(cg.resourceURL,fileString);
 
 				ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
-				Map<String,TexMap> textureMapMap = cgsisi.textureMapMap;
-				Map<String,String> textureMapFullPathMap = cgsisi.textureMapFullPathMap;
-				textureMapMap.put(name,newTexMap);
-				textureMapFullPathMap.put(name, fileFullString);
+				Map<String,ContentGeneratorTextureMap> textureMapMap = cgsisi.textureMapMap;
+				ContentGeneratorTextureMap cgtm = new ContentGeneratorTextureMap(cg.resourceURL,fileString,newTexMap);
+				textureMapMap.put(name,cgtm);
 				TextureMapDialog.this.setVisible(false);
 				TextureMapDialog.this.dispose();		
 			}
@@ -206,7 +202,7 @@ public class TextureMapDialog extends JDialog{
 	{
 		SharedImmutableSubItem sisi = cg.generatedSISI;
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
-		Map<String,TexMap> textureMapMap = cgsisi.textureMapMap;
+		Map<String,ContentGeneratorTextureMap> textureMapMap = cgsisi.textureMapMap;
 		
 		if(textureMapMap.containsKey(name))
 		{

@@ -195,6 +195,21 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		{
 			handleUndoButton();
 		}	
+		
+		if(source == cgL.textureSetRef)
+		{
+			cgL.textureRefX = Integer.parseInt(cgL.textureMapX.getText());
+			cgL.textureRefY = Integer.parseInt(cgL.textureMapY.getText());
+			int dx = cg.cursor_x - cg.textureRefX;
+			int dy = cg.cursor_y - cg.textureRefY;
+			
+			cg.textureMapDX.setEditable(true);
+			cg.textureMapDY.setEditable(true);
+			cg.textureMapDX.setText("" + dx);
+			cg.textureMapDY.setText("" + dy);
+			cg.textureMapDX.setEditable(false);
+			cg.textureMapDY.setEditable(false);
+		}
 	}		
 	
 	void updateWorkingVertexFromCursor()
@@ -730,7 +745,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 	{		
 		cg.viewType = ContentGenerator.TEXTURE_MAP;
 		
-		Map<String,TexMap> texMapMap = cg.contentGeneratorSISI.textureMapMap;
+		Map<String,ContentGeneratorTextureMap> texMapMap = cg.contentGeneratorSISI.textureMapMap;
 		if(texMapMap == null)return;
 		
 			// get available textures
@@ -754,6 +769,22 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			cg.textureMapX.setMaximumSize(cg.textureMapX.getPreferredSize());
 			cg.textureMapY.setMaximumSize(cg.textureMapY.getPreferredSize());
 			
+			cg.textureMapDX = new JTextField(6);
+			cg.textureMapDY = new JTextField(6);
+			cg.textureMapDX.setMaximumSize(cg.textureMapDX.getPreferredSize());
+			cg.textureMapDY.setMaximumSize(cg.textureMapDY.getPreferredSize());
+			cg.textureMapDX.setEditable(false);
+			cg.textureMapDY.setEditable(false);
+			
+			cg.textureSetRef = new FixedSizeButton("/res/setRefButton.PNG");
+			cg.textureSetRef.setAction(cg.cgc);
+			
+			Box refBox = Box.createHorizontalBox();
+			refBox.add(cg.textureMapDX);
+			refBox.add(cg.textureMapDY);
+			refBox.add(cg.textureSetRef);
+			refBox.add(Box.createHorizontalGlue());
+			
 			Box whereBox = Box.createHorizontalBox();
 			whereBox.add(cg.textureMapX);
 			whereBox.add(cg.textureMapY);
@@ -762,6 +793,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			cg.textureMapViewTypeControls = Box.createVerticalBox();
 			cg.textureMapViewTypeControls.add(cg.textureMapCombo);
 			cg.textureMapViewTypeControls.add(whereBox);
+			cg.textureMapViewTypeControls.add(refBox);
 			cg.textureMapViewTypeControls.add(Box.createVerticalGlue());
 		
 			// add controls to rightHandControls
@@ -779,16 +811,16 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		
 		String name = (String) cg.textureMapCombo.getEditor().getItem();
 		if(name == null)return;
-		TexMap texMap = cg.contentGeneratorSISI.textureMapMap.get(name);
+		ContentGeneratorTextureMap texMap = cg.contentGeneratorSISI.textureMapMap.get(name);
 		if(texMap == null)return;
 		
 		// create texture only if it fits on the screen
 		int h = cg.nc.h;
 		int w = cg.nc.w;
 		
-		int th = texMap.h;
-		int tw = texMap.w;
-		int[] tp = texMap.tex;
+		int th = texMap.textureMap.h;
+		int tw = texMap.textureMap.w;
+		int[] tp = texMap.textureMap.tex;
 		
 		if(th > h)return;
 		if(tw > w)return;

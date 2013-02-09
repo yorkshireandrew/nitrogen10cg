@@ -560,7 +560,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	private String[] getTextureMapNames()
 	{
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
-		Map<String,TexMap> polygonDataMap = cgsisi.textureMapMap;
+		Map<String,ContentGeneratorTextureMap> polygonDataMap = cgsisi.textureMapMap;
 		Set<String> names = polygonDataMap.keySet();
 		String[] nameArray = names.toArray(new String[0]);
 		Arrays.sort(nameArray);

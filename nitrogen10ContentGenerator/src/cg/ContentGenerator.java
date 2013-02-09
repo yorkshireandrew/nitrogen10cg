@@ -132,6 +132,11 @@ public class ContentGenerator extends JFrame{
 	JComboBox textureMapCombo;
 	JTextField textureMapX;
 	JTextField textureMapY;
+	JTextField textureMapDX;
+	JTextField textureMapDY;
+	int textureRefX = 0;
+	int textureRefY = 0;
+	FixedSizeButton textureSetRef;
 	
 	/** the template models controlled by the template dialog */
 	TemplateModel[] templateModels = new TemplateModel[6];
@@ -232,7 +237,8 @@ public class ContentGenerator extends JFrame{
 		createPerspectiveViewControls();
 		
 		// create the controls for textureMap view
-		createTextureMapViewControls();
+		// now done on fly
+//		createTextureMapViewControls();
 		
 		// create a box to fill with various RHS controls
 		rightHandControls = new Box(BoxLayout.Y_AXIS);
@@ -1123,6 +1129,7 @@ public class ContentGenerator extends JFrame{
 		perspectiveViewTypeControls.add(Box.createVerticalGlue());		
 	}
 	
+	/*
 	void createTextureMapViewControls()
 	{
 		textureMapCombo = new JComboBox();
@@ -1133,17 +1140,37 @@ public class ContentGenerator extends JFrame{
 		textureMapY = new JTextField(6);
 		textureMapX.setMaximumSize(textureMapX.getPreferredSize());
 		textureMapY.setMaximumSize(textureMapY.getPreferredSize());
+		textureMapX.setEditable(false);
+		textureMapY.setEditable(false);
+		
+		textureMapDX = new JTextField(6);
+		textureMapDY = new JTextField(6);
+		textureMapDX.setMaximumSize(textureMapDX.getPreferredSize());
+		textureMapDY.setMaximumSize(textureMapDY.getPreferredSize());
+		textureMapDX.setEditable(false);
+		textureMapDY.setEditable(false);
+		
+		textureSetRef = new FixedSizeButton("/res/setRefButton.PNG");
+//		textureSetRef.setAction(cgc);
 		
 		Box whereBox = Box.createHorizontalBox();
 		whereBox.add(textureMapX);
 		whereBox.add(textureMapY);
 		whereBox.add(Box.createHorizontalGlue());
 		
+		Box refBox = Box.createHorizontalBox();
+		refBox.add(textureMapDX);
+		refBox.add(textureMapDY);
+		refBox.add(textureSetRef);
+		refBox.add(Box.createHorizontalGlue());
+		
 		textureMapViewTypeControls = Box.createVerticalBox();
 		textureMapViewTypeControls.add(textureMapCombo);
 		textureMapViewTypeControls.add(whereBox);
+		textureMapViewTypeControls.add(refBox);
 		textureMapViewTypeControls.add(Box.createVerticalGlue());
 	}
+	*/
 	
 	void showCollisionVertexes()
 	{
