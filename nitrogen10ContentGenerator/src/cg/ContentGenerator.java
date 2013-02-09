@@ -228,8 +228,9 @@ public class ContentGenerator extends JFrame{
 		undoStack = new FixedSizeStack<ContentGeneratorSISI>(20);
 		createWorld();
 		
-
-		
+	    // create Renderers
+	    createRenderers();
+			
 		// create the controls for standard view
 		createOrthogonalViewControls();
 		
@@ -237,8 +238,7 @@ public class ContentGenerator extends JFrame{
 		createPerspectiveViewControls();
 		
 		// create the controls for textureMap view
-		// now done on fly
-//		createTextureMapViewControls();
+		createTextureMapViewControls();
 		
 		// create a box to fill with various RHS controls
 		rightHandControls = new Box(BoxLayout.Y_AXIS);
@@ -775,8 +775,7 @@ public class ContentGenerator extends JFrame{
 				1f, 0f, 0f, 0f,
 				0f, 1f, 0f, 0f,
 				0f, 0f, 1f, 0f); 
-	    // create Renderers
-	    createRenderers();
+
 		// create basic (mutable) SISI
 		generatedSISI = new SharedImmutableSubItem();	
 		// Let garbage collector be responsible for dead Items              
@@ -814,22 +813,10 @@ public class ContentGenerator extends JFrame{
 	
 	void writeToFile(ObjectOutputStream out) throws IOException
 	{
-		
-		out.writeInt(viewDirection);
-		out.writeInt(viewType);
-		out.writeInt(viewDetail);
-		out.writeBoolean(showCollisionVertexes);
-		
-		// Item gets constructed and added during loading
+		out.writeObject(resourceURL);
+	
 		viewDirectionTransform.remove(generatedItem);
-		
-		out.writeObject(rootTransform);
-		out.writeObject(distTransform);
-		out.writeObject(turnTransform);
-		out.writeObject(climbTransform);	
-		out.writeObject(rollTransform);
-		out.writeObject(viewDirectionTransform); 
-		
+			
 		out.writeObject(templateModels[0]);
 		out.writeObject(templateModels[1]);
 		out.writeObject(templateModels[2]);
@@ -853,64 +840,40 @@ public class ContentGenerator extends JFrame{
 		
 		out.writeObject(workingVertexModel);
 		
-		out.writeObject(resourceURL);
-		
 		out.writeObject(polygonDialogModel);
-		
-		// done this but need to push down because of dependencies
-		out.writeObject(nc);
 	}
 	
 	void readFromFile(ObjectInputStream in) throws IOException
 	{
+		try {
+			resourceURL = (String)in.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		createWorld();
 		
-		// read the viewDirection and set the UI
-		viewDirection = in.readInt();
-		frontViewButton.setSelected(false);
+		viewDirection = FRONT;
+		frontViewButton.setSelected(true);
 		leftViewButton.setSelected(false);
 		backViewButton.setSelected(false);
 		rightViewButton.setSelected(false);
 		topViewButton.setSelected(false);
-		bottomViewButton.setSelected(false);	
-		if(viewDirection == FRONT) frontViewButton.setSelected(true);
-		if(viewDirection == LEFT) leftViewButton.setSelected(true);
-		if(viewDirection == BACK) backViewButton.setSelected(true);
-		if(viewDirection == RIGHT) rightViewButton.setSelected(true);
-		if(viewDirection == TOP) topViewButton.setSelected(true);
-		if(viewDirection == BOTTOM) bottomViewButton.setSelected(true);
-		
-		// read viewType and set the UI
-		viewType = in.readInt();
-		orthogonalProjectionButton.setSelected(false);
-		perspectiveButton.setSelected(false);
-		textureButton.setSelected(false);		
-		if(viewType == ORTHOGONAL_PROJECTION) orthogonalProjectionButton.setSelected(true);
-		if(viewType == PERSPECTIVE) perspectiveButton.setSelected(true);
-		if(viewType == TEXTURE_MAP) textureButton.setSelected(true);
+		bottomViewButton.setSelected(false);
 
-		// read the viewDetail and set the UI
-		viewDetail = in.readInt(); 	
-		vertexesOnlyButton.setSelected(false);
+		viewType = ORTHOGONAL_PROJECTION;
+		orthogonalProjectionButton.setSelected(true);
+		perspectiveButton.setSelected(false);
+		textureButton.setSelected(false);
+		
+		showCollisionVertexes = false;
+		showCollisionVertexesButton.setSelected(false);
+		
+		viewDetail = VERTEXES_ONLY;
+		
+		vertexesOnlyButton.setSelected(true);
 		wireframeOnlyButton.setSelected(false);
 		wireframeOnlyBacksideCulledButton.setSelected(false);
 		fullRenderButton.setSelected(false);
-		if(viewDetail == VERTEXES_ONLY)vertexesOnlyButton.setSelected(true);
-		if(viewDetail == WIREFRAME )wireframeOnlyButton.setSelected(true);
-		if(viewDetail == BACKSIDE_CULLED_WIREFRAME )wireframeOnlyBacksideCulledButton.setSelected(true);
-		if(viewDetail == FULLY_RENDERED )fullRenderButton.setSelected(true);		
-		showCollisionVertexes = in.readBoolean();
-		showCollisionVertexesButton.setSelected(showCollisionVertexes);
-	
-		// read the transforms 
-		// TO DO align the perspective UI components
-		try{
-			rootTransform = (Transform)in.readObject();
-			distTransform = (Transform)in.readObject();
-			turnTransform = (Transform)in.readObject();
-			climbTransform = (Transform)in.readObject();
-			rollTransform = (Transform)in.readObject();
-			viewDirectionTransform = (Transform)in.readObject(); 
-		} catch (ClassNotFoundException e) {e.printStackTrace();}	
 		
 		// read the template models
 		// template dialog is created in response to UI 
@@ -953,7 +916,7 @@ public class ContentGenerator extends JFrame{
 		polygonVertexViews[1].updateFromModel();
 		polygonVertexViews[2].updateFromModel();
 		polygonVertexViews[3].updateFromModel();
-
+		
 		try {
 			workingVertexModel = (WorkingVertexModel)in.readObject();
 		} catch (ClassNotFoundException e1) {e1.printStackTrace();}
@@ -962,20 +925,22 @@ public class ContentGenerator extends JFrame{
 		cgc.updateCursorFromWorkingVertex();
 		
 		try {
-			resourceURL = (String) in.readObject();
-		} catch (ClassNotFoundException e1) {e1.printStackTrace();}
-
-		try {
 			polygonDialogModel = (ContentGeneratorPolygon) in.readObject();
 		} catch (ClassNotFoundException e1) {e1.printStackTrace();}
+	
+		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1f,0.85f,1, 1000000);
 
-		
-		// read and set up the the nc 
-		try {
-			nc = (NitrogenContext) in.readObject();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+        nc.cls(0xFF000000);        
+        nc.repaint();
+        
+        // initially on ORTHOGONAL_PROJECTION
+    	nc.contentGeneratorForcesNoPerspective = true;
+    	
+    	// initially on VERTEXES_ONLY
+    	viewDetail = VERTEXES_ONLY;
+    	nc.contentGeneratorForcesNoCulling = true;
+    	RendererTriplet.setPickingRenderer(new Renderer_Null());
+    	nc.isPicking = true;
 		
 		// attach listener
 		MouseListener[] mouseListeners = nc.getMouseListeners();
@@ -1129,48 +1094,13 @@ public class ContentGenerator extends JFrame{
 		perspectiveViewTypeControls.add(Box.createVerticalGlue());		
 	}
 	
-	/*
+	
 	void createTextureMapViewControls()
 	{
-		textureMapCombo = new JComboBox();
-		textureMapCombo.setMaximumSize(textureMapCombo.getPreferredSize());
-		textureMapCombo.setEnabled(true);
-		
-		textureMapX = new JTextField(6);
-		textureMapY = new JTextField(6);
-		textureMapX.setMaximumSize(textureMapX.getPreferredSize());
-		textureMapY.setMaximumSize(textureMapY.getPreferredSize());
-		textureMapX.setEditable(false);
-		textureMapY.setEditable(false);
-		
-		textureMapDX = new JTextField(6);
-		textureMapDY = new JTextField(6);
-		textureMapDX.setMaximumSize(textureMapDX.getPreferredSize());
-		textureMapDY.setMaximumSize(textureMapDY.getPreferredSize());
-		textureMapDX.setEditable(false);
-		textureMapDY.setEditable(false);
-		
-		textureSetRef = new FixedSizeButton("/res/setRefButton.PNG");
-//		textureSetRef.setAction(cgc);
-		
-		Box whereBox = Box.createHorizontalBox();
-		whereBox.add(textureMapX);
-		whereBox.add(textureMapY);
-		whereBox.add(Box.createHorizontalGlue());
-		
-		Box refBox = Box.createHorizontalBox();
-		refBox.add(textureMapDX);
-		refBox.add(textureMapDY);
-		refBox.add(textureSetRef);
-		refBox.add(Box.createHorizontalGlue());
-		
 		textureMapViewTypeControls = Box.createVerticalBox();
-		textureMapViewTypeControls.add(textureMapCombo);
-		textureMapViewTypeControls.add(whereBox);
-		textureMapViewTypeControls.add(refBox);
-		textureMapViewTypeControls.add(Box.createVerticalGlue());
+		// this gets filled on the fly when view type is switched
 	}
-	*/
+	
 	
 	void showCollisionVertexes()
 	{
