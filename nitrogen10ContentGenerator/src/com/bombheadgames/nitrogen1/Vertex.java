@@ -191,10 +191,7 @@ public final class Vertex implements Serializable{
     		sz = Integer.MIN_VALUE - (int)(context.zk/vs_z);   		 		
     		sx = (int)((m * vs_x)/(-vs_z)) + context.midw;
     		sy = context.midh - (int)((m * vs_y)/(-vs_z));
-    		screenCoordinatesNeedUpdate = false;
-    		
-    		
-    		
+    		screenCoordinatesNeedUpdate = false;		
     }
     
     /** collision vertex method */

@@ -138,7 +138,12 @@ final public void renderTrapezoid(
         // global parameters array - eg. the colour for a single colour polygon
         int[] polyData,
         float lightingValue,
-        NitrogenContext context
+        NitrogenContext context,
+        boolean hlp,
+        Vertex a,
+        Vertex b,
+        Vertex c,
+        Vertex d
         )
 
 

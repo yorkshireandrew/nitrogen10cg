@@ -26,9 +26,6 @@ final public class Item implements Serializable{
 	
 	/** Class used to encapsulate polygon clipping */
 	static final PolygonClipper polygonClipper = new PolygonClipper();
-
-	/** Class used to encapsulate polygon breaking into lower perspective levels */
-	static final HLPBreaker  hlpBreaker = new HLPBreaker();
 	
 	/** Class used to source and sink the internal components of Items*/
 	static ItemFactory itemFactory;

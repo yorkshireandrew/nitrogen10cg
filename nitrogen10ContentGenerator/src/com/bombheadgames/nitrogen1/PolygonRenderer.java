@@ -23,7 +23,8 @@ final class PolygonRenderer {
 			final Renderer ren, 
 			final int[] polyData, 
 			final TexMap texMap,
-			final float lightingValue
+			final float lightingValue,
+			boolean hlp
 			)
 	{
 	    context.polygonRendererCalls++;
@@ -48,7 +49,23 @@ final class PolygonRenderer {
 	    System.out.println("vert c = " + c.sx + "," + c.sy );	    
 	    System.out.println("vert d = " + d.sx + "," + d.sy );	    
 		*/
-			
+		
+	    if(ren instanceof Renderer_DirtyTextureRenderer)
+	    {
+	    	if(hlp)
+	    	{
+	    		// Handle special case 
+	    		Renderer_DirtyTextureRenderer.dirtyRenderTrapezoid
+	    		(
+	    				context,
+	    				a, b, c, d, 
+	    				polyData, 
+	    				texMap,
+	    				lightingValue
+	    				);
+	    		return;
+	    	}
+	    }
 		// create local copies of y coordinates for sorting
 	    int ay = a.sy;
 	    int by = b.sy;
@@ -63,11 +80,11 @@ final class PolygonRenderer {
 	    		// must be c or d
 	    		if(cy >= dy)
 	    		{
-	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    		else
 	    		{
-	    			min_c(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_c(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}	    		
 	    	}
 	    	else
@@ -75,11 +92,11 @@ final class PolygonRenderer {
 	    		// must be b or d
 	    		if(by >= dy)
 	    		{
-	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    		else
 	    		{
-	    			min_b(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_b(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}	  	    		
 	    	}
 	    		
@@ -91,11 +108,11 @@ final class PolygonRenderer {
 	    		// must be c or d
 	    		if(cy >= dy)
 	    		{
-	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    		else
 	    		{
-	    			min_c(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_c(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}	 
 	    	}
 	    	else
@@ -103,11 +120,11 @@ final class PolygonRenderer {
 	    		// must be a or d
 	    		if(ay >= dy)
 	    		{
-	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_d(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    		else
 	    		{
-	    			min_a(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			min_a(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}	 
 	    	}	    	
 	    }
@@ -119,7 +136,8 @@ final class PolygonRenderer {
 			final Renderer ren, 
 			final int[] polyData, 
 			final TexMap texMap,
-			final float lightingValue
+			final float lightingValue,
+			boolean hlp
 			)
 	{
 		// create local copies of y coordinates for sorting
@@ -135,12 +153,12 @@ final class PolygonRenderer {
 	    	if(by >= dy)
 	    	{
 	    		// b is max, a is min
-	    		plotCase4(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    		plotCase4(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    	}
 	    	else
 	    	{
 	    		// d is max, a is min
-	    		plotCase1(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    		plotCase1(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    	}
 	    }
 	    else
@@ -152,18 +170,18 @@ final class PolygonRenderer {
 	    		if(by >= dy)
 	    		{
 	    			// a < d < b < c
-	    			plotCase3(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			plotCase3(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    		else
 	    		{
 	    			// a < b < d < c
-	    			plotCase2(context,a, b, c, d, ren, polyData, texMap,lightingValue);
+	    			plotCase2(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    	}
 	    	else
 	    	{
 	    		// d is max, a is min
-	    		plotCase1(context,a, b, c, d, ren, polyData, texMap,lightingValue);  		
+	    		plotCase1(context,a, b, c, d, ren, polyData, texMap,lightingValue, hlp);  		
 	    	}
 	    }
 		
@@ -175,7 +193,8 @@ final class PolygonRenderer {
 			final Renderer ren, 
 			final int[] polyData, 
 			final TexMap texMap,
-			final float lightingValue
+			final float lightingValue,
+			boolean hlp
 			)
 	{
 		// create local copies of y coordinates for sorting
@@ -192,7 +211,7 @@ final class PolygonRenderer {
 	    	if(ay >= dy)
 	    	{
 	    		// a is max, b is min
-	    		plotCase1(context, b,c,d,a, ren, polyData, texMap,lightingValue);
+	    		plotCase1(context, b,c,d,a, ren, polyData, texMap,lightingValue, hlp);
 
 	    	}
 	    	else
@@ -201,12 +220,12 @@ final class PolygonRenderer {
 	    		if(ay >= cy)
 	    		{
 	    			// b < c < a < d
-		    		plotCase2(context, b,c,d,a, ren, polyData, texMap,lightingValue);
+		    		plotCase2(context, b,c,d,a, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    		else
 	    		{
 	    			// b < a < c < d
-		    		plotCase3(context, b,c,d,a, ren, polyData, texMap,lightingValue);
+		    		plotCase3(context, b,c,d,a, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    	}
 	    }
@@ -216,7 +235,7 @@ final class PolygonRenderer {
 	    	if(cy >= dy)
 	    	{
 	    		// c is max, b is min
-	    		plotCase4(context, b,c,d,a, ren, polyData, texMap,lightingValue);
+	    		plotCase4(context, b,c,d,a, ren, polyData, texMap,lightingValue, hlp);
 	    		
 	    	}
 	    	else
@@ -225,12 +244,12 @@ final class PolygonRenderer {
 	    		if(ay >= cy)
 	    		{
 	    			// b < c < a < d
-		    		plotCase2(context, b,c,d,a, ren, polyData, texMap,lightingValue);
+		    		plotCase2(context, b,c,d,a, ren, polyData, texMap,lightingValue, hlp);
 	    		}
 	    		else
 	    		{
 	    			// b < a < c < d
-		    		plotCase3(context, b,c,d,a, ren, polyData, texMap,lightingValue);
+		    		plotCase3(context, b,c,d,a, ren, polyData, texMap,lightingValue, hlp);
 	    		}	    		
 	    	}
 	    }    
@@ -242,7 +261,7 @@ final class PolygonRenderer {
 			final Renderer ren, 
 			final int[] polyData, 
 			final TexMap texMap,
-			final float lightingValue
+			final float lightingValue, boolean hlp
 			)
 	{
 		// create local copies of y coordinates for sorting
@@ -261,18 +280,18 @@ final class PolygonRenderer {
 	    		if(by >= dy)
 	    		{
 		    		// c < d < b < a
-	    			plotCase2(context, c,d,a,b, ren, polyData, texMap,lightingValue);	    			
+	    			plotCase2(context, c,d,a,b, ren, polyData, texMap,lightingValue, hlp);	    			
 	    		}
 	    		else
 	    		{
 		    		// c < b < d < a
-	    			plotCase3(context, c,d,a,b, ren, polyData, texMap,lightingValue);	    				    			
+	    			plotCase3(context, c,d,a,b, ren, polyData, texMap,lightingValue, hlp);	    				    			
 	    		}
 	    	}
 	    	else
 	    	{
 	    		// d is max, c is min
-    			plotCase4(context, c,d,a,b, ren, polyData, texMap,lightingValue);	    			
+    			plotCase4(context, c,d,a,b, ren, polyData, texMap,lightingValue, hlp);	    			
 	    		
 	    	}
 	    }
@@ -282,13 +301,13 @@ final class PolygonRenderer {
 	    	if(by >= dy)
 	    	{
 	    		// b is max, c is min
-    			plotCase1(context, c,d,a,b, ren, polyData, texMap,lightingValue);	    			
+    			plotCase1(context, c,d,a,b, ren, polyData, texMap,lightingValue, hlp);	    			
 
 	    	}
 	    	else
 	    	{
 	    		// d is max, c is min
-    			plotCase4(context, c,d,a,b, ren, polyData, texMap,lightingValue);	    			
+    			plotCase4(context, c,d,a,b, ren, polyData, texMap,lightingValue, hlp);	    			
 	    	}
 	    }   
 	}
@@ -299,7 +318,8 @@ final class PolygonRenderer {
 			final Renderer ren, 
 			final int[] polyData, 
 			final TexMap texMap,
-			final float lightingValue
+			final float lightingValue,
+			boolean hlp
 			)
 	{
 		// create local copies of y coordinates for sorting
@@ -315,12 +335,12 @@ final class PolygonRenderer {
 	    	if(ay >= cy)
 	    	{
 	    		// max a, min d
-    			plotCase4(context, d,a,b,c, ren, polyData, texMap,lightingValue);	    			
+    			plotCase4(context, d,a,b,c, ren, polyData, texMap,lightingValue, hlp);	    			
 	    	}
 	    	else
 	    	{
 	    		// max c, min d
-    			plotCase1(context, d,a,b,c, ren, polyData, texMap,lightingValue);	    			
+    			plotCase1(context, d,a,b,c, ren, polyData, texMap,lightingValue, hlp);	    			
 	    	}
 	    }
 	    else
@@ -332,18 +352,18 @@ final class PolygonRenderer {
 	    		if( cy >= ay)
 	    		{
 	    			// d < a < c < b
-	       			plotCase2(context, d,a,b,c, ren, polyData, texMap,lightingValue);	    				    			
+	       			plotCase2(context, d,a,b,c, ren, polyData, texMap,lightingValue, hlp);	    				    			
 	    		}
 	    		else
 	    		{
 	    			// d < c < a < b
-	       			plotCase3(context, d,a,b,c, ren, polyData, texMap,lightingValue);	    				    						
+	       			plotCase3(context, d,a,b,c, ren, polyData, texMap,lightingValue, hlp);	    				    						
 	    		}	    		
 	    	}
 	    	else
 	    	{
 	    		// max c, min d
-	   			plotCase1(context, d,a,b,c, ren, polyData, texMap,lightingValue);	    				    		
+	   			plotCase1(context, d,a,b,c, ren, polyData, texMap,lightingValue, hlp);	    				    		
 	    	}
 	    }
 	}
@@ -352,7 +372,7 @@ final class PolygonRenderer {
 	//------------------------------------------------------------------------------------------------------------------------
 	    //*********************** PLOT CASE 1 ************************************
 		/** case where  a <  b <  c <  d */
-		final private static void plotCase1(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
+		final private static void plotCase1(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue, boolean hlp)
 	    {
 			/*
 			System.out.println(" plot case 1 where vert a < vert b < vert c < vert d");
@@ -497,7 +517,9 @@ final class PolygonRenderer {
 	                    tw,      
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set start point to b
@@ -579,7 +601,9 @@ final class PolygonRenderer {
 	                    tw,      
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set start point to c
@@ -660,7 +684,9 @@ final class PolygonRenderer {
 	                    tw,      
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set start point to d
@@ -705,7 +731,9 @@ final class PolygonRenderer {
 	        		tw,      
 	        		polyData,
 	        		lightingValue,
-                    context
+                    context,
+                    hlp,
+                    a,b,c,d
 	                );
 	
 	
@@ -713,7 +741,7 @@ final class PolygonRenderer {
 	    
 		//************************ PLOT CASE 2 ***********************************************
 		/** case where a < b < d < c */
-	    final private static void plotCase2(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
+	    final private static void plotCase2(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue, boolean hlp)
 	    {
 			/*
 	    	System.out.println("plot case 2 where vert a < vert b < vert d < vert c");
@@ -872,7 +900,9 @@ final class PolygonRenderer {
 	                    tw,			
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set start point to b
@@ -960,7 +990,9 @@ final class PolygonRenderer {
 	                    tw,     
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set finish point to d
@@ -1044,7 +1076,9 @@ final class PolygonRenderer {
 	                    tw,     
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set finish point to c
@@ -1095,7 +1129,9 @@ final class PolygonRenderer {
                     tw,     
                     polyData,
                     lightingValue,
-                    context
+                    context,
+                    hlp,
+                    a,b,c,d
                     );
 	        
 	    }
@@ -1103,7 +1139,7 @@ final class PolygonRenderer {
 	    
 	    //*********************** PLOT CASE 3 *********************************
 	    /** plot case 3 a < d < b < c */
-	    private static final void plotCase3(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
+	    private static final void plotCase3(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue, boolean hlp)
 	    {
 			/*
 	    	System.out.println("plot case 3 where vert a < vert d < vert b < vert c");
@@ -1261,7 +1297,9 @@ final class PolygonRenderer {
 	                    tw,			
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set finish point to d
@@ -1349,7 +1387,9 @@ final class PolygonRenderer {
 	                    tw,     
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set start point to b
@@ -1433,7 +1473,9 @@ final class PolygonRenderer {
 	                    tw,     
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set finish point to c
@@ -1484,14 +1526,16 @@ final class PolygonRenderer {
                     tw,     
                     polyData,
                     lightingValue,
-                    context
+                    context,
+                    hlp,
+                    a,b,c,d
                     );
 	    	
 	    }
 
 	    //*********************** PLOT CASE 4 *********************************
 	    /** plot case 4 a < d < c < b */	    
-	    final private static void plotCase4(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue)
+	    final private static void plotCase4(final NitrogenContext context, final Vertex a, final Vertex b, final Vertex c, final Vertex d, final Renderer ren, final int[] polyData, final TexMap tm, final float lightingValue, boolean hlp)
 	    {
 			/*
 	    	System.out.println(" plot case 4 where vert a < vert d < vert c < vert b");
@@ -1635,7 +1679,9 @@ final class PolygonRenderer {
 	                    tw,      
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set finish point to d
@@ -1717,7 +1763,9 @@ final class PolygonRenderer {
 	                    tw,      
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set finish point to c
@@ -1799,7 +1847,9 @@ final class PolygonRenderer {
 	                    tw,      
 	                    polyData,
 	                    lightingValue,
-	                    context
+	                    context,
+	                    hlp,
+	                    a,b,c,d
 	                    );
 	
 	            // set start point to b
@@ -1844,7 +1894,9 @@ final class PolygonRenderer {
 	        		tw,      
 	        		polyData,
 	        		lightingValue,
-                    context
+                    context,
+                    hlp,
+                    a,b,c,d
 	                );	    	
 	    }
 	    
