@@ -50,12 +50,12 @@ final class PolygonRenderer {
 	    System.out.println("vert d = " + d.sx + "," + d.sy );	    
 		*/
 		
-	    if(ren instanceof Renderer_DirtyTextureRenderer)
+	    if(ren.isTextured())
 	    {
 	    	if(hlp)
 	    	{
 	    		// Handle special case 
-	    		Renderer_DirtyTextureRenderer.dirtyRenderTrapezoid
+	    		ren.renderTrapezoidHLP
 	    		(
 	    				context,
 	    				a, b, c, d, 

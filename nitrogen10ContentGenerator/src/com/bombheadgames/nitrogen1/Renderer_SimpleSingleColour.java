@@ -202,6 +202,15 @@ final public void renderTrapezoid(
     }//end of y_counter while loop
 }
 
-public boolean usesHLPBreak(){return false;}
+public void renderTrapezoidHLP(
+		final NitrogenContext context,
+		final Vertex a, final Vertex b, final Vertex c, final Vertex d, 
+		final int[] polyData, 
+		final TexMap texMap,
+		final float lightingValue
+	     ){}
+
+public boolean isTextured(){return false;}
+
 
 }// end of class

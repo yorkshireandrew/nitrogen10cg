@@ -229,7 +229,7 @@ public class ContentGenerator extends JFrame{
 		createWorld();
 		
 	    // create Renderers
-	    createRenderers();
+	    LoadRendererClasses.createRenderers();
 			
 		// create the controls for standard view
 		createOrthogonalViewControls();
@@ -790,26 +790,7 @@ public class ContentGenerator extends JFrame{
 	 * available in the ContentGenerator. Amend this
 	 * if you need to add in more RendererTriplets
 	 */
-	void createRenderers()
-	{
-        // RendererTriplet using just the SimpleTexture renderer
-		Renderer_SimpleTexture str = new Renderer_SimpleTexture();
-        RendererTriplet rt = new RendererTriplet(str);
-        try
-        {
-        	RendererHelper.addRendererTriplet("str",rt);
-        }
-        catch(Exception e){System.out.println(e.getMessage());}
 
-        // RendererTriplet using just the SimpleSingleColour renderer 
-        Renderer_SimpleSingleColour sscr = new Renderer_SimpleSingleColour();           
-        RendererTriplet sscrt = new RendererTriplet(sscr);
-        try
-        {
-        	RendererHelper.addRendererTriplet("sscr",sscrt);
-        }
-        catch(Exception e){System.out.println(e.getMessage());}		
-	}
 	
 	void writeToFile(ObjectOutputStream out) throws IOException
 	{

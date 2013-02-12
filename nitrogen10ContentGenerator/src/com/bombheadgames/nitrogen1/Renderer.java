@@ -110,5 +110,15 @@ public interface Renderer {
                     Vertex d
                     );
             
+            public void renderTrapezoidHLP(
+            		final NitrogenContext context,
+            		final Vertex a, final Vertex b, final Vertex c, final Vertex d, 
+            		final int[] polyData, 
+            		final TexMap texMap,
+            		final float lightingValue
+            	     );
+            
+            public boolean isTextured();
+            
 
 }
