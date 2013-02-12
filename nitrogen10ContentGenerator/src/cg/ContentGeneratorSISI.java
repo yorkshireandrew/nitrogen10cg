@@ -334,11 +334,9 @@ public class ContentGeneratorSISI implements Serializable{
     }
     
     /** read object called during un-serialisation, implemented to load texture maps */
-    final private void readObject(ContentGenerator cg, ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
-    	in.defaultReadObject();
-    	
-    	Iterator<Entry<String,ContentGeneratorTextureMap>> it = textureMapMap.entrySet().iterator();
+    final public void setUpTransientFields(ContentGenerator cg) throws IOException, ClassNotFoundException
+    {  	
+    	Iterator<Entry<String,ContentGeneratorTextureMap>> it = cg.contentGeneratorSISI.textureMapMap.entrySet().iterator();
     	
     	boolean hasChoosen = false;
     	boolean useContentGeneratorPath = false;
@@ -350,10 +348,11 @@ public class ContentGeneratorSISI implements Serializable{
     		Entry<String,ContentGeneratorTextureMap> ent = it.next();
     		
     		ContentGeneratorTextureMap cgtm = ent.getValue();
-    		
+    		if(cgtm == null)continue;
+    		if(cgtm.path == null)continue;
     		if(cgtm.path.equals(cg.resourceURL))
     		{
-    			cgtm.textureMap = new TexMap(cgtm.path, cgtm.file);
+    			ent.setValue(new ContentGeneratorTextureMap(cgtm.path, cgtm.file,new TexMap(cgtm.path, cgtm.file)));
     		}
     		else
     		{
@@ -381,10 +380,12 @@ public class ContentGeneratorSISI implements Serializable{
     			if(useContentGeneratorPath)
     			{
     				cgtm.textureMap = new TexMap(cg.resourceURL, cgtm.file);
+    				ent.setValue(new ContentGeneratorTextureMap(cg.resourceURL, cgtm.file, new TexMap(cg.resourceURL, cgtm.file)));
     			}
     			else
     			{
     				cgtm.textureMap = new TexMap(cgtm.path, cgtm.file);
+    				ent.setValue(new ContentGeneratorTextureMap(cgtm.path, cgtm.file, new TexMap(cgtm.path, cgtm.file))); 				
     			}
     		}// end of path checking if-else
     	}//end of while	

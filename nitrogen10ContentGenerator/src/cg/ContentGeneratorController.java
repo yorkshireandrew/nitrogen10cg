@@ -901,13 +901,13 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		cg.cgc.updateGeneratedItemAndEditArea();
 	}
 	
-	private void handleHLPBreakingOnButton()
+	private void handleHLPBreakingOffButton()
 	{
 		cg.contentGeneratorSISI.hlpBreakingDist = 1f;
 		cg.cgc.updateGeneratedItemAndEditArea();
 	}
 	
-	private void handleHLPBreakingOffButton()
+	private void handleHLPBreakingOnButton()
 	{
 		cg.contentGeneratorSISI.hlpBreakingDist = 1000000f;
 		cg.cgc.updateGeneratedItemAndEditArea();

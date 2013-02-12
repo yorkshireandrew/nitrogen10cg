@@ -643,6 +643,7 @@ final public class Item implements Serializable{
 	final private void updateRenderingFlags(final float itemDist, final SharedImmutableSubItem sisi)
 	{
 		// see if isImprovedDetail needs changing
+		System.out.println("updateRenderingFlags called");
 		if(isImprovedDetail)
 		{
 			if(itemDist > sisi.improvedDetailDistPlus)isImprovedDetail = false;
@@ -654,11 +655,19 @@ final public class Item implements Serializable{
 		
 		if(isUsingHLPBreaking)
 		{
-			if(itemDist > sisi.hlpBreakingDistPlus)isUsingHLPBreaking = false;
+			if(itemDist > sisi.hlpBreakingDistPlus)
+				{
+				System.out.println("isUsingHLPBreaking toggled false");	
+				isUsingHLPBreaking = false;
+				}
 		}
 		else
 		{
-			if(itemDist < sisi.hlpBreakingDist)isUsingHLPBreaking = true;
+			if(itemDist < sisi.hlpBreakingDist)
+				{
+				System.out.println("isUsingHLPBreaking toggled true");	
+				isUsingHLPBreaking = true;
+				}
 		}
 	}
 	

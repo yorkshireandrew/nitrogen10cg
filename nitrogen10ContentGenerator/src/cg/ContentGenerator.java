@@ -878,6 +878,7 @@ public class ContentGenerator extends JFrame{
 		// read and set up the the ContentGeneratorSISI 
 		try {
 			contentGeneratorSISI = (ContentGeneratorSISI) in.readObject();
+			contentGeneratorSISI.setUpTransientFields(this);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

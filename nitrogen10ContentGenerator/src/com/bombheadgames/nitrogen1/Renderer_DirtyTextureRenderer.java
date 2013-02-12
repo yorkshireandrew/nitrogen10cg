@@ -14,12 +14,12 @@ static final int SH = 20;
 static final int NUM = 1 << SH;
 
 static final int OUTER_HOLE_FILL_CONSTANT = 32;
-static final int INNER_HOLE_FILL_CONSTANT = 8;
+static final int INNER_HOLE_FILL_CONSTANT = 64;
 
 static final int AFFINE_SH = 20;
 static final int AFFINE_NUM = 1 << SH;
 static final float AFFINE_NUM_FLOAT = (float)AFFINE_NUM;
-static final int AFFINE_CONSTANT = 3;
+static final int AFFINE_CONSTANT = 8;
 static final int AFFINE_RECIPROCAL = AFFINE_NUM / AFFINE_CONSTANT;
 static final float AFFINE_RECIPROCAL_FLOAT = AFFINE_NUM_FLOAT / (float)(AFFINE_CONSTANT);
 
@@ -117,15 +117,6 @@ static final float AFFINE_RECIPROCAL_FLOAT = AFFINE_NUM_FLOAT / (float)(AFFINE_C
 		float finishZ = d.vs_z;
 		float finishTX = d.aux1;
 		float finishTY = d.aux2;
-		
-		float pixX;
-		float pixY;
-		float pixZ;
-		float pixTX;
-		float pixTY;
-		
-		int pix_sx, pix_sy;
-		long pix_sz;
 		
 		for(int outerCount = 0; outerCount < outerDelta; outerCount++)
 		{
@@ -350,6 +341,8 @@ static final float AFFINE_RECIPROCAL_FLOAT = AFFINE_NUM_FLOAT / (float)(AFFINE_C
 				}
 				
 				int index = sy * contextWidth + sx;
+				old_sx = sx;
+				old_sy = sy;
 				
 				// *********************************************************************
 				// *********************************************************************

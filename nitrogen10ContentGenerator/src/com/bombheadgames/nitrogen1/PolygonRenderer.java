@@ -38,6 +38,8 @@ final class PolygonRenderer {
 	    if(context.debug){
 	    	System.out.println("debug on");
 	    }
+	    
+	    System.out.println("HLP is " + hlp);
 		
 		a.calculateScreenSpaceCoordinate(context);
 	    b.calculateScreenSpaceCoordinate(context);

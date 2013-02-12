@@ -64,7 +64,7 @@ public class HLPBinaryBreaker {
 					vertex1, vertex2, vertex3, vertex4,					
 					renderer,
 					polyData,
-					textureMap, lightingValue, false 
+					textureMap, lightingValue, true 
 					);
 					return;			
 		}
@@ -75,7 +75,7 @@ public class HLPBinaryBreaker {
 					vertex1, vertex2, vertex3, vertex4,					
 					renderer,
 					polyData,
-					textureMap, lightingValue, true 
+					textureMap, lightingValue, false
 					);
 					return;					
 		}
@@ -137,10 +137,14 @@ public class HLPBinaryBreaker {
 		// return result
 		if(localThresholdDist < finalmaxz)
 		{
+			System.out.println("minz=" + finalminz + "minzt="+ localThresholdDist + "maxz=" + finalmaxz);
+			System.out.println("HLPBinaryBreaker returns FALSE");
 			return(false);
 		}
 		else
 		{
+			System.out.println("minz=" + finalminz + "minzt="+ localThresholdDist + "maxz=" + finalmaxz);
+			System.out.println("HLPBinaryBreaker returns TRUE");
 			return(true);
 		}
 	}
