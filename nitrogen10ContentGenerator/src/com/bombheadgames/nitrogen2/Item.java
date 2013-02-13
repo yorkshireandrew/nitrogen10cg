@@ -321,6 +321,9 @@ final public class Item implements Serializable{
 		final boolean contextTransparencyPassL = context.transparencyPass;
 		final boolean isUsingHLPBreakingL = isUsingHLPBreaking;
 		
+		Vertex[] vertexArray;
+		int[] vertexIndexArray;
+		
 		/** True unless the Items SharedImmutableSubItem nearPlaneCrashBacksideOverride is true and the Item has also crashed into near Plane */
 		final boolean noBacksideCullOverride = (!sisiL.nearPlaneCrashBacksideOverride) ||(!touchedNear);
 		
@@ -356,25 +359,22 @@ final public class Item implements Serializable{
 			
 			if(backside.facingViewer() || context.contentGeneratorForcesNoCulling)
 			{
-				// -- optimised to here --
 				// Calculate the vertexes, then Pass the polygon on to the next process.
-				Vertex v1 = vertexes[immutablePolygon.c1];
-				Vertex v2 = vertexes[immutablePolygon.c2];
-				Vertex v3 = vertexes[immutablePolygon.c3];
-				Vertex v4 = vertexes[immutablePolygon.c4];				
-				v1.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
-				v2.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
-				v3.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
-				v4.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
-
-				// move vertex data across from the immutable polygon
-				v1.setAux(immutablePolygon.pvd_c1);
-				v2.setAux(immutablePolygon.pvd_c2);
-				v3.setAux(immutablePolygon.pvd_c3);
-				v4.setAux(immutablePolygon.pvd_c4);
+				vertexIndexArray = immutablePolygon.vertexIndexArray;
+				int vertexIndexArrayLength = vertexIndexArray.length;
+				vertexArray = new Vertex[vertexIndexArrayLength];
 				
-				PolygonClipper.prepareForNewPolygon();
-				PolygonClipper.process(
+				for(int q = 0; q < vertexIndexArrayLength; q++)
+				{
+					
+					Vertex v = vertexes[immutablePolygon.vertexIndexArray[q]];
+					v.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
+					PolygonVertexData pvd = immutablePolygon.polygonVertexDataArray[q];
+					if(pvd != null)v.setAux(immutablePolygon.polygonVertexDataArray[q]);
+					vertexArray[q]  = v;                   
+				}
+				
+				Nitrogen2PolygonRenderer.process(
 						context,
 						fustrumTouchCountL, 
 						touchedNearL,
@@ -382,59 +382,53 @@ final public class Item implements Serializable{
 						touchedLeftL,
 						touchedTopL,
 						touchedBottomL,					
-						v1, 
-						v2, 
-						v3, 
-						v4, 									
+						vertexArray,
 
 						immutablePolygon.getRenderer(whichRendererIsIt, context.isPicking),
 						immutablePolygon.polyData,
 						immutablePolygon.textureMap,						
 						backside.lightingValue,
-						isUsingHLPBreakingL						
-					);				
+						isUsingHLPBreakingL
+				);
 			}
 			else
 			{
 				// Skip rendering the polygon if it is backside culled
 				if(immutablePolygon.isBacksideCulled && noBacksideCullOverride)continue;
 				
-				// Calculate the vertexes, then Pass the polygon on to the next process.
-				Vertex v1 = vertexes[immutablePolygon.c1];
-				Vertex v2 = vertexes[immutablePolygon.c2];
-				Vertex v3 = vertexes[immutablePolygon.c3];
-				Vertex v4 = vertexes[immutablePolygon.c4];			
-				v1.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
-				v2.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
-				v3.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
-				v4.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
+				vertexIndexArray = immutablePolygon.vertexIndexArray;
+				int vertexIndexArrayLength = vertexIndexArray.length;
+				vertexArray = new Vertex[vertexIndexArrayLength];
+				
+				// create array but fill backwards, to ensure anticlockwise ordering
+				int to = vertexIndexArrayLength;
+				for(int q = 0; q < vertexIndexArrayLength; q++)
+				{
+					Vertex v = vertexes[immutablePolygon.vertexIndexArray[q]];
+					v.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
+					PolygonVertexData pvd = immutablePolygon.polygonVertexDataArray[q];
+					if(pvd != null)v.setAux(immutablePolygon.polygonVertexDataArray[q]);
+					vertexArray[--to]  = v;                   
+				}
+				
+				Nitrogen2PolygonRenderer.process(
+						context,
+						fustrumTouchCountL, 
+						touchedNearL,
+						touchedRightL,
+						touchedLeftL,
+						touchedTopL,
+						touchedBottomL,					
+						vertexArray,
 
-				// move vertex data across from the immutable polygon
-				v1.setAux(immutablePolygon.pvd_c1);
-				v2.setAux(immutablePolygon.pvd_c2);
-				v3.setAux(immutablePolygon.pvd_c3);
-				v4.setAux(immutablePolygon.pvd_c4);
-				// Pass the polygon on to the next process, but reverse the ordering of the vertexes 
-				// because the polygon is facing away, to ensure they occur in a clockwise direction		
-				PolygonClipper.prepareForNewPolygon();
-				PolygonClipper.process(
-					context,
-					fustrumTouchCountL, 
-					touchedNearL,
-					touchedRightL,
-					touchedLeftL,
-					touchedTopL,
-					touchedBottomL,					
-					v4, 
-					v3, 
-					v2, 
-					v1,
-					immutablePolygon.getRenderer(whichRendererIsIt,context.isPicking),					
-					immutablePolygon.polyData,
-					immutablePolygon.textureMap,
-					backside.lightingValue,
-					isUsingHLPBreakingL
+						immutablePolygon.getRenderer(whichRendererIsIt, context.isPicking),
+						immutablePolygon.polyData,
+						immutablePolygon.textureMap,						
+						backside.lightingValue,
+						isUsingHLPBreakingL
 				);
+				
+				
 			} //end of backside facing viewer if-else
 		} //end of polygon rendering loop	
 	}

@@ -5,24 +5,12 @@ import java.io.Serializable;
 /** Encapsulates the immutable details about a polygon so that they can be shared across several Item instances */
 public class ImmutablePolygon implements Serializable{
 	private static final long serialVersionUID = 3401874576594754016L;
-
-	/** index of first vertex of polygon */
-	int c1;	
-	/** index of second vertex of polygon */
-	int c2;	
-	/** index of third vertex of polygon */
-	int c3;	
-	/** index of fourth vertex of polygon */
-	int c4;
 	
-	/** vertex data to be associated with c1 for this immutable polygon */
-	PolygonVertexData pvd_c1;
-	/** vertex data to be associated with c2 for this immutable polygon */	
-	PolygonVertexData pvd_c2;
-	/** vertex data to be associated with c3 for this immutable polygon */	
-	PolygonVertexData pvd_c3;
-	/** vertex data to be associated with c4 for this immutable polygon */	
-	PolygonVertexData pvd_c4;
+	/** index of vertexes of the polygon in the Items vertexes array */
+	int[] vertexIndexArray;
+	
+	/** The vertex data to be associated with the polygons vertexes */
+	PolygonVertexData[] polygonVertexDataArray;
 	
 	/** Information to pass to the renderer, for example the polygons colour */
 	int[] polyData;
@@ -43,14 +31,8 @@ public class ImmutablePolygon implements Serializable{
 	boolean isTransparent;
 	
 	public ImmutablePolygon(
-			int c1,
-			int c2,
-			int c3,
-			int c4,
-			PolygonVertexData pvd_c1,
-			PolygonVertexData pvd_c2,
-			PolygonVertexData pvd_c3,
-			PolygonVertexData pvd_c4,
+			int[] vertexIndexArray,
+			PolygonVertexData[] polygonVertexDataArray,
 			int[] polyData,
 			RendererTriplet rendererTriplet,
 			TexMap textureMap,
@@ -58,16 +40,9 @@ public class ImmutablePolygon implements Serializable{
 			boolean isBacksideCulled,
 			boolean isTransparent)
 			{
-				this.c1=c1;
-				this.c2=c2;
-				this.c3=c3;
-				this.c4=c4;
-				
-				this.pvd_c1 = pvd_c1;
-				this.pvd_c2 = pvd_c2;
-				this.pvd_c3 = pvd_c3;
-				this.pvd_c4 = pvd_c4;
-				
+				this.vertexIndexArray = vertexIndexArray;
+				this.polygonVertexDataArray = polygonVertexDataArray;
+								
 				this.polyData=polyData;
 				this.rendererTriplet = rendererTriplet;
 				this.textureMap=textureMap;

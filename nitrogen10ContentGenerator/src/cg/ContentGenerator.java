@@ -159,7 +159,10 @@ public class ContentGenerator extends JFrame{
 	
 	/** variable to hold polygon dialog choices between dialog openings */
 	ContentGeneratorPolygon polygonDialogModel;
-	String lastPolygonEdited = "";
+	
+	/** name of the PolygonDialog polygon. If this is null PolygonDialog 
+	 * treats any opening of PolygonDialog as a new polygon */
+	String workingPolygon;
 	
 	
 	/** Box in which rightHandControls for orthogonal view type are kept */
@@ -199,7 +202,7 @@ public class ContentGenerator extends JFrame{
         
         cgc = new ContentGeneratorController(this);
         
-        polygonDialogModel = new ContentGeneratorPolygon();
+        polygonDialogModel = null;
         		
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip

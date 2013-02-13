@@ -132,17 +132,21 @@ public class MoveOriginMenuItemAction implements ActionListener {
 			Entry<String,ContentGeneratorPolygon> element = cgcgp_in_it.next();
 			ContentGeneratorPolygon cgp_in = element.getValue();
 			
-			int c1_index = oldVertexes.indexOf(cgp_in.c1);
-			int c2_index = oldVertexes.indexOf(cgp_in.c2);
-			int c3_index = oldVertexes.indexOf(cgp_in.c3);
-			int c4_index = oldVertexes.indexOf(cgp_in.c4);
+			int numberOfVertexes = cgp_in.numberOfVertexes;
 			
+			int[] indexes = new int[numberOfVertexes];
+			
+			for(int x = 0; x < numberOfVertexes; x++)
+			{
+				indexes[x] = oldVertexes.indexOf(cgp_in.vertexes[x]);
+			}
+		
 			ContentGeneratorPolygon cgp_out = new ContentGeneratorPolygon(cgp_in);
 			
-			cgp_out.c1 = newVertexes.get(c1_index);
-			cgp_out.c2 = newVertexes.get(c2_index);
-			cgp_out.c3 = newVertexes.get(c3_index);
-			cgp_out.c4 = newVertexes.get(c4_index);
+			for(int x = 0; x < numberOfVertexes; x++)
+			{
+				cgp_out.vertexes[x] = newVertexes.get(indexes[x]);
+			}
 			
 			newPolygons.put(element.getKey(), cgp_out);		
 		}

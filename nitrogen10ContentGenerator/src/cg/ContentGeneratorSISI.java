@@ -142,14 +142,17 @@ public class ContentGeneratorSISI implements Serializable{
 	    	while(it.hasNext())
 	    	{
 	    		ContentGeneratorPolygon cgp = it.next().getValue();
-	    		int c1 = immutableVertexListL.indexOf(cgp.c1);
-	    		int c2 = immutableVertexListL.indexOf(cgp.c2);
-	    		int c3 = immutableVertexListL.indexOf(cgp.c3);
-	    		int c4 = immutableVertexListL.indexOf(cgp.c4);
-	    		PolygonVertexData pvd_c1 = polygonVertexDataMapL.get(cgp.pvd_c1_name);
-	    		PolygonVertexData pvd_c2 = polygonVertexDataMapL.get(cgp.pvd_c2_name);
-	    		PolygonVertexData pvd_c3 = polygonVertexDataMapL.get(cgp.pvd_c3_name);
-	    		PolygonVertexData pvd_c4 = polygonVertexDataMapL.get(cgp.pvd_c4_name);
+	    		
+	    		int numberOfVertexes = cgp.numberOfVertexes;
+	    		int[] vertexIndexArray = new int[numberOfVertexes];
+	    		PolygonVertexData[] polygonVertexDataArray = new PolygonVertexData[numberOfVertexes];
+	    		
+	    		for(int x = 0; x < numberOfVertexes; x++)
+	    		{
+	    			vertexIndexArray[x] = immutableVertexListL.indexOf(cgp.vertexes[x]);
+	    			polygonVertexDataArray[x] = polygonVertexDataMapL.get(cgp.pvd_names[x]);		
+	    		}
+	    		
 	    		int[] polyData = polygonDataMap.get(cgp.polyData_name);
 	    		RendererTriplet rendererTriplet;
 				rendererTriplet = RendererHelper.getRendererTriplet(cgp.rendererTriplet_name);
@@ -165,16 +168,15 @@ public class ContentGeneratorSISI implements Serializable{
 	    			}
 	    		}
 	    		
-	    		TexMap textureMap = textureMapMap.get(cgp.textureMap_name).textureMap;
+	    		ContentGeneratorTextureMap contentGeneratorTextureMap = textureMapMap.get(cgp.textureMap_name);
+	    		TexMap textureMap = null;
+	    		if(contentGeneratorTextureMap != null)
+	    			{
+	    				textureMap = contentGeneratorTextureMap.textureMap;
+	    			}
 	    		ImmutablePolygon element = new ImmutablePolygon(
-				c1,
-				c2,
-				c3,
-				c4,
-				pvd_c1,
-				pvd_c2,
-				pvd_c3,
-				pvd_c4,
+	    		vertexIndexArray,
+	    		polygonVertexDataArray,
 				polyData,
 				rendererTriplet,
 				textureMap,
@@ -204,10 +206,11 @@ public class ContentGeneratorSISI implements Serializable{
     	
     	for(ContentGeneratorPolygon cgp: cgps)
     	{
-    		if(cgp.c1 == iv)return true;
-    		if(cgp.c2 == iv)return true;
-    		if(cgp.c3 == iv)return true;
-    		if(cgp.c4 == iv)return true;
+    		int numberOfVertexes = cgp.numberOfVertexes;
+    		for(int x = 0; x < numberOfVertexes; x++)
+    		{
+    			if(cgp.vertexes[x] == iv) return true; 
+    		}
     	}
     	return false;
     }
@@ -218,10 +221,11 @@ public class ContentGeneratorSISI implements Serializable{
     	
     	for(ContentGeneratorPolygon cgp: cgps)
     	{
-    		if(cgp.pvd_c1_name.equals(name))return true;
-    		if(cgp.pvd_c2_name.equals(name))return true;
-    		if(cgp.pvd_c3_name.equals(name))return true;
-    		if(cgp.pvd_c4_name.equals(name))return true;
+    		int numberOfVertexes = cgp.numberOfVertexes;
+    		for(int x = 0; x < numberOfVertexes; x++)
+    		{
+    			if(cgp.pvd_names[x].equals(name)) return true; 
+    		}
     	}
     	return false;
     }

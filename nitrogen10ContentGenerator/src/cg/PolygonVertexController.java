@@ -81,6 +81,8 @@ class PolygonVertexController extends AbstractAction
 			JOptionPane.showMessageDialog(cg, "must be an integer numerical value", "Error",JOptionPane.ERROR_MESSAGE);
 			return;	
 		}
+		// edit detected so invalidate working polygon
+		cg.workingPolygon = null;
 		
 		createOrMoveToVertexAt(x,y,z);
 	}
@@ -91,6 +93,9 @@ class PolygonVertexController extends AbstractAction
 		int x = wvm.x;
 		int y = wvm.y; 
 		int z = wvm.z; 
+		
+		// edit detected so invalidate working polygon
+		cg.workingPolygon = null;
 		
 		createOrMoveToVertexAt(x, y, z);
 	}

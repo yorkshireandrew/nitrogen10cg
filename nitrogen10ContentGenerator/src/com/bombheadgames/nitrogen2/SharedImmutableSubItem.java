@@ -372,32 +372,22 @@ public class SharedImmutableSubItem implements Serializable{
 			String			textureMapName;
 			String			backsideName;		
 						
-			// read in the indexes to the Vertexes
-			temp_c1 = readInt( in, "Unable to find c1.");
-			temp_c2 = readInt( in, "Unable to find c2.");
-			temp_c3 = readInt( in, "Unable to find c3.");
-			temp_c4 = readInt( in, "Unable to find c4.");
+			int numberOfVertexes = readInt( in, "Unable to find number of vertexes");
+			
+			int[] vertexIndexes = new int[numberOfVertexes];
+			for(int x = 0; x < numberOfVertexes; x++)
+			{
+				vertexIndexes[x] = readInt( in, "Unable to find vertex index [" + x +"]");
+			}
+			
+			PolygonVertexData[] polygonVertexDataArray = new PolygonVertexData[numberOfVertexes];
+			for(int x = 0; x < numberOfVertexes; x++)
+			{
+				polygonVertexDataName = readLine(in, "Unable to find polygonVertexData name associated with c1");
+			    if(polygonVertexDataMap.containsKey(polygonVertexDataName)){polygonVertexDataArray[x] = polygonVertexDataMap.get(polygonVertexDataName);}
+				else throw new NitrogenCreationException("The PolygonVertexData named " + polygonVertexDataName + "is not loaded by the file.");
+			}			
 
-			// read in the polygonVertexData associated with c1
-			polygonVertexDataName = readLine(in, "Unable to find polygonVertexData name associated with c1");
-		    if(polygonVertexDataMap.containsKey(polygonVertexDataName)){temp_pvd_c1 = polygonVertexDataMap.get(polygonVertexDataName);}
-			else throw new NitrogenCreationException("The PolygonVertexData named " + polygonVertexDataName + "is not loaded by the file.");
-
-			// read in the polygonVertexData associated with c2
-			polygonVertexDataName = readLine(in, "Unable to find polygonVertexData name associated with c1");
-		    if(polygonVertexDataMap.containsKey(polygonVertexDataName)){temp_pvd_c2 = polygonVertexDataMap.get(polygonVertexDataName);}
-			else throw new NitrogenCreationException("The PolygonVertexData named " + polygonVertexDataName + "is not loaded by the file.");
-
-		    // read in the polygonVertexData associated with c3
-			polygonVertexDataName = readLine(in, "Unable to find polygonVertexData name associated with c1");
-		    if(polygonVertexDataMap.containsKey(polygonVertexDataName)){temp_pvd_c3 = polygonVertexDataMap.get(polygonVertexDataName);}
-			else throw new NitrogenCreationException("The PolygonVertexData named " + polygonVertexDataName + "is not loaded by the file.");
-
-		    // read in the polygonVertexData associated with c4
-			polygonVertexDataName = readLine(in, "Unable to find polygonVertexData name associated with c1");
-		    if(polygonVertexDataMap.containsKey(polygonVertexDataName)){temp_pvd_c4 = polygonVertexDataMap.get(polygonVertexDataName);}
-			else throw new NitrogenCreationException("The PolygonVertexData named " + polygonVertexDataName + "is not loaded by the file.");
-		
 		    // read in the polygonData 
 			polygonDataName = readLine(in, "Unable to find polygonData name");
 		    if(polygonDataMap.containsKey(polygonDataName)){temp_polygonData = polygonDataMap.get(polygonDataName);}
@@ -440,14 +430,8 @@ public class SharedImmutableSubItem implements Serializable{
 		    temp_isTransparent = readBoolean( in, "Unable to find isTransparent");
 	
 			return new ImmutablePolygon(
-					temp_c1,
-					temp_c2,
-					temp_c3,
-					temp_c4,
-					temp_pvd_c1,
-					temp_pvd_c2,
-					temp_pvd_c3,
-					temp_pvd_c4,
+					vertexIndexes,
+					polygonVertexDataArray,
 					temp_polygonData,
 					temp_rendererTriplet,
 					temp_textureMap,

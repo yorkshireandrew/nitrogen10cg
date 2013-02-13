@@ -8,20 +8,13 @@ import com.bombheadgames.nitrogen2.ImmutableVertex;
 public class ContentGeneratorPolygon implements Serializable{
 	private static final long serialVersionUID = -50807080139615148L;
 	
-	// the vertexes - these should also be in the ContentGeneratorSISI
-	ImmutableVertex c1;	
-	ImmutableVertex c2;	
-	ImmutableVertex c3;	
-	ImmutableVertex c4;
+	int numberOfVertexes;
 	
-	/** string used to reference vertex data to be associated with c1 for this immutable polygon */
-	String pvd_c1_name;
-	/** string used to reference vertex data to be associated with c2 for this immutable polygon */	
-	String pvd_c2_name;
-	/** string used to reference vertex data to be associated with c3 for this immutable polygon */	
-	String pvd_c3_name;
-	/** string used to reference vertex data to be associated with c4 for this immutable polygon */	
-	String pvd_c4_name;
+	/** vertexes of this polygon */
+	ImmutableVertex[] vertexes;
+	
+	/** string used to reference vertex data to be associated with vertexes of this polygon */
+	String[] pvd_names;
 	
 	/** string used to reference Information to pass to the renderer, for example the polygons colour */
 	String polyData_name;
@@ -49,16 +42,18 @@ public class ContentGeneratorPolygon implements Serializable{
 	// copy constructor
 	ContentGeneratorPolygon(ContentGeneratorPolygon p)
 	{
-		c1 = p.c1;
-		c2 = p.c2;	
-		c3 = p.c3;	
-		c4 = p.c4;	
+		numberOfVertexes = p.numberOfVertexes;
+		int numberOfVertexesL = numberOfVertexes;
 		
-		pvd_c1_name = p.pvd_c1_name;
-		pvd_c2_name = p.pvd_c2_name;
-		pvd_c3_name = p.pvd_c3_name;
-		pvd_c4_name = p.pvd_c4_name;
+		vertexes = new ImmutableVertex[numberOfVertexesL];
+		pvd_names = new String[numberOfVertexesL];
 		
+		for(int x = 0; x < numberOfVertexesL; x++)
+		{
+			vertexes[x] = p.vertexes[x];
+			pvd_names[x] = p.pvd_names[x];
+		}
+			
 		polyData_name 			= p.polyData_name;		
 		rendererTriplet_name 	= p.rendererTriplet_name;
 		textureMap_name 		= p.textureMap_name;	

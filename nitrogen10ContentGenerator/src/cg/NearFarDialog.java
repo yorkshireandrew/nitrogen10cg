@@ -171,7 +171,7 @@ public class NearFarDialog extends JDialog implements ActionListener{
 	}
 	
 
-	
+	/*
 	void updateImmutableVertexReferences(List<ImmutableVertex> oldVertexes, List<ImmutableVertex> newVertexes)
 	{
 		ContentGeneratorSISI cgSISI = cg.contentGeneratorSISI;
@@ -203,4 +203,5 @@ public class NearFarDialog extends JDialog implements ActionListener{
 		
 		cgSISI.contentGeneratorPolygonMap = newPolygons;
 	}
+	*/
 }

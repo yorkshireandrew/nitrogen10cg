@@ -964,8 +964,8 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			System.out.println("found polygon "+ pickedPolygon);
 			System.out.println("******************************");
 
+			PolygonDialog.pickPolygon(cg,pickedPolygon);
 			PolygonDialog pd = new PolygonDialog(cg);
-			pd.pickPolygon(pickedPolygon);
 			pd.setVisible(true);		
 		}
 		else
