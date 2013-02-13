@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 import javax.swing.AbstractAction;
 
-import com.bombheadgames.nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen2.ImmutableVertex;
 
 
 public class WorkingVertexModel implements Serializable{

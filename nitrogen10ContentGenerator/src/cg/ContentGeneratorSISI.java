@@ -19,16 +19,16 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import com.bombheadgames.nitrogen1.ImmutableBackside;
-import com.bombheadgames.nitrogen1.ImmutableCollisionVertex;
-import com.bombheadgames.nitrogen1.ImmutablePolygon;
-import com.bombheadgames.nitrogen1.ImmutableVertex;
-import com.bombheadgames.nitrogen1.NitrogenCreationException;
-import com.bombheadgames.nitrogen1.PolygonVertexData;
-import com.bombheadgames.nitrogen1.RendererHelper;
-import com.bombheadgames.nitrogen1.RendererTriplet;
-import com.bombheadgames.nitrogen1.SharedImmutableSubItem;
-import com.bombheadgames.nitrogen1.TexMap;
+import com.bombheadgames.nitrogen2.ImmutableBackside;
+import com.bombheadgames.nitrogen2.ImmutableCollisionVertex;
+import com.bombheadgames.nitrogen2.ImmutablePolygon;
+import com.bombheadgames.nitrogen2.ImmutableVertex;
+import com.bombheadgames.nitrogen2.NitrogenCreationException;
+import com.bombheadgames.nitrogen2.PolygonVertexData;
+import com.bombheadgames.nitrogen2.RendererHelper;
+import com.bombheadgames.nitrogen2.RendererTriplet;
+import com.bombheadgames.nitrogen2.SharedImmutableSubItem;
+import com.bombheadgames.nitrogen2.TexMap;
 
 
 /** encapsulates the ContentGenerators perspective of the Items SISI. This is used to create the generatedSISI */

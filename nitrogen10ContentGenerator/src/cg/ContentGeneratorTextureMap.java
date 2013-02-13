@@ -2,7 +2,7 @@ package cg;
 
 import java.io.Serializable;
 
-import com.bombheadgames.nitrogen1.TexMap;
+import com.bombheadgames.nitrogen2.TexMap;
 
 public class ContentGeneratorTextureMap implements Serializable{
 	private static final long serialVersionUID = 4849787247414774169L;

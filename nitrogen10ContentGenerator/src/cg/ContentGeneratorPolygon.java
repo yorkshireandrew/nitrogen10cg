@@ -2,7 +2,7 @@ package cg;
 
 import java.io.Serializable;
 
-import com.bombheadgames.nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen2.ImmutableVertex;
 
 
 public class ContentGeneratorPolygon implements Serializable{

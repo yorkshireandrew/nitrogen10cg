@@ -3,7 +3,7 @@ package cg;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import com.bombheadgames.nitrogen1.*;
+import com.bombheadgames.nitrogen2.*;
 
 
 import java.awt.*;

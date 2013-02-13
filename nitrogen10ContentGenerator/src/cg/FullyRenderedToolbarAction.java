@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import com.bombheadgames.nitrogen1.NitrogenContext;
+import com.bombheadgames.nitrogen2.NitrogenContext;
 
 
 class FullyRenderedToolbarAction extends AbstractAction

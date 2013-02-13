@@ -16,10 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.bombheadgames.nitrogen1.Backside;
-import com.bombheadgames.nitrogen1.ImmutableBackside;
-import com.bombheadgames.nitrogen1.ImmutableVertex;
-import com.bombheadgames.nitrogen1.SharedImmutableSubItem;
+import com.bombheadgames.nitrogen2.Backside;
+import com.bombheadgames.nitrogen2.ImmutableBackside;
+import com.bombheadgames.nitrogen2.ImmutableVertex;
+import com.bombheadgames.nitrogen2.SharedImmutableSubItem;
 
 
 public class BacksideDialog extends JDialog implements ActionListener{

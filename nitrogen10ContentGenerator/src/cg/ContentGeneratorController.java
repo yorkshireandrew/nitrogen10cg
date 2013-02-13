@@ -28,7 +28,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.filechooser.FileFilter;
 
-import com.bombheadgames.nitrogen1.*;
+import com.bombheadgames.nitrogen2.*;
 
 
 

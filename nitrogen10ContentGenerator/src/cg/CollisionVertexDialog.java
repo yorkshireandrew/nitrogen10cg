@@ -17,7 +17,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.bombheadgames.nitrogen1.ImmutableCollisionVertex;
+import com.bombheadgames.nitrogen2.ImmutableCollisionVertex;
 
 
 public class CollisionVertexDialog  extends JDialog implements ChangeListener{

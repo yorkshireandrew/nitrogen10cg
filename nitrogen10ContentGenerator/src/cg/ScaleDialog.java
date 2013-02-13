@@ -18,9 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.bombheadgames.nitrogen1.ImmutableBackside;
-import com.bombheadgames.nitrogen1.ImmutableCollisionVertex;
-import com.bombheadgames.nitrogen1.ImmutableVertex;
+import com.bombheadgames.nitrogen2.ImmutableBackside;
+import com.bombheadgames.nitrogen2.ImmutableCollisionVertex;
+import com.bombheadgames.nitrogen2.ImmutableVertex;
 
 
 public class ScaleDialog extends JDialog implements ActionListener{

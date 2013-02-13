@@ -1,11 +1,11 @@
 package cg;
 
-import com.bombheadgames.nitrogen1.RendererHelper;
-import com.bombheadgames.nitrogen1.RendererTriplet;
-import com.bombheadgames.nitrogen1.Renderer_DirtyTextureRenderer;
-import com.bombheadgames.nitrogen1.Renderer_Outline;
-import com.bombheadgames.nitrogen1.Renderer_SimpleSingleColour;
-import com.bombheadgames.nitrogen1.Renderer_SimpleTexture;
+import com.bombheadgames.nitrogen2.RendererHelper;
+import com.bombheadgames.nitrogen2.RendererTriplet;
+import com.bombheadgames.nitrogen2.Renderer_DirtyTextureRenderer;
+import com.bombheadgames.nitrogen2.Renderer_Outline;
+import com.bombheadgames.nitrogen2.Renderer_SimpleSingleColour;
+import com.bombheadgames.nitrogen2.Renderer_SimpleTexture;
 
 public class LoadRendererClasses {
 

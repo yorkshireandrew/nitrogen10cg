@@ -4,9 +4,9 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import com.bombheadgames.nitrogen1.NitrogenContext;
-import com.bombheadgames.nitrogen1.RendererTriplet;
-import com.bombheadgames.nitrogen1.Renderer_Outline;
+import com.bombheadgames.nitrogen2.NitrogenContext;
+import com.bombheadgames.nitrogen2.RendererTriplet;
+import com.bombheadgames.nitrogen2.Renderer_Outline;
 
 
 class BacksideCulledWireFrameToolbarAction extends AbstractAction

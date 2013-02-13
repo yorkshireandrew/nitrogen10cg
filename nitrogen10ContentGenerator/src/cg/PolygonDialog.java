@@ -25,12 +25,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.bombheadgames.nitrogen1.ImmutableBackside;
-import com.bombheadgames.nitrogen1.ImmutableVertex;
-import com.bombheadgames.nitrogen1.NitrogenContext;
-import com.bombheadgames.nitrogen1.PolygonVertexData;
-import com.bombheadgames.nitrogen1.RendererHelper;
-import com.bombheadgames.nitrogen1.TexMap;
+import com.bombheadgames.nitrogen2.ImmutableBackside;
+import com.bombheadgames.nitrogen2.ImmutableVertex;
+import com.bombheadgames.nitrogen2.NitrogenContext;
+import com.bombheadgames.nitrogen2.PolygonVertexData;
+import com.bombheadgames.nitrogen2.RendererHelper;
+import com.bombheadgames.nitrogen2.TexMap;
 
 
 public class PolygonDialog extends JDialog implements ActionListener{

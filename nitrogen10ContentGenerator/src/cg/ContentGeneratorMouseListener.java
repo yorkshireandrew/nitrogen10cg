@@ -4,7 +4,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.event.MouseInputAdapter;
 
-import com.bombheadgames.nitrogen1.NitrogenContext;
+import com.bombheadgames.nitrogen2.NitrogenContext;
 
 /** class to handle mouse clicks on the edit area */
 class ContentGeneratorMouseListener extends MouseInputAdapter

@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.bombheadgames.nitrogen1.NitrogenCreationException;
+import com.bombheadgames.nitrogen2.NitrogenCreationException;
 
 
 public class TemplateModel implements Serializable{
