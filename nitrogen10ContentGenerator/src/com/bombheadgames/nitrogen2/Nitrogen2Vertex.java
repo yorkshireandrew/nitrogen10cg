@@ -33,7 +33,7 @@ final public class Nitrogen2Vertex {
     /** next Nitrogen2PolygonRenderer in LLL moving anticlockwise */
     Nitrogen2Vertex anticlockwise;
 	
-	final void initializeAllFromVertex(final Vertex vertex)
+	final int initializeAllFromVertex(final Vertex vertex)
 	{
 		vsX = vertex.vs_x;
 		vsY = vertex.vs_y;
@@ -44,18 +44,23 @@ final public class Nitrogen2Vertex {
 		intVSZ = (int)(vertex.vs_z * VIEWSPACE_Z_MULTIPLIER);
 		
 		intSX = vertex.sx;
-		intSY = vertex.sy;
+		int intSYL = vertex.sy;
+		intSY = intSYL;
 		intSZ = vertex.sz;
 		
 		intTX = (int)(vertex.aux1 * TEXTURE_MULTIPLIER);
 		intTY = (int)(vertex.aux2 * TEXTURE_MULTIPLIER);
+		return intSYL;
 	}
 	
-	final void initializeScreenSpaceFromVertex(final Vertex vertex)
+	/** initializes screen space coordinates, returning sy */
+	final int initializeScreenSpaceFromVertex(final Vertex vertex)
 	{
 		intSX = vertex.sx;
-		intSY = vertex.sy;
+		int intSYL = vertex.sy;
+		intSY = intSYL;
 		intSZ = vertex.sz;
+		return intSYL;
 	}
 	
 	

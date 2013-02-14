@@ -7,7 +7,7 @@ public class Nitrogen2PolygonClipper {
 	final static Vertex[] workingVertexes= new Vertex[NUMBER_OF_WORKING_VERTEXES];
 	static int workingVertexIndex;
 
-	
+	/** clip polygon using floating point math, creating a circular LLL of Vertexes */
 	final static void process(
 
 			final NitrogenContext context,
