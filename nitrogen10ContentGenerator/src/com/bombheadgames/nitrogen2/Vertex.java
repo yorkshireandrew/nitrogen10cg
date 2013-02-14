@@ -69,6 +69,11 @@ public final class Vertex implements Serializable{
 	/** package scope reference for use in factories LLL*/
     transient Vertex nextInList;
     
+    /** package scope references for Nitrogen2Clipping / rendering */
+    transient Vertex clockwise;
+    transient Vertex anticlockwise;
+       
+    
     /** default constructor used by static initialiser in HLPBreaker */
     Vertex() {}
     

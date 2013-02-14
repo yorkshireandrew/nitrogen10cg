@@ -4,7 +4,12 @@ public class Nitrogen2PolygonRenderer {
 	
 	final static int NUMBER_OF_WORKING_N2VS = 10;
 	final static Nitrogen2Vertex[] workingN2Vs= new Nitrogen2Vertex[NUMBER_OF_WORKING_N2VS];
+	static int intNitrogenContextNearPlane;
+	
 	static int workingN2VIndex = 0;
+	
+	
+	
 	static{
 		for(int x = 0; x < NUMBER_OF_WORKING_N2VS; x++)
 		{
@@ -12,6 +17,25 @@ public class Nitrogen2PolygonRenderer {
 		}
 	}
 	
+	static void initialiseFromNitrogenContext(NitrogenContext nc)
+	{
+		intNitrogenContextNearPlane = (int)(nc.nearClip *((float)Nitrogen2Vertex.VIEWSPACE_Z_MULTIPLIER));
+		intNitrogenContextNearPlane = -intNitrogenContextNearPlane;
+	}
+	
+	final static void process
+	(
+		final NitrogenContext context,		
+		final Vertex start, 	
+		final Renderer renderer,
+		final int[] polyData,
+		final TexMap textureMap,
+		final float lightingValue,
+		final boolean useHLPBreak
+	)
+	{}
+
+
 	
 	/** Responsible for rendering the polygon
 	 * 
@@ -36,7 +60,7 @@ public class Nitrogen2PolygonRenderer {
 	 * <br/><br/>
 	 * @param v11-v34 The orientation matrix computed by the scene graph (12 floating point values)
 	 */	
-	final static void process(
+	final static void process_old(
 
 			final NitrogenContext context,
 			final int fustrumTouchCount, 
@@ -99,5 +123,68 @@ public class Nitrogen2PolygonRenderer {
 		Nitrogen2Vertex start 	= workingN2VsL[0];
 		start.anticlockwise = end;
 		end.clockwise = start;
+		
+		if(touchedNear)
+		{
+			nearPlaneClip(start);
+		}
 	}
+	
+	
+	final static void nearPlaneClip(Nitrogen2Vertex start)
+	{
+		Nitrogen2Vertex a = findNearClippedVertex(start, start);
+		while(a != null)
+		{
+			Nitrogen2Vertex b,c,d;
+			b = findAnticlockwiseMostNearClippedVertex(a,a);
+			if (b == null)return;
+			c = findClockwiseMostNearClippedVertex(a,b);
+			if (c == null)return;
+		}
+	}
+	
+	final static Nitrogen2Vertex findNearClippedVertex(Nitrogen2Vertex start, Nitrogen2Vertex endPoint)
+	{
+		int intNitrogenContextNearPlaneL = intNitrogenContextNearPlane;
+		Nitrogen2Vertex toTest = start;
+		do{
+			if(toTest.intVSZ > intNitrogenContextNearPlaneL) return toTest;
+			toTest = toTest.anticlockwise;
+		}while(toTest != endPoint);	
+		return null;
+	}
+	
+	final static Nitrogen2Vertex findAnticlockwiseMostNearClippedVertex(Nitrogen2Vertex start, Nitrogen2Vertex endPoint)
+	{
+		int intNitrogenContextNearPlaneL = intNitrogenContextNearPlane;
+		Nitrogen2Vertex toTest = start.anticlockwise;
+		Nitrogen2Vertex anticlockwise = toTest.anticlockwise;
+		do{
+			if(anticlockwise.intVSZ <= intNitrogenContextNearPlaneL) return toTest;
+			toTest = anticlockwise;
+			anticlockwise = toTest.anticlockwise;
+		}while(toTest != endPoint);	
+		return null;
+	}
+	
+	final static Nitrogen2Vertex findClockwiseMostNearClippedVertex(Nitrogen2Vertex start, Nitrogen2Vertex endPoint)
+	{
+		int intNitrogenContextNearPlaneL = intNitrogenContextNearPlane;
+		Nitrogen2Vertex toTest = start.clockwise;
+		Nitrogen2Vertex clockwise = toTest.clockwise;
+		do{
+			if(clockwise.intVSZ <= intNitrogenContextNearPlaneL) return toTest;
+			toTest = clockwise;
+			clockwise = toTest.anticlockwise;
+		}while(toTest != endPoint);	
+		return null;
+	}
+	
+
+		
+		
+		
+		
+	
 }

@@ -82,7 +82,7 @@ final public class Item implements Serializable{
 	private boolean isImprovedDetail = false;
 	
 	/** Flag to use hlp breaking. This is a state field used to apply hysteresis */
-	private boolean isUsingHLPBreaking = false;
+	private boolean isUsingHLP = false;
 	
 	/** Flag to use billboard Orientation. This is a state field used to apply hysteresis */
 	private boolean isUsingBillboardOriention = false;
@@ -183,7 +183,7 @@ final public class Item implements Serializable{
 		translationNeedsUpdate = true;
 		whichRendererOld = NEAR_RENDERER;
 		isImprovedDetail = false;	
-		isUsingHLPBreaking = false;
+		isUsingHLP = false;
 		isUsingBillboardOriention = false;
 		name = null;
 		wasRendered = false;
@@ -202,7 +202,7 @@ final public class Item implements Serializable{
 		translationNeedsUpdate = i.translationNeedsUpdate;
 		whichRendererOld = i.whichRendererOld;
 		isImprovedDetail = i.isImprovedDetail;	
-		isUsingHLPBreaking = i.isUsingHLPBreaking;
+		isUsingHLP = i.isUsingHLP;
 		isUsingBillboardOriention = i.isUsingBillboardOriention;
 		name = i.name;
 		wasRendered = i.wasRendered;
@@ -319,7 +319,7 @@ final public class Item implements Serializable{
 		Backside backside;
 		boolean immutablePolygonIsTransparentL;
 		final boolean contextTransparencyPassL = context.transparencyPass;
-		final boolean isUsingHLPBreakingL = isUsingHLPBreaking;
+		final boolean isUsingHLPL = isUsingHLP;
 		
 		Vertex[] vertexArray;
 		int[] vertexIndexArray;
@@ -373,23 +373,25 @@ final public class Item implements Serializable{
 					if(pvd != null)v.setAux(immutablePolygon.polygonVertexDataArray[q]);
 					vertexArray[q]  = v;                   
 				}
-				
-				Nitrogen2PolygonRenderer.process(
+
+				Nitrogen2PolygonClipper.process(
 						context,
-						fustrumTouchCountL, 
+						
 						touchedNearL,
 						touchedRightL,
 						touchedLeftL,
 						touchedTopL,
-						touchedBottomL,					
+						touchedBottomL,	
+						
 						vertexArray,
 
 						immutablePolygon.getRenderer(whichRendererIsIt, context.isPicking),
 						immutablePolygon.polyData,
 						immutablePolygon.textureMap,						
 						backside.lightingValue,
-						isUsingHLPBreakingL
+						isUsingHLPL
 				);
+
 			}
 			else
 			{
@@ -410,10 +412,9 @@ final public class Item implements Serializable{
 					if(pvd != null)v.setAux(immutablePolygon.polygonVertexDataArray[q]);
 					vertexArray[--to]  = v;                   
 				}
-				
-				Nitrogen2PolygonRenderer.process(
+
+				Nitrogen2PolygonClipper.process(
 						context,
-						fustrumTouchCountL, 
 						touchedNearL,
 						touchedRightL,
 						touchedLeftL,
@@ -425,10 +426,8 @@ final public class Item implements Serializable{
 						immutablePolygon.polyData,
 						immutablePolygon.textureMap,						
 						backside.lightingValue,
-						isUsingHLPBreakingL
-				);
-				
-				
+						isUsingHLPL
+				);				
 			} //end of backside facing viewer if-else
 		} //end of polygon rendering loop	
 	}
@@ -647,12 +646,12 @@ final public class Item implements Serializable{
 			if(itemDist < sisi.improvedDetailDist)isImprovedDetail = true;
 		}
 		
-		if(isUsingHLPBreaking)
+		if(isUsingHLP)
 		{
 			if(itemDist > sisi.hlpBreakingDistPlus)
 				{
 				System.out.println("isUsingHLPBreaking toggled false");	
-				isUsingHLPBreaking = false;
+				isUsingHLP = false;
 				}
 		}
 		else
@@ -660,7 +659,7 @@ final public class Item implements Serializable{
 			if(itemDist < sisi.hlpBreakingDist)
 				{
 				System.out.println("isUsingHLPBreaking toggled true");	
-				isUsingHLPBreaking = true;
+				isUsingHLP = true;
 				}
 		}
 	}
