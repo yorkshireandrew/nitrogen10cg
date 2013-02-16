@@ -25,9 +25,7 @@ public void render(
 {
 	
 	// **************** initialise colour ********************************************
-	System.out.println("render called");
-	int colour = -1; // white
-	if(polyData != null)colour = polyData[0] | ALPHA;
+	System.out.println("PICKING render called");
 	
 	// **************** initialise nitrogen context references ***********************
 	final int[] contextPixels = context.pix;
@@ -242,6 +240,8 @@ public void render(
 			contextZBuffer,
 			contextWidth		
 	);
+	
+	System.out.println("PICKING render finished polygon " + context.currentPolygon);
 }
 
 //*****************************************************************************
@@ -273,7 +273,7 @@ private final void renderLine(
 	if(lineStart > contextPickX)return;
 	if(lineFinish < contextPickX)return;
 			
-	System.out.println("rendering line " + lineStart + "->" + lineFinish);
+//	System.out.println("rendering line " + lineStart + "->" + lineFinish);
 	
 	int lineLength = lineFinish - lineStart;
 	

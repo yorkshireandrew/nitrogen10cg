@@ -34,7 +34,7 @@ public class Nitrogen2PolygonClipper {
 			final boolean useHLP
 			)
 	{
-		System.out.println("Nitrogen2PolygonClipper.process called");
+	//	System.out.println("Nitrogen2PolygonClipper.process called");
 		context.polygonsRendered++;
 		workingVertexIndex = 0;
 		int numberOfVertexes = vertexes.length;
@@ -44,11 +44,11 @@ public class Nitrogen2PolygonClipper {
 		for(int x = 0; x < numberOfVertexes; x++)
 		{
 			Vertex a = vertexes[x];
-			System.out.println("" + x + ":" + a.toString());
+		//	System.out.println("" + x + ":" + a.toString());
 			a.clockwise = backlink;
 			backlink = a;
 		}
-		System.out.println("created clockwise links");
+	//	System.out.println("created clockwise links");
 		
 		// create anticlockwise links
 		Vertex frontlink = null;
@@ -58,14 +58,14 @@ public class Nitrogen2PolygonClipper {
 			b.anticlockwise = frontlink;
 			frontlink = b;
 		}
-		System.out.println("created anticlockwise links");
+	//	System.out.println("created anticlockwise links");
 		
 		// complete the loop
 		Vertex end 		= vertexes[numberOfVertexes-1];
 		Vertex start	= vertexes[0];
 		start.clockwise = end;
 		end.anticlockwise = start;
-		System.out.println("completed loop");
+	//	System.out.println("completed loop");
 		
 		check(start);
 		
@@ -75,7 +75,7 @@ public class Nitrogen2PolygonClipper {
 		{
 			start = nearPlaneClip(start, -context.nearClip);
 			if(start == null)return;
-			System.out.println("--- Post nearPlane ---");
+//			System.out.println("--- Post nearPlane ---");
 			check(start);
 		}
 		
@@ -83,7 +83,7 @@ public class Nitrogen2PolygonClipper {
 		{
 			start = rightPlaneClip(start, context.xClip);
 			if(start == null)return;
-			System.out.println("--- Post rightPlane ---");
+	//		System.out.println("--- Post rightPlane ---");
 			check(start);
 		}	
 		
@@ -91,7 +91,7 @@ public class Nitrogen2PolygonClipper {
 		{
 			start = leftPlaneClip(start, context.xClip);
 			if(start == null)return;
-			System.out.println("--- Post leftPlane ---");
+	//		System.out.println("--- Post leftPlane ---");
 			check(start);
 		}	
 		
@@ -99,7 +99,7 @@ public class Nitrogen2PolygonClipper {
 		{
 			start = topPlaneClip(start, context.yClip);
 			if(start == null)return;
-			System.out.println("--- Post topPlane ---");
+	//		System.out.println("--- Post topPlane ---");
 			check(start);
 		}
 		
@@ -107,10 +107,10 @@ public class Nitrogen2PolygonClipper {
 		{
 			start = bottomPlaneClip(start, context.yClip);
 			if(start == null)return;
-			System.out.println("--- Post bottomPlane ---");
+//			System.out.println("--- Post bottomPlane ---");
 			check(start);
 		}		
-		System.out.println("completed clipping");
+//		System.out.println("completed clipping");
 		Nitrogen2PolygonRenderer.process
 		(
 			context,		
@@ -690,6 +690,7 @@ public class Nitrogen2PolygonClipper {
 	
 	final static void check(Vertex start)
 	{
+		/*
 		System.out.println("********** CHECK *************");
 //		System.out.println("Start clockwise =" + start.clockwise);
 		System.out.println("Start           =" + start);
@@ -705,6 +706,7 @@ public class Nitrogen2PolygonClipper {
 			System.out.println("------------------------------------");
 			test = test.anticlockwise;
 		}
+		*/
 	}
 	
 	
