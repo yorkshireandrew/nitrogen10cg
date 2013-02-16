@@ -23,10 +23,7 @@ final public class Item implements Serializable{
 	// used for drawing collision vertexes
 	static final float[] sinTable;
 	static final float[] cosTable;
-	
-	/** Class used to encapsulate polygon clipping */
-	static final PolygonClipper polygonClipper = new PolygonClipper();
-	
+		
 	/** Class used to source and sink the internal components of Items*/
 	static ItemFactory itemFactory;
 
@@ -63,9 +60,6 @@ final public class Item implements Serializable{
 	
 	/** Set true by scene graph if rotation or translation has occurred since last render call */
 	private boolean translationNeedsUpdate = true;
-	
-	/** Count of how many fustrum planes the item may touch */
-	transient private int fustrumTouchCount;
 	
 	/** Enumerated value that determines which renderer to use based on distance */
 	private int whichRendererOld = NEAR_RENDERER;
@@ -246,7 +240,6 @@ final public class Item implements Serializable{
 		context.currentItem = this;
 		
 		//Cache values needed for rendering locally
-		final int 		fustrumTouchCountL	= fustrumTouchCount;
 		final boolean 	touchedNearL 		= touchedNear;
 		final boolean 	touchedRightL 		= touchedRight;
 		final boolean 	touchedLeftL		= touchedLeft;
@@ -359,14 +352,16 @@ final public class Item implements Serializable{
 			
 			if(backside.facingViewer() || context.contentGeneratorForcesNoCulling)
 			{
+				if(backside.facingViewer())System.out.println("backside facing viewer");
+				if(context.contentGeneratorForcesNoCulling) System.out.println("context forces no backside culling");
+				
 				// Calculate the vertexes, then Pass the polygon on to the next process.
 				vertexIndexArray = immutablePolygon.vertexIndexArray;
 				int vertexIndexArrayLength = vertexIndexArray.length;
 				vertexArray = new Vertex[vertexIndexArrayLength];
 				
 				for(int q = 0; q < vertexIndexArrayLength; q++)
-				{
-					
+				{	
 					Vertex v = vertexes[immutablePolygon.vertexIndexArray[q]];
 					v.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
 					PolygonVertexData pvd = immutablePolygon.polygonVertexDataArray[q];
@@ -395,12 +390,32 @@ final public class Item implements Serializable{
 			}
 			else
 			{
+				System.out.println("backside facing AWAY FROM viewer");
 				// Skip rendering the polygon if it is backside culled
 				if(immutablePolygon.isBacksideCulled && noBacksideCullOverride)continue;
 				
 				vertexIndexArray = immutablePolygon.vertexIndexArray;
 				int vertexIndexArrayLength = vertexIndexArray.length;
 				vertexArray = new Vertex[vertexIndexArrayLength];
+				/*
+				// create array but fill backwards, to ensure anticlockwise ordering
+				int to = vertexIndexArrayLength - 1;
+				for(int q = 1; q < vertexIndexArrayLength; q++)
+				{
+					Vertex v = vertexes[immutablePolygon.vertexIndexArray[q]];
+					v.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
+					PolygonVertexData pvd = immutablePolygon.polygonVertexDataArray[q];
+					if(pvd != null)v.setAux(immutablePolygon.polygonVertexDataArray[q]);
+					vertexArray[to--]  = v;                   
+				}
+				
+				// keep first vertex
+				Vertex v = vertexes[immutablePolygon.vertexIndexArray[0]];
+				v.calculateViewSpaceCoordinates(v11,v12,v13,v14,v21,v22,v23,v24,v31,v32,v33,v34);				
+				PolygonVertexData pvd = immutablePolygon.polygonVertexDataArray[0];
+				if(pvd != null)v.setAux(immutablePolygon.polygonVertexDataArray[0]);
+				vertexArray[0]  = v; 				
+				*/
 				
 				// create array but fill backwards, to ensure anticlockwise ordering
 				int to = vertexIndexArrayLength;
@@ -412,7 +427,7 @@ final public class Item implements Serializable{
 					if(pvd != null)v.setAux(immutablePolygon.polygonVertexDataArray[q]);
 					vertexArray[--to]  = v;                   
 				}
-
+				
 				Nitrogen2PolygonClipper.process(
 						context,
 						touchedNearL,
@@ -533,9 +548,6 @@ final public class Item implements Serializable{
 		}
 		else
 		{touchedTop = false;}
-			
-		fustrumTouchCount = fustrumTouchCountL;	
-		System.out.println("Fustrum Touch  count" + fustrumTouchCount);
 	}
 	
 	/** Examines rotationNeedsUpdate and translationNeedsUpdate flags then if necessary informs all the Items backsides and vertexs that they have moved 

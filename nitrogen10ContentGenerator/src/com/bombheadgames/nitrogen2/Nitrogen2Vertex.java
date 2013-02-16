@@ -43,10 +43,11 @@ final public class Nitrogen2Vertex {
 		intVSY = (int)(vertex.vs_y * VIEWSPACE_XY_MULTIPLIER);
 		intVSZ = (int)(vertex.vs_z * VIEWSPACE_Z_MULTIPLIER);
 		
-		intSX = vertex.sx;
-		int intSYL = vertex.sy;
-		intSY = intSYL;
-		intSZ = vertex.sz;
+		// used to find topmost N2V and by findXXXXDestN2V methods
+		intSX 		= vertex.sx;
+		int intSYL 	= vertex.sy;
+		intSY 		= intSYL;
+		intSZ 		= vertex.sz;
 		
 		intTX = (int)(vertex.aux1 * TEXTURE_MULTIPLIER);
 		intTY = (int)(vertex.aux2 * TEXTURE_MULTIPLIER);
@@ -56,11 +57,18 @@ final public class Nitrogen2Vertex {
 	/** initializes screen space coordinates, returning sy */
 	final int initializeScreenSpaceFromVertex(final Vertex vertex)
 	{
-		intSX = vertex.sx;
-		int intSYL = vertex.sy;
-		intSY = intSYL;
-		intSZ = vertex.sz;
+		intSX 		= vertex.sx;
+		int intSYL 	= vertex.sy;
+		intSY 		= intSYL;
+		intSZ 		= vertex.sz;
 		return intSYL;
+	}
+	
+	public String toString()
+	{
+		String s = super.toString();
+		s = s + "[" + intSX + "," + intSY +"]";
+		return s;
 	}
 	
 	

@@ -260,6 +260,20 @@ public final class Vertex implements Serializable{
     	return is_z;
     }   
     
+    /** for debug */
+    final public String toString()
+    {
+    	String s = super.toString();
+    	s = s + "[" + vs_x + "," + vs_y +"," + vs_z + "]";
+    	if(vs_z < 0)
+    	{
+    		int sxish= (int)(1000f * (-vs_x/vs_z));
+    		int syish= (int)(1000f * (-vs_y/vs_z));
+    		s = s + "(" + sxish + "," +syish+")";
+    	}
+    	return s;
+    }
+    
 
 
 }

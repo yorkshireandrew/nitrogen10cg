@@ -87,9 +87,16 @@ public class ContentGeneratorSISI implements Serializable{
     {
     	immutableVertexList			= new ArrayList<ImmutableVertex>();
     	collisionVertexList			= new ArrayList<ImmutableCollisionVertex>();   	
+ 
     	polygonVertexDataMap 		= new HashMap<String,PolygonVertexData>();
-        polygonDataMap 				= new HashMap<String,int[]>();
-        textureMapMap 				= new HashMap<String,ContentGeneratorTextureMap>();
+    	polygonVertexDataMap.put("null", null);
+    	
+    	polygonDataMap 				= new HashMap<String,int[]>();
+    	polygonDataMap.put("blue", new int[]{255});
+    	polygonDataMap.put("green", new int[]{65280});
+    	polygonDataMap.put("red", new int[]{16711680});
+    	
+    	textureMapMap 				= new HashMap<String,ContentGeneratorTextureMap>();
         textureMapMap.put("null", null);
         textureMapFullPathMap 		= new HashMap<String,String>();
         textureMapMap.put("null", null);

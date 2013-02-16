@@ -24,13 +24,38 @@ public class Nitrogen2UntexturedRenderer {
 		final TexMap textureMap,
 		final float lightingValue
 	){	
+		System.out.println("Nitrogen2UntexturedRenderer.process called");
 		context.polygonsRendered++;	
 		Nitrogen2Vertex startN2V = produceN2Vs(context, start);
+		System.out.println("produced N2Vs");
+		System.out.println("topmost N2V is " + startN2V);
 		
+		Nitrogen2Vertex leftN2V = findLeftN2V(startN2V);
+		System.out.println("found left N2V " + leftN2V.toString());
+		Nitrogen2Vertex leftDestN2V = findLeftDestN2V(leftN2V);
+		if(leftDestN2V == null)return;
+		System.out.println("found left DestN2V " + leftDestN2V.toString());
+		System.out.println("found left N2V " + leftN2V.intSX);
 		
-
+		Nitrogen2Vertex rightN2V = findRightN2V(startN2V);
+		System.out.println("found right N2V " + rightN2V.toString());
+		Nitrogen2Vertex rightDestN2V = findRightDestN2V(rightN2V);
+		if(rightDestN2V == null)return;	
+		System.out.println("found right DestN2V " + rightDestN2V.toString());
+		System.out.println("found right N2V");
+		
+		renderer.render(
+				context,
+				leftN2V,leftDestN2V,
+				rightN2V,rightDestN2V,
+				polyData,
+				textureMap,
+				lightingValue
+				);
 	}
 	
+	/** generates Nitrogen2Vertexes from Vertex LLL returning one with lowest screen Y.
+	 * calculating the Vertexes screen coordinates in the process */
 	final static Nitrogen2Vertex produceN2Vs(NitrogenContext nc, Vertex start)
 	{
 		Nitrogen2Vertex retval;	
@@ -48,7 +73,7 @@ public class Nitrogen2UntexturedRenderer {
 		// step round anticlockwise creating N2Vs and clockwise references
 		// also remember the N2V with lowest screen Y coordinate
 		Vertex next = start.anticlockwise;
-		Vertex previousOne = start;
+		Nitrogen2Vertex previousOne = startN2V;
 		while(next != start)
 		{
 			Nitrogen2Vertex nextN2V = workingN2VsL[index++];
@@ -56,14 +81,14 @@ public class Nitrogen2UntexturedRenderer {
 			int nextSY = nextN2V.initializeScreenSpaceFromVertex(next);
 			if(nextSY < minSY)
 			{
-				retval = startN2V;
+				retval = nextN2V;
 				minSY = nextSY;
 			}
-			next.clockwise = previousOne;
-			previousOne = next;
+			nextN2V.clockwise = previousOne;
+			previousOne = nextN2V;
 			next = next.anticlockwise;
 		}
-		start.clockwise = previousOne; // complete the loop of clockwise references
+		startN2V.clockwise = previousOne; // complete the loop of clockwise references
 	
 		// step round clockwise creating the anticlockwise references
 		Nitrogen2Vertex previousN2V = startN2V;
@@ -80,5 +105,72 @@ public class Nitrogen2UntexturedRenderer {
 		return retval;	
 	}
 	
+	/** finds leftmost Nitrogen2Vertex with the same screen Y as parameter */
+	final static Nitrogen2Vertex findLeftN2V(Nitrogen2Vertex in)
+	{
+		int inSY = in.intSY;
+		Nitrogen2Vertex retval = in;
+		Nitrogen2Vertex testN2V = in.anticlockwise;
+		System.out.println("findLeftN2V testing " + testN2V);
+		int debug = 0;
+		while((testN2V.intSY == inSY)&&(testN2V != in)&&(debug < 10))
+		{
+			debug++;
+			if(testN2V.intSX < retval.intSX)retval = testN2V;
+			testN2V = in.anticlockwise;
+			System.out.println("findLeftN2V testing " + testN2V);
+		}
+		return retval;	
+	}
+	
+	/** finds rightmost Nitrogen2Vertex with the same screen Y as parameter */
+	final static Nitrogen2Vertex findRightN2V(Nitrogen2Vertex in)
+	{
+		int inSY = in.intSY;
+		Nitrogen2Vertex retval = in;
+		Nitrogen2Vertex testN2V = in.clockwise;
+		System.out.println("findRightN2V testing " + testN2V);
+		int debug = 0;
+		while((testN2V.intSY == inSY)&&(testN2V != in)&&(debug < 10))
+		{
+			debug++;
+			if(testN2V.intSX < retval.intSX)retval = testN2V;
+			testN2V = in.clockwise;
+			System.out.println("findRightN2V testing " + testN2V);
+		}
+		return retval;	
+	}
+	
+	/** find destination Nitrogen2Vertex moving anticlockwise. returns null if this is a lower SY than parameter */
+	final static Nitrogen2Vertex findLeftDestN2V(Nitrogen2Vertex in)
+	{
+		Nitrogen2Vertex testN2V = in.anticlockwise;
+		if(testN2V == null)System.out.println("findLeftDestN2V hit a null");
+		if(testN2V.intSY < in.intSY)
+		{
+			System.out.println("findLeftDestN2V returning null");
+			return null;
+		}
+		else
+		{
+			return testN2V;
+		}
+	}
+	
+	/** find destination Nitrogen2Vertex moving clockwise. returns null if this is a lower SY than parameter */
+	final static Nitrogen2Vertex findRightDestN2V(Nitrogen2Vertex in)
+	{
+		Nitrogen2Vertex testN2V = in.clockwise;
+		if(testN2V == null)System.out.println("findRightDestN2V hit a null");
+		if(testN2V.intSY < in.intSY)
+		{
+			System.out.println("findRightDestN2V returning null");
+			return null;
+		}
+		else
+		{
+			return testN2V;
+		}
+	}
 	
 }

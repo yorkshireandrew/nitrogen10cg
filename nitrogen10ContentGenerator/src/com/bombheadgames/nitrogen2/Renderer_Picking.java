@@ -1,187 +1,297 @@
 package com.bombheadgames.nitrogen2;
 
-public class Renderer_Picking implements Renderer{
-
-	static final int SH = 20;
-	static final int NUM = 1 << SH;
-	static final int ALPHA = -16777216; // 0xFF000000
-	static final boolean usesHLPBreak = false;
+public final class Renderer_Picking implements Renderer{
 	
-	final public void renderTrapezoid(
+private static final int SHIFT = 20;
+private static final int NUM = 1 << SHIFT;
 
-	        // line start point
-	        int st_x,   long st_z,
-	        int st_aux1,
-	        int st_aux2,
-	        int st_aux3,
-	        
-	        // start point increment
-	        int st_dx,   long st_dz,
-	        int st_daux1,
-	        int st_daux2,
-	        int st_daux3,
-	        
-	        // line finish point
-	        int fin_x,   long fin_z,
-	        int fin_aux1,
-	        int fin_aux2,
-	        int fin_aux3,                    
+public void render(
+		final NitrogenContext context,	
+		
+		Nitrogen2Vertex leftN2V,
+		Nitrogen2Vertex leftDestN2V,
+		
+		Nitrogen2Vertex rightN2V,
+		Nitrogen2Vertex rightDestN2V,			
+		
+		final int[] polyData,
+		final TexMap textureMap,
+		final float lightingValue	
+		)
+{
+	
+	// **************** initialise nitrogen context references ***********************
+	final int[] contextPixels = context.pix;
+	final int[] contextZBuffer = context.zbuff;
+	final int contextWidth = context.w;
+	
+	
+	// **************** Initialise Left start position and calculate delta ***********
+	int		leftSX			= leftN2V.intSX;
+	int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
+	int 	leftSY			= leftN2V.intSY;
+	int 	leftSZ			= leftN2V.intSZ;
+	long 	bigLeftSZ		= ((long)leftSZ) << SHIFT;
 
-	        // finish point increment
-	        int fin_dx,   long fin_dz,
-	        int fin_daux1,
-	        int fin_daux2,
-	        int fin_daux3,
-	        
-	        // start and finish y values
-	        // note the last line y_max is not rendered
-	        int y_counter,   int y_max,
-
-	        // pixel buffer
-	        int[] p,
-	        
-	        // z buffer
-	        int[] z,
-
-	        // texture buffer
-	        int[] tex,
-
-	        // output image width
-	        int pixelBufferWidth,
-
-	        // input texture width
-	        int textureBufferWidth,
-	        
-	        // global parameters array - eg. the colour for a single colour polygon
-	        int[] polyData,
-	        float lightingValue,
-	        NitrogenContext context,
-	        boolean hlp,
-            Vertex a,
-            Vertex b,
-            Vertex c,
-            Vertex d
-	        )
-
-
+	int 	leftDestSX 	= leftDestN2V.intSX;
+	int 	leftDestSY 	= leftDestN2V.intSY;
+	long 	leftDestSZ	= leftDestN2V.intSZ;
+		
+	int 	leftDeltaSX; 
+	int 	leftDeltaSY;
+	long 	leftDeltaSZ;
+	
+	leftDeltaSY = leftDestSY - leftSY;
+	
+	if(leftDeltaSY > 0)
 	{
-	    int contextPickX = context.pickX;   
-	    int contextPickY = context.pickY;   
-		if(y_counter > contextPickY)return;
-		if(y_max < contextPickY)return;
-		
-		
-
-	        // line rendering fields
-	        int srl_st_x;
-	        int srl_fin_x;
-	        long srl_z;
-
-	        // line rendering fields used for stepping
-	        int srl_dx;
-	        long srl_dz;
-
-	        int linestart;      // value that is constant for a line - gets precalculated
-
-	        // fields used for pixel rendering
-	        int srl_z2;         // integer version of srl_z
-	        int index;          // index into colour and z buffer arrays
-
-	        long temp;          // used to do a faster divide
-	        int rec;
-	        
-	        while(y_counter < y_max)
-	        {
-
-	            //***********************************************
-	            //****                                       ****
-	            //****    START OF CODE TO RENDER A LINE     ****
-	            //****                                       ****
-	            //***********************************************
-	        	if(y_counter == contextPickY){
-		            // set line rendering fields to start of line
-		            srl_st_x = (st_x >> SH);
-		            srl_fin_x = (fin_x >> SH);
-		            srl_dx = srl_fin_x - srl_st_x;
-		            srl_z = st_z;
-	
-		            // prevent zero srl_dx case throwing div0
-		            if(srl_dx == 0) srl_dx = 1;
-	
-		            // calculate line rendering fields used for stepping
-		            rec = NUM / srl_dx;
-	
-		            temp = (fin_z - st_z);
-		            srl_dz = ((temp * rec) >> SH);
-	
-		            linestart = y_counter * pixelBufferWidth;         // pre-calculate this constant value
-	
-		            while(srl_st_x <= srl_fin_x)
-		            {
-		                // *******************************************
-		                // *******************************************
-		                // ****                                   ****
-		                // ****     START OF RENDER A PIXEL       ****
-		                // ****                                   ****
-		                // *******************************************
-		                // *******************************************
-		            	if(srl_st_x == contextPickX)
-		            	{
-			                System.out.println("XY hit");
-		            		srl_z2 = (int)(srl_z >> SH);
-			                index = (linestart + srl_st_x);
-		
-			                if(srl_z2 >= z[index])
-			                {
-			                	System.out.println("It is closer");
-			                	System.out.println("Setting picked Polygon to current Polygon " + context.currentPolygon);
-			                	context.pickedItem = context.currentItem;
-			                	context.pickedPolygon = context.currentPolygon;
-			                	context.pickDetected = true;
-			                    z[index] = srl_z2;
-			                    //p[index] = (int)(0xFF000000 + (srl_z2));    // test
-			                }
-		            	}
-	
-		                // *******************************************
-		                // *******************************************
-		                // ****                                   ****
-		                // ****       END OF RENDER A PIXEL       ****
-		                // ****                                   ****
-		                // *******************************************
-		                // *******************************************
-	
-		                srl_st_x++;
-		                srl_z   += srl_dz;
-		            }// end of line rendering loop
-		            //***********************************************
-		            //****                                       ****
-		            //****      END OF CODE TO RENDER A LINE     ****
-		            //****                                       ****
-		            //***********************************************
-	        	}
-	            //increment local st_* and fin_* values by passed in parameters
-
-	            // increment local line start point (st_*) using passed in parameters
-	            st_x    += st_dx;
-	            st_z    += st_dz;
-
-	            // increment local line finish point (fin_*) using passed in parameters
-	            fin_x    += fin_dx;
-	            fin_z    += fin_dz;
-
-	            // move to next line
-	            y_counter++;
-	    }//end of y_counter while loop
+			int rec 	= NUM / leftDeltaSY;
+			leftDeltaSX = (leftDestSX - leftSX)	* rec;
+			leftDeltaSY = (leftDestSY - leftSY);	// down counter
+			leftDeltaSZ = (leftDestSZ - leftSZ)	* rec;		
+	}
+	else
+	{
+			leftDeltaSX = 0;
+			leftDeltaSY = 0;
+			leftDeltaSZ = 0;
 	}
 	
-    public void renderTrapezoidHLP(
-    		final NitrogenContext context,
-    		final Vertex a, final Vertex b, final Vertex c, final Vertex d, 
-    		final int[] polyData, 
-    		final TexMap texMap,
-    		final float lightingValue
-    	     ){}
+	// **************** Initialise Right start position and calculate delta ***********
+	int		rightSX			= rightN2V.intSX;
+	int 	bigRightSX 		= rightN2V.intSX << SHIFT;
+	int 	rightSY			= rightN2V.intSY;
+	int 	rightSZ			= rightN2V.intSZ;
+	long 	bigRightSZ		= ((long)rightSZ) << SHIFT;
+
+	int 	rightDestSX 	= rightDestN2V.intSX;
+	int 	rightDestSY 	= rightDestN2V.intSY;
+	long 	rightDestSZ		= rightDestN2V.intSZ;
+		
+	int 	rightDeltaSX; 
+	int 	rightDeltaSY;
+	long 	rightDeltaSZ;
+	
+	rightDeltaSY = rightDestSY - rightSY;
+	
+	if(rightDeltaSY > 0)
+	{
+			int rec 	= NUM / rightDeltaSY;
+			rightDeltaSX = (rightDestSX - rightSX)	* rec;
+			rightDeltaSY = (rightDestSY - rightSY);	// down counter
+			rightDeltaSZ = (rightDestSZ - rightSZ)	* rec;		
+	}
+	else
+	{
+			rightDeltaSX = 0;
+			rightDeltaSY = 0;
+			rightDeltaSZ = 0;
+	}
+	
+	boolean trucking = true;
+	
+	while(trucking)
+	{
+		// ************ Render a line *******
+		renderLine(
+				bigLeftSX, 
+				bigLeftSZ, 
+				leftSY * contextWidth,
+				leftSY,
+				
+				bigRightSX,
+				bigRightSZ,
+				
+				context,
+				contextPixels,
+				contextZBuffer,
+				contextWidth	
+		);
+		
+		// *********** move by delta *******
+		bigLeftSX += leftDeltaSX;
+		leftSY++;
+		bigLeftSZ += leftDeltaSZ;
+				
+		bigRightSX += rightDeltaSX;
+		// rightSY++;
+		bigRightSZ += rightDeltaSZ;
+		
+		// *********** decrement steps to destination down counters ****
+		leftDeltaSY--;
+		rightDeltaSY--;
+		
+		// *********** handle if we reach left destination ******************
+		if(leftDeltaSY <= 0)
+		{
+			leftN2V 		= leftDestN2V;
+			
+			// now update left to eliminate rounding errors
+			leftSX			= leftN2V.intSX;
+			bigLeftSX 		= leftN2V.intSX << SHIFT;
+			leftSY			= leftN2V.intSY;
+			leftSZ			= leftN2V.intSZ;
+			bigLeftSZ		= ((long)leftSZ) << SHIFT;
+			
+			// find a new destination
+			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+			
+			if(leftDestN2V == null)
+			{
+				leftDeltaSX = 0;
+				leftDeltaSY = 0;
+				leftDeltaSZ = 0;
+				trucking = false;
+			}
+			else
+			{
+				leftDeltaSY = leftDestSY - leftSY;
+				
+				if(leftDeltaSY > 0)
+				{
+						int rec 	= NUM / leftDeltaSY;
+						leftDeltaSX = (leftDestSX - leftSX)	* rec;
+						leftDeltaSY = (leftDestSY - leftSY);	// down counter
+						leftDeltaSZ = (leftDestSZ - leftSZ)	* rec;		
+				}
+				else
+				{
+						leftDeltaSX = 0;
+						leftDeltaSY = 0;
+						leftDeltaSZ = 0;
+						trucking = false;
+				}
+			}		
+		}
+		
+		// *********** handle if we reach right destination ******************
+		if(rightDeltaSY <= 0)
+		{
+			rightN2V 		= rightDestN2V;
+			
+			// now update right to eliminate rounding errors
+			rightSX			= rightN2V.intSX;
+			bigRightSX 		= rightN2V.intSX << SHIFT;
+			rightSY			= rightN2V.intSY;
+			rightSZ			= rightN2V.intSZ;
+			bigRightSZ		= ((long)rightSZ) << SHIFT;
+			
+			// find a new destination
+			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+			
+			if(rightDestN2V == null)
+			{
+				rightDeltaSX = 0;
+				rightDeltaSY = 0;
+				rightDeltaSZ = 0;
+				trucking = false;
+			}
+			else
+			{
+				rightDeltaSY = rightDestSY - rightSY;
+				
+				if(rightDeltaSY > 0)
+				{
+						int rec 	= NUM / rightDeltaSY;
+						rightDeltaSX = (rightDestSX - rightSX)	* rec;
+						rightDeltaSY = (rightDestSY - rightSY);	// down counter
+						rightDeltaSZ = (rightDestSZ - rightSZ)	* rec;		
+				}
+				else
+				{
+						rightDeltaSX = 0;
+						rightDeltaSY = 0;
+						rightDeltaSZ = 0;
+						trucking = false;
+				}
+			}		
+		}
+	}//end of while loop
+	
+	// ************ Render final line *******
+	renderLine(
+			bigLeftSX, 
+			bigLeftSZ, 
+			leftSY * contextWidth,
+			leftSY,
+			
+			bigRightSX,
+			bigRightSZ,
+			
+			context,
+			contextPixels,
+			contextZBuffer,
+			contextWidth		
+	);
+}
+
+//*****************************************************************************
+//*****************************************************************************
+// ****************************** Render Line *********************************
+//*****************************************************************************
+//*****************************************************************************
+
+private final void renderLine(
+		int 	bigLeftSX, 
+		long 	bigLeftSZ, 
+		int 	indexOffset,
+		int		y,
+		
+		int 	bigRightSX,
+		long 	bigRightSZ,
+
+		NitrogenContext context,
+		final int[] contextPixels,
+		final int[] contextZBuffer,
+		final int contextWidth
+		)
+{
+	int contextPickX = context.pickX;
+	
+	if(y != context.pickY)return;
+	
+	int lineStart 	= bigLeftSX >> SHIFT;
+	int lineFinish 	= bigRightSX >> SHIFT;	
+	
+	if(lineStart > contextPickX)return;
+	if(lineFinish < contextPickX)return;
+	
+	int lineLength = lineFinish - lineStart;
+	
+	// calculate zDelta
+	long zDelta;
+	if(lineLength > 0)
+	{
+		zDelta = (bigRightSZ - bigLeftSZ) / lineLength;
+	}
+	else
+	{
+		zDelta = 0;
+	}
+	
+	while(lineLength >= 0)
+	{
+		// ***************** TEST PIXEL ****************
+		int pixelZ = (int)(bigLeftSZ >> SHIFT);
+		int index = indexOffset + lineStart;
+		
+		if(lineStart == contextPickX)
+		{
+			if(pixelZ > contextZBuffer[index])
+			{
+				contextZBuffer[index] = pixelZ;
+				context.pickedPolygon = context.currentPolygon;
+				context.pickedItem = context.currentItem;
+				context.pickDetected = true;
+			}
+		}
+		
+		// ***********************************************
+		bigLeftSZ += zDelta;
+		lineStart++;
+		lineLength--;	
+	}
+}
 	
 	public boolean isTextured(){return false;}
 
