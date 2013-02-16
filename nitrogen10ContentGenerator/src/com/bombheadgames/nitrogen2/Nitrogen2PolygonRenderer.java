@@ -17,7 +17,9 @@ public class Nitrogen2PolygonRenderer {
 		System.out.println("Nitrogen2PolygonRenderer.process called");
 		if(renderer.isTextured())
 		{
-			if (useHLP && Nitrogen2TexturedRenderer.isHLP(start, context.qualityOfHLP))
+			if (	useHLP 
+					&& renderer.allowsHLP()
+					&& Nitrogen2TexturedRenderer.isHLP(start, context.qualityOfHLP))
 			{
 				Nitrogen2TexturedHLPRenderer.process
 				(

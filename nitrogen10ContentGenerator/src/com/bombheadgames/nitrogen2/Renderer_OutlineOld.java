@@ -1,15 +1,11 @@
 package com.bombheadgames.nitrogen2;
 
-public class Renderer_Outline implements Renderer{
-	private static final long serialVersionUID = -7435141406825586043L;
+public class Renderer_OutlineOld implements Renderer {
 
-	private static final int ALPHA = 0xFF000000;
 	private static final int SHIFT = 20;
-	private static final int ZSHIFT = 20;
 	private static final int NUM = 1 << SHIFT;
 
 	public void render(
-			
 			final NitrogenContext context,	
 			
 			Nitrogen2Vertex leftN2V,
@@ -25,9 +21,9 @@ public class Renderer_Outline implements Renderer{
 	{
 		
 		// **************** initialise colour ********************************************
-		System.out.println("render called");
-		int colour = -1; // white
-		if(polyData != null)colour = polyData[0] | ALPHA;
+		
+		int colour = 16711680; // red
+		if((polyData != null) && (polyData.length > 0))colour = polyData[0];
 		
 		// **************** initialise nitrogen context references ***********************
 		final int[] contextPixels = context.pix;
@@ -40,11 +36,11 @@ public class Renderer_Outline implements Renderer{
 		int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
 		int 	leftSY			= leftN2V.intSY;
 		int 	leftSZ			= leftN2V.intSZ;
-		long 	bigLeftSZ		= ((long)leftSZ) << ZSHIFT;
+		long 	bigLeftSZ		= ((long)leftSZ) << SHIFT;
 
-		int 	leftDestSX 		= leftDestN2V.intSX;
-		int 	leftDestSY 		= leftDestN2V.intSY;
-		long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
+		int 	leftDestSX 	= leftDestN2V.intSX;
+		int 	leftDestSY 	= leftDestN2V.intSY;
+		long 	leftDestSZ	= leftDestN2V.intSZ;
 			
 		int 	leftDeltaSX; 
 		int 	leftDeltaSY;
@@ -57,7 +53,7 @@ public class Renderer_Outline implements Renderer{
 				int rec 	= NUM / leftDeltaSY;
 				leftDeltaSX = (leftDestSX - leftSX)	* rec;
 				leftDeltaSY = (leftDestSY - leftSY);	// down counter
-				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
+				leftDeltaSZ = (leftDestSZ - leftSZ)	* rec;		
 		}
 		else
 		{
@@ -75,7 +71,7 @@ public class Renderer_Outline implements Renderer{
 
 		int 	rightDestSX 	= rightDestN2V.intSX;
 		int 	rightDestSY 	= rightDestN2V.intSY;
-		long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
+		long 	rightDestSZ		= rightDestN2V.intSZ;
 			
 		int 	rightDeltaSX; 
 		int 	rightDeltaSY;
@@ -88,7 +84,7 @@ public class Renderer_Outline implements Renderer{
 				int rec 	= NUM / rightDeltaSY;
 				rightDeltaSX = (rightDestSX - rightSX)	* rec;
 				rightDeltaSY = (rightDestSY - rightSY);	// down counter
-				rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
+				rightDeltaSZ = (rightDestSZ - rightSZ)	* rec;		
 		}
 		else
 		{
@@ -97,12 +93,29 @@ public class Renderer_Outline implements Renderer{
 				rightDeltaSZ = 0;
 		}
 		
+		// ************** render top line ******************
+		// renderTerminatorLine deals with cases of 
+		// horisontal top & bottom lines
+		// *************************************************
+		
+		renderTerminatorLine(
+				bigLeftSX, 
+				bigLeftSZ, 
+				leftSY * contextWidth, 
+				
+				bigRightSX,
+				bigRightSZ,
+				
+				colour,
+				contextPixels,
+				contextZBuffer,
+				contextWidth	
+		);
+		
 		boolean trucking = true;
 		
-		int escape = 1000;
-		while(trucking && (escape > 0))
+		while(trucking)
 		{
-			escape--;
 			// ************ Render a line *******
 			renderLine(
 					bigLeftSX, 
@@ -119,6 +132,7 @@ public class Renderer_Outline implements Renderer{
 					
 					leftDeltaSX,
 					rightDeltaSX
+					
 			);
 			
 			// *********** move by delta *******
@@ -137,7 +151,6 @@ public class Renderer_Outline implements Renderer{
 			// *********** handle if we reach left destination ******************
 			if(leftDeltaSY <= 0)
 			{
-				System.out.println("handling leftDeltaSY <= 0");
 				leftN2V 		= leftDestN2V;
 				
 				// now update left to eliminate rounding errors
@@ -147,13 +160,11 @@ public class Renderer_Outline implements Renderer{
 				leftSZ			= leftN2V.intSZ;
 				bigLeftSZ		= ((long)leftSZ) << SHIFT;
 				
-				System.out.println("completed leftDestN2V is " + leftDestN2V);
 				// find a new destination
 				leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 				
 				if(leftDestN2V == null)
 				{
-					System.out.println("handling (leftDestN2V == null)");
 					leftDeltaSX = 0;
 					leftDeltaSY = 0;
 					leftDeltaSZ = 0;
@@ -161,16 +172,14 @@ public class Renderer_Outline implements Renderer{
 				}
 				else
 				{
-					System.out.println("new leftDest is" + leftDestN2V);
-					leftDeltaSY = leftDestN2V.intSY - leftSY;
-					System.out.println("new leftDeltaSY = " + leftDeltaSY );
+					leftDeltaSY = leftDestSY - leftSY;
+					
 					if(leftDeltaSY > 0)
 					{
 							int rec 	= NUM / leftDeltaSY;
-							leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-							leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-							leftDeltaSZ -= bigLeftSZ;
-							leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
+							leftDeltaSX = (leftDestSX - leftSX)	* rec;
+							leftDeltaSY = (leftDestSY - leftSY);	// down counter
+							leftDeltaSZ = (leftDestSZ - leftSZ)	* rec;		
 					}
 					else
 					{
@@ -185,7 +194,6 @@ public class Renderer_Outline implements Renderer{
 			// *********** handle if we reach right destination ******************
 			if(rightDeltaSY <= 0)
 			{
-				System.out.println("handling rightDeltaSY <= 0");
 				rightN2V 		= rightDestN2V;
 				
 				// now update right to eliminate rounding errors
@@ -195,14 +203,11 @@ public class Renderer_Outline implements Renderer{
 				rightSZ			= rightN2V.intSZ;
 				bigRightSZ		= ((long)rightSZ) << SHIFT;
 				
-				System.out.println("completed rightDestN2V is " + rightDestN2V);
-				
 				// find a new destination
 				rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 				
 				if(rightDestN2V == null)
 				{
-					System.out.println("handling (rightDestN2V == null)");
 					rightDeltaSX = 0;
 					rightDeltaSY = 0;
 					rightDeltaSZ = 0;
@@ -210,18 +215,14 @@ public class Renderer_Outline implements Renderer{
 				}
 				else
 				{
-					System.out.println("new rightDest is" + rightDestN2V);
-					rightDeltaSY = rightDestN2V.intSY - rightSY;
-					System.out.println("new rightDeltaSY = " + rightDeltaSY );
+					rightDeltaSY = rightDestSY - rightSY;
+					
 					if(rightDeltaSY > 0)
 					{
 							int rec 	= NUM / rightDeltaSY;
-							rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-							rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
-							
-							rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-							rightDeltaSZ -= bigRightSZ;
-							rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
+							rightDeltaSX = (rightDestSX - rightSX)	* rec;
+							rightDeltaSY = (rightDestSY - rightSY);	// down counter
+							rightDeltaSZ = (rightDestSZ - rightSZ)	* rec;		
 					}
 					else
 					{
@@ -235,7 +236,6 @@ public class Renderer_Outline implements Renderer{
 		}//end of while loop
 		
 		// ************ Render final line *******
-		System.out.println("render final line");
 		renderTerminatorLine(
 				bigLeftSX, 
 				bigLeftSZ, 
@@ -275,16 +275,16 @@ public class Renderer_Outline implements Renderer{
 			)
 	{
 		int lineStart 	= bigLeftSX >> SHIFT;
-		int lineFinish 	= bigRightSX >> SHIFT;	
+		int lineFinish 	= bigRightSX >> SHIFT;
 				
 		int lineStartDelta = leftDeltaSX >> SHIFT;
-		int lineFinishDelta = rightDeltaSX >> SHIFT;
-							
+		int lineFinishDelta = leftDeltaSX >> SHIFT;
+		
 		// ********* calculate bit at left of line to draw ****
 		int lineStartEnd = lineStart + lineStartDelta;
 		if(lineStartEnd < 0)lineStartEnd = 0;
 		if(lineStartEnd >= contextWidth)lineStartEnd = contextWidth-1;
-							
+		
 		if(lineStartEnd < lineStart)
 		{
 			int swap = lineStart;
@@ -314,7 +314,6 @@ public class Renderer_Outline implements Renderer{
 		{
 			contextPixels[indexOffset + x] = colour;
 		}
-
 	}
 	
 	//*****************************************************************************
@@ -354,11 +353,10 @@ public class Renderer_Outline implements Renderer{
 			lineLength--;	
 		}
 	}
-
-	//*****************************************************************************
-	//*****************************************************************************
-	//*****************************************************************************
-	//*****************************************************************************
+	
+	
+	
+	
 	public void renderHLP(
 			final NitrogenContext context,	
 			
@@ -376,4 +374,5 @@ public class Renderer_Outline implements Renderer{
 	public boolean isTextured(){return false;}
 
 	public boolean allowsHLP(){return false;}
+	
 }
