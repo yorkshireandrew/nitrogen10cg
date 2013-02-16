@@ -71,21 +71,45 @@ public class Nitrogen2PolygonClipper {
 		
 		// clip the loop against various planes
 		// start ends up being an on screen vertex
-		if(touchedNear)		start = nearPlaneClip(start, -context.nearClip);		
-		System.out.println("--- Post nearPlane ---");
-		check(start);
-		if(touchedRight)	start = rightPlaneClip(start, context.xClip);		
-		System.out.println("--- Post rightPlane ---");
-		check(start);
-		if(touchedLeft)		start = leftPlaneClip(start, context.xClip);		
-		System.out.println("--- Post leftPlane ---");
-		check(start);
-		if(touchedBottom)	start = bottomPlaneClip(start, context.yClip);		
-		System.out.println("--- Post bottomPlane ---");
-		check(start);
-		if(touchedTop)		start = topPlaneClip(start, context.yClip);		
-		System.out.println("--- Post topPlane ---");
-		check(start);
+		if(touchedNear)		
+		{
+			start = nearPlaneClip(start, -context.nearClip);
+			if(start == null)return;
+			System.out.println("--- Post nearPlane ---");
+			check(start);
+		}
+		
+		if(touchedRight)
+		{
+			start = rightPlaneClip(start, context.xClip);
+			if(start == null)return;
+			System.out.println("--- Post rightPlane ---");
+			check(start);
+		}	
+		
+		if(touchedLeft)
+		{
+			start = leftPlaneClip(start, context.xClip);
+			if(start == null)return;
+			System.out.println("--- Post leftPlane ---");
+			check(start);
+		}	
+		
+		if(touchedTop)
+		{
+			start = topPlaneClip(start, context.yClip);
+			if(start == null)return;
+			System.out.println("--- Post topPlane ---");
+			check(start);
+		}
+		
+		if(touchedBottom)
+		{
+			start = bottomPlaneClip(start, context.yClip);
+			if(start == null)return;
+			System.out.println("--- Post bottomPlane ---");
+			check(start);
+		}		
 		System.out.println("completed clipping");
 		Nitrogen2PolygonRenderer.process
 		(
@@ -122,7 +146,7 @@ public class Nitrogen2PolygonClipper {
 			System.out.println(b);
 			if (b == null)return(null);
 			Vertex bAnticlockwise = b.anticlockwise;
-			c = findClockwiseMostNearClippedVertex(a,b,nearClip);
+			c = findClockwiseMostNearClippedVertex(a,a,nearClip);
 			System.out.println("most clockwise nearclipped vertex");
 			System.out.println(c);
 			if (c == null)return(null);
@@ -185,7 +209,7 @@ public class Nitrogen2PolygonClipper {
 		do{
 			if(clockwise.vs_z < nearClip) return toTest;
 			toTest = clockwise;
-			clockwise = toTest.anticlockwise;
+			clockwise = toTest.clockwise;
 		}while(toTest != endPoint);	
 		return null;
 	}
@@ -220,7 +244,7 @@ public class Nitrogen2PolygonClipper {
 			b = findAnticlockwiseMostRightClippedVertex(a,a,xClip);
 			if (b == null)return(null);
 			Vertex bAnticlockwise = b.anticlockwise;
-			c = findClockwiseMostRightClippedVertex(a,b,xClip);
+			c = findClockwiseMostRightClippedVertex(a,a,xClip);
 			if (c == null)return(null);
 			Vertex cClockwise = c.clockwise;
 			d = calcRightPlaneIntersect(cClockwise, c, xClip);
@@ -303,7 +327,7 @@ public class Nitrogen2PolygonClipper {
 				return toTest;
 				}
 			toTest = clockwise;
-			clockwise = toTest.anticlockwise;
+			clockwise = toTest.clockwise;
 		}while(toTest != endPoint);	
 		System.out.println("returned null");
 		return null;
@@ -340,7 +364,7 @@ public class Nitrogen2PolygonClipper {
 			b = findAnticlockwiseMostLeftClippedVertex(a,a,xClip);
 			if (b == null)return(null);
 			Vertex bAnticlockwise = b.anticlockwise;
-			c = findClockwiseMostLeftClippedVertex(a,b,xClip);
+			c = findClockwiseMostLeftClippedVertex(a,a,xClip);
 			if (c == null)return(null);
 			Vertex cClockwise = c.clockwise;
 			d = calcLeftPlaneIntersect(cClockwise, c, xClip);
@@ -397,7 +421,7 @@ public class Nitrogen2PolygonClipper {
 			// test returning true if NOT clipped
 			if(-clockwise.vs_x < (-clockwise.vs_z * xClip)) return toTest;
 			toTest = clockwise;
-			clockwise = toTest.anticlockwise;
+			clockwise = toTest.clockwise;
 		}while(toTest != endPoint);	
 		return null;
 	}
@@ -413,9 +437,143 @@ public class Nitrogen2PolygonClipper {
 	}	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
 	// *********************************************************
 	// *********************************************************
-	//                    BOTTOM PLANE CLIPPING
+	//                    TOP PLANE CLIPPING
+	// *********************************************************
+	// *********************************************************
+	
+	final static Vertex topPlaneClip(Vertex start, float yClip)
+	{
+		Vertex a = findTopClippedVertex(start, start, yClip);
+		Vertex retval = start;
+		while(a != null)
+		{
+			System.out.println("top clipping");
+			System.out.println(a);
+			System.out.println("-------------");
+			check(a);
+			
+			Vertex b,c,d,e;
+			b = findAnticlockwiseMostTopClippedVertex(a,a,yClip);
+			if (b == null)return(null);
+			Vertex bAnticlockwise = b.anticlockwise;
+			c = findClockwiseMostTopClippedVertex(a,a,yClip);
+			if (c == null)return(null);
+			Vertex cClockwise = c.clockwise;
+			d = calcTopPlaneIntersect(cClockwise, c, yClip);
+			System.out.println("c.clockwise - c intersect");
+			System.out.println(d);
+			e = calcTopPlaneIntersect(bAnticlockwise, b, yClip);
+			System.out.println("b - b.anticlockwise intersect");
+			System.out.println(e);	
+			
+			//link c.clockwise - d - e - b.anticlockwise
+			
+			cClockwise.anticlockwise = d;
+			d.clockwise = cClockwise;
+			
+			d.anticlockwise = e;
+			e.clockwise = d;
+			
+			e.anticlockwise = bAnticlockwise;
+			bAnticlockwise.clockwise = e;
+			
+			retval = d;	// ensure we return something in the onscreen loop
+			a = findTopClippedVertex(bAnticlockwise, cClockwise, yClip);	
+		
+			System.out.println("completed top clipping");
+			check(d);
+		}
+		
+		System.out.println("top Plane Clip returns=" + retval);
+		return retval;
+	}
+	
+	final static Vertex findTopClippedVertex(Vertex start, Vertex endPoint, float yClip)
+	{
+		System.out.println("findTopClippedVertex start= " + start);
+		Vertex toTest = start;
+		do{
+			// test returning true if clipped
+			if(toTest.vs_y >= (-toTest.vs_z * yClip)) 
+				{
+				System.out.println("returned = " + toTest);
+				return toTest;
+				}
+			toTest = toTest.anticlockwise;
+		}while(toTest != endPoint);	
+		System.out.println("didn't find one so returned null");
+		return null;
+	}
+	
+	final static Vertex findAnticlockwiseMostTopClippedVertex(Vertex start, Vertex endPoint, float yClip)
+	{
+
+		System.out.println("findAnticlockwiseMostTopClippedVertex start= " + start);
+		Vertex toTest = start;
+		Vertex anticlockwise = toTest.anticlockwise;
+		do{
+			// test returning true if NOT clipped
+			System.out.println("testing " + anticlockwise);
+			if(anticlockwise.vs_y < (-anticlockwise.vs_z * yClip)) 
+				{
+				System.out.println("returned " + toTest);	
+				return toTest;
+				}
+			toTest = anticlockwise;
+			anticlockwise = toTest.anticlockwise;
+		}while(toTest != endPoint);
+		System.out.println("returned null");
+		return null;
+	}
+	
+	final static Vertex findClockwiseMostTopClippedVertex(Vertex start, Vertex endPoint, float yClip)
+	{
+		System.out.println("findClockwiseMostTopClippedVertex start= " + start);
+
+		Vertex toTest = start;
+		Vertex clockwise = toTest.clockwise;
+		do{
+			// test returning true if NOT clipped
+			System.out.println("testing " + clockwise);
+			if(clockwise.vs_y < (-clockwise.vs_z * yClip)) 
+				{
+				System.out.println("returned " + toTest);	
+				return toTest;
+				}
+			toTest = clockwise;
+			clockwise = toTest.clockwise;
+		}while(toTest != endPoint);	
+		System.out.println("returned null");
+		return null;
+	}
+	
+	final static Vertex calcTopPlaneIntersect(Vertex onscreen, Vertex offscreen, float yClip)
+	{	
+		float in_deapth = -onscreen.vs_z;
+		float out_deapth = -offscreen.vs_z;
+		float onscreenY = onscreen.vs_y;
+		System.out.println("calcRightPlaneIntersect Called");	
+		System.out.println("onscreen  =" + onscreen);		
+		System.out.println("offscreen =" + offscreen);
+		System.out.println("offscreen vs_y " + offscreen.vs_y + ", onscreen vs_x=" + onscreenY);
+		float n = (yClip * in_deapth - onscreenY) / ((offscreen.vs_y - onscreenY) - yClip * (out_deapth - in_deapth));	
+		return(calcInbetweenVertex(onscreen,offscreen,n));	
+	}
+	
+	
+	// *********************************************************
+	// *********************************************************
+	//                    Bottom PLANE CLIPPING
 	// *********************************************************
 	// *********************************************************
 	
@@ -430,7 +588,7 @@ public class Nitrogen2PolygonClipper {
 			b = findAnticlockwiseMostBottomClippedVertex(a,a,yClip);
 			if (b == null)return(null);
 			Vertex bAnticlockwise = b.anticlockwise;
-			c = findClockwiseMostBottomClippedVertex(a,b,yClip);
+			c = findClockwiseMostBottomClippedVertex(a,a,yClip);
 			if (c == null)return(null);
 			Vertex cClockwise = c.clockwise;
 			d = calcBottomPlaneIntersect(cClockwise, c, yClip);
@@ -458,7 +616,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex toTest = start;
 		do{
 			// test returning true if clipped
-			if(toTest.vs_y >= (-toTest.vs_z * yClip)) return toTest;
+			if(-toTest.vs_y >= (-toTest.vs_z * yClip)) return toTest;
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
@@ -471,7 +629,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex anticlockwise = toTest.anticlockwise;
 		do{
 			// test returning true if NOT clipped
-			if(anticlockwise.vs_y < (-anticlockwise.vs_z * yClip)) return toTest;
+			if(-anticlockwise.vs_y < (-anticlockwise.vs_z * yClip)) return toTest;
 			toTest = anticlockwise;
 			anticlockwise = toTest.anticlockwise;
 		}while(toTest != endPoint);	
@@ -485,9 +643,9 @@ public class Nitrogen2PolygonClipper {
 		Vertex clockwise = toTest.clockwise;
 		do{
 			// test returning true if NOT clipped
-			if (clockwise.vs_y < (-clockwise.vs_z * yClip)) return toTest;
+			if(-clockwise.vs_y < (-clockwise.vs_z * yClip)) return toTest;
 			toTest = clockwise;
-			clockwise = toTest.anticlockwise;
+			clockwise = toTest.clockwise;
 		}while(toTest != endPoint);	
 		return null;
 	}
@@ -497,97 +655,11 @@ public class Nitrogen2PolygonClipper {
 		float in_deapth = -onscreen.vs_z;
 		float out_deapth = -offscreen.vs_z;
 		float onscreenY = onscreen.vs_y;
-		float n = (yClip * in_deapth - onscreenY) / ((offscreen.vs_y - onscreenY) - yClip * (out_deapth - in_deapth));
+		// same as calcRightPlaneIntersect but x coordinates are inverted
+		float n = (yClip * in_deapth + onscreenY) / ((onscreenY - offscreen.vs_y) - yClip * (out_deapth - in_deapth));	
 		return(calcInbetweenVertex(onscreen,offscreen,n));	
-	}
-	
-	// *********************************************************
-	// *********************************************************
-	//                    TOP PLANE CLIPPING
-	// *********************************************************
-	// *********************************************************
-	
-	final static Vertex topPlaneClip(Vertex start, float yClip)
-	{
-		Vertex a = findTopClippedVertex(start, start, yClip);
-		Vertex retval = start;
-		while(a != null)
-		{
-			System.out.println("top clipping");
-			Vertex b,c,d,e;
-			b = findAnticlockwiseMostTopClippedVertex(a,a,yClip);
-			if (b == null)return(null);
-			Vertex bAnticlockwise = b.anticlockwise;
-			c = findClockwiseMostTopClippedVertex(a,b,yClip);
-			if (c == null)return(null);
-			Vertex cClockwise = c.clockwise;
-			d = calcTopPlaneIntersect(cClockwise, c, yClip);
-			e = calcTopPlaneIntersect(bAnticlockwise, b, yClip);
-			
-			//link c.clockwise - d - e - b.anticlockwise
-			
-			cClockwise.anticlockwise = d;
-			d.clockwise = cClockwise;
-			
-			d.anticlockwise = e;
-			e.clockwise = d;
-			
-			e.anticlockwise = bAnticlockwise;
-			bAnticlockwise.clockwise = e;
-			
-			retval = d;	// ensure we return something in the onscreen loop
-			a = findTopClippedVertex(bAnticlockwise, cClockwise, yClip);	
-		}
-		return retval;
-	}
-	
-	final static Vertex findTopClippedVertex(Vertex start, Vertex endPoint, float yClip)
-	{
-		Vertex toTest = start;
-		do{
-			// test returning true if clipped
-			if(-toTest.vs_y >= (-toTest.vs_z * yClip)) return toTest;
-			toTest = toTest.anticlockwise;
-		}while(toTest != endPoint);	
-		return null;
-	}
-	
-	final static Vertex findAnticlockwiseMostTopClippedVertex(Vertex start, Vertex endPoint, float yClip)
-	{
+	}	
 
-		Vertex toTest = start;
-		Vertex anticlockwise = toTest.anticlockwise;
-		do{
-			// test returning true if NOT clipped
-			if(-toTest.vs_y < (-toTest.vs_z * yClip)) return toTest;
-			toTest = anticlockwise;
-			anticlockwise = toTest.anticlockwise;
-		}while(toTest != endPoint);	
-		return null;
-	}
-	
-	final static Vertex findClockwiseMostTopClippedVertex(Vertex start, Vertex endPoint, float yClip)
-	{
-
-		Vertex toTest = start;
-		Vertex clockwise = toTest.clockwise;
-		do{
-			// test returning true if NOT clipped
-			if (-toTest.vs_y < (-toTest.vs_z * yClip)) return toTest;
-			toTest = clockwise;
-			clockwise = toTest.anticlockwise;
-		}while(toTest != endPoint);	
-		return null;
-	}
-	
-	final static Vertex calcTopPlaneIntersect(Vertex onscreen, Vertex offscreen, float yClip)
-	{	
-		float in_deapth = -onscreen.vs_z;
-		float out_deapth = -offscreen.vs_z;
-		float onscreenY = onscreen.vs_y;
-		float n = (yClip * in_deapth + onscreenY) / ((onscreenY - offscreen.vs_y) - yClip * (out_deapth - in_deapth));
-		return(calcInbetweenVertex(onscreen,offscreen,n));	
-	}
 	
 	// *********************************************************
 	// *********************************************************
@@ -619,17 +691,17 @@ public class Nitrogen2PolygonClipper {
 	final static void check(Vertex start)
 	{
 		System.out.println("********** CHECK *************");
-		System.out.println("Start clockwise =" + start.clockwise);
+//		System.out.println("Start clockwise =" + start.clockwise);
 		System.out.println("Start           =" + start);
-		System.out.println("Start anticlock =" + start.anticlockwise);
+//		System.out.println("Start anticlock =" + start.anticlockwise);
 		
 		Vertex test = start.anticlockwise;	
 		while(test != start)
 		{
 			System.out.println("------------------------------------");
-			System.out.println("clockwise  =" + test.clockwise);
+//			System.out.println("clockwise  =" + test.clockwise);
 			System.out.println("current    =" + test);
-			System.out.println("anticlock  =" + test.anticlockwise);
+//			System.out.println("anticlock  =" + test.anticlockwise);
 			System.out.println("------------------------------------");
 			test = test.anticlockwise;
 		}
