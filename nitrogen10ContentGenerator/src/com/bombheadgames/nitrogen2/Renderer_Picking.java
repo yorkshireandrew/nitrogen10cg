@@ -1,11 +1,10 @@
 package com.bombheadgames.nitrogen2;
 
 public class Renderer_Picking implements Renderer{
-
 private static final long serialVersionUID = -7435141406825586043L;
 
-private static final int ALPHA = 0xFF000000;
 private static final int SHIFT = 20;
+private static final int ZSHIFT = 20;
 private static final int NUM = 1 << SHIFT;
 
 public void render(
@@ -26,6 +25,7 @@ public void render(
 	
 	// **************** initialise colour ********************************************
 	System.out.println("PICKING render called");
+
 	
 	// **************** initialise nitrogen context references ***********************
 	final int[] contextPixels = context.pix;
@@ -38,11 +38,11 @@ public void render(
 	int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
 	int 	leftSY			= leftN2V.intSY;
 	int 	leftSZ			= leftN2V.intSZ;
-	long 	bigLeftSZ		= ((long)leftSZ) << SHIFT;
+	long 	bigLeftSZ		= ((long)leftSZ) << ZSHIFT;
 
-	int 	leftDestSX 	= leftDestN2V.intSX;
-	int 	leftDestSY 	= leftDestN2V.intSY;
-	long 	leftDestSZ	= leftDestN2V.intSZ;
+	int 	leftDestSX 		= leftDestN2V.intSX;
+	int 	leftDestSY 		= leftDestN2V.intSY;
+	long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
 		
 	int 	leftDeltaSX; 
 	int 	leftDeltaSY;
@@ -55,7 +55,7 @@ public void render(
 			int rec 	= NUM / leftDeltaSY;
 			leftDeltaSX = (leftDestSX - leftSX)	* rec;
 			leftDeltaSY = (leftDestSY - leftSY);	// down counter
-			leftDeltaSZ = (leftDestSZ - leftSZ)	* rec;		
+			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
 	}
 	else
 	{
@@ -73,7 +73,7 @@ public void render(
 
 	int 	rightDestSX 	= rightDestN2V.intSX;
 	int 	rightDestSY 	= rightDestN2V.intSY;
-	long 	rightDestSZ		= rightDestN2V.intSZ;
+	long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
 		
 	int 	rightDeltaSX; 
 	int 	rightDeltaSY;
@@ -86,7 +86,7 @@ public void render(
 			int rec 	= NUM / rightDeltaSY;
 			rightDeltaSX = (rightDestSX - rightSX)	* rec;
 			rightDeltaSY = (rightDestSY - rightSY);	// down counter
-			rightDeltaSZ = (rightDestSZ - rightSZ)	* rec;		
+			rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
 	}
 	else
 	{
@@ -110,8 +110,8 @@ public void render(
 				bigRightSX,
 				bigRightSZ,
 				
-				leftSY,
 				context,
+				leftSY,
 				contextPixels,
 				contextZBuffer,
 				contextWidth	
@@ -164,7 +164,9 @@ public void render(
 				{
 						int rec 	= NUM / leftDeltaSY;
 						leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-						leftDeltaSZ = (leftDestN2V.intSZ - leftSZ)	* rec;		
+						leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+						leftDeltaSZ -= bigLeftSZ;
+						leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
 				}
 				else
 				{
@@ -211,7 +213,11 @@ public void render(
 				{
 						int rec 	= NUM / rightDeltaSY;
 						rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;		
+						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
+						
+						rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+						rightDeltaSZ -= bigRightSZ;
+						rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
 				}
 				else
 				{
@@ -234,14 +240,12 @@ public void render(
 			bigRightSX,
 			bigRightSZ,
 			
-			leftSY,
 			context,
+			leftSY,
 			contextPixels,
 			contextZBuffer,
 			contextWidth		
 	);
-	
-	System.out.println("PICKING render finished polygon " + context.currentPolygon);
 }
 
 //*****************************************************************************
@@ -258,22 +262,25 @@ private final void renderLine(
 		int 	bigRightSX,
 		long 	bigRightSZ,
 
-		int 	y,
 		NitrogenContext context,
+		int Y,
 		final int[] contextPixels,
 		final int[] contextZBuffer,
 		final int contextWidth
 		)
 {
-	if(y != context.pickY)return;
-	int lineStart 	= bigLeftSX >> SHIFT;
-	int lineFinish 	= bigRightSX >> SHIFT;
-			
 	int contextPickX = context.pickX;
-	if(lineStart > contextPickX)return;
+	int contextPickY = context.pickY;
+	
+	if( Y != contextPickY)return;
+	
+	int lineStart 	= bigLeftSX >> SHIFT;
+	int lineFinish 	= bigRightSX >> SHIFT;	
+			
+	if(lineStart  > contextPickX)return;
 	if(lineFinish < contextPickX)return;
 			
-//	System.out.println("rendering line " + lineStart + "->" + lineFinish);
+	System.out.println("rendering line " + lineStart + "->" + lineFinish);
 	
 	int lineLength = lineFinish - lineStart;
 	
@@ -287,22 +294,22 @@ private final void renderLine(
 	{
 		zDelta = 0;
 	}
+	
 	while(lineLength >= 0)
 	{
 		// ***************** RENDER PIXEL ****************
-		if(lineStart == context.pickX)
+		int pixelZ = (int)(bigLeftSZ >> ZSHIFT);
+		int index = indexOffset + lineStart;
+		if(lineStart == contextPickX)
 		{
-			int pixelZ = (int)(bigLeftSZ >> SHIFT);
-			int index = indexOffset + lineStart;
-			
+			System.out.println("FOUND PICKING PIXEL");
 			if(pixelZ > contextZBuffer[index])
 			{
 				contextZBuffer[index] = pixelZ;
 				context.pickedPolygon = context.currentPolygon;
 				context.pickedItem = context.currentItem;
 				context.pickDetected = true;
-				System.out.println("Pick Hit Polygon =" + context.currentPolygon);
-				System.out.println("Pick Hit Z = " + pixelZ);
+				System.out.println("PICKED PIXEL");
 			}
 		}
 		

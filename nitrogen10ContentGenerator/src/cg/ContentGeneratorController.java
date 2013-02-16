@@ -948,6 +948,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		cgnc.isPicking = true;
 		cgnc.pickedPolygon = -1;
 		RendererTriplet.setPickingRenderer( new Renderer_Picking());
+		cgnc.clearZBuffer();
 		cg.rootTransform.render(cgnc);
 		boolean pickDetected = cgnc.pickDetected;
 		int pickedPolygon = cgnc.pickedPolygon; 
@@ -955,7 +956,8 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		// return state
 		RendererTriplet.setPickingRenderer(originalPickingRenderer);
 		cgnc.isPicking = originalIsPicking;
-//		cg.rootTransform.render(cgnc);
+		cgnc.clearZBuffer();
+		cg.rootTransform.render(cgnc);
 		
 		if(pickDetected)
 		{

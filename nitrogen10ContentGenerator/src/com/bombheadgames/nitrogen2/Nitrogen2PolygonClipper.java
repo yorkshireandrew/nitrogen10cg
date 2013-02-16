@@ -3,7 +3,7 @@ package com.bombheadgames.nitrogen2;
 /** responsible for clipping polygon using floating point math */
 public class Nitrogen2PolygonClipper {
 	
-	final static int NUMBER_OF_WORKING_VERTEXES = 10;
+	final static int NUMBER_OF_WORKING_VERTEXES = 64;
 	final static Vertex[] workingVertexes;
 	static int workingVertexIndex;
 	

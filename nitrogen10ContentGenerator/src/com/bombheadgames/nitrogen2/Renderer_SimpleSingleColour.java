@@ -17,6 +17,7 @@ private static final long serialVersionUID = -7435141406825586043L;
 
 private static final int ALPHA = 0xFF000000;
 private static final int SHIFT = 20;
+private static final int ZSHIFT = 20;
 private static final int NUM = 1 << SHIFT;
 
 public void render(
@@ -51,11 +52,11 @@ public void render(
 	int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
 	int 	leftSY			= leftN2V.intSY;
 	int 	leftSZ			= leftN2V.intSZ;
-	long 	bigLeftSZ		= ((long)leftSZ) << SHIFT;
+	long 	bigLeftSZ		= ((long)leftSZ) << ZSHIFT;
 
-	int 	leftDestSX 	= leftDestN2V.intSX;
-	int 	leftDestSY 	= leftDestN2V.intSY;
-	long 	leftDestSZ	= leftDestN2V.intSZ;
+	int 	leftDestSX 		= leftDestN2V.intSX;
+	int 	leftDestSY 		= leftDestN2V.intSY;
+	long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
 		
 	int 	leftDeltaSX; 
 	int 	leftDeltaSY;
@@ -68,7 +69,7 @@ public void render(
 			int rec 	= NUM / leftDeltaSY;
 			leftDeltaSX = (leftDestSX - leftSX)	* rec;
 			leftDeltaSY = (leftDestSY - leftSY);	// down counter
-			leftDeltaSZ = (leftDestSZ - leftSZ)	* rec;		
+			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
 	}
 	else
 	{
@@ -86,7 +87,7 @@ public void render(
 
 	int 	rightDestSX 	= rightDestN2V.intSX;
 	int 	rightDestSY 	= rightDestN2V.intSY;
-	long 	rightDestSZ		= rightDestN2V.intSZ;
+	long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
 		
 	int 	rightDeltaSX; 
 	int 	rightDeltaSY;
@@ -99,7 +100,7 @@ public void render(
 			int rec 	= NUM / rightDeltaSY;
 			rightDeltaSX = (rightDestSX - rightSX)	* rec;
 			rightDeltaSY = (rightDestSY - rightSY);	// down counter
-			rightDeltaSZ = (rightDestSZ - rightSZ)	* rec;		
+			rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
 	}
 	else
 	{
@@ -176,7 +177,9 @@ public void render(
 				{
 						int rec 	= NUM / leftDeltaSY;
 						leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-						leftDeltaSZ = (leftDestN2V.intSZ - leftSZ)	* rec;		
+						leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+						leftDeltaSZ -= bigLeftSZ;
+						leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
 				}
 				else
 				{
@@ -223,7 +226,11 @@ public void render(
 				{
 						int rec 	= NUM / rightDeltaSY;
 						rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;		
+						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
+						
+						rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+						rightDeltaSZ -= bigRightSZ;
+						rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
 				}
 				else
 				{
@@ -294,7 +301,7 @@ private final void renderLine(
 	while(lineLength >= 0)
 	{
 		// ***************** RENDER PIXEL ****************
-		int pixelZ = (int)(bigLeftSZ >> SHIFT);
+		int pixelZ = (int)(bigLeftSZ >> ZSHIFT);
 		int index = indexOffset + lineStart;
 		
 		if(pixelZ > contextZBuffer[index])
