@@ -1,15 +1,11 @@
 package com.bombheadgames.nitrogen2;
 
-public class Renderer_Picking implements Renderer{
-
-private static final long serialVersionUID = -7435141406825586043L;
-
-private static final int ALPHA = 0xFF000000;
+public final class Renderer_PickingOld implements Renderer{
+	
 private static final int SHIFT = 20;
 private static final int NUM = 1 << SHIFT;
 
 public void render(
-		
 		final NitrogenContext context,	
 		
 		Nitrogen2Vertex leftN2V,
@@ -23,11 +19,6 @@ public void render(
 		final float lightingValue	
 		)
 {
-	
-	// **************** initialise colour ********************************************
-	System.out.println("render called");
-	int colour = -1; // white
-	if(polyData != null)colour = polyData[0] | ALPHA;
 	
 	// **************** initialise nitrogen context references ***********************
 	final int[] contextPixels = context.pix;
@@ -99,20 +90,18 @@ public void render(
 	
 	boolean trucking = true;
 	
-	int escape = 1000;
-	while(trucking && (escape > 0))
+	while(trucking)
 	{
-		escape--;
 		// ************ Render a line *******
 		renderLine(
 				bigLeftSX, 
 				bigLeftSZ, 
-				leftSY * contextWidth, 
+				leftSY * contextWidth,
+				leftSY,
 				
 				bigRightSX,
 				bigRightSZ,
 				
-				leftSY,
 				context,
 				contextPixels,
 				contextZBuffer,
@@ -135,7 +124,6 @@ public void render(
 		// *********** handle if we reach left destination ******************
 		if(leftDeltaSY <= 0)
 		{
-			System.out.println("handling leftDeltaSY <= 0");
 			leftN2V 		= leftDestN2V;
 			
 			// now update left to eliminate rounding errors
@@ -145,13 +133,11 @@ public void render(
 			leftSZ			= leftN2V.intSZ;
 			bigLeftSZ		= ((long)leftSZ) << SHIFT;
 			
-			System.out.println("completed leftDestN2V is " + leftDestN2V);
 			// find a new destination
 			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 			
 			if(leftDestN2V == null)
 			{
-				System.out.println("handling (leftDestN2V == null)");
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
 				leftDeltaSZ = 0;
@@ -159,14 +145,14 @@ public void render(
 			}
 			else
 			{
-				System.out.println("new leftDest is" + leftDestN2V);
-				leftDeltaSY = leftDestN2V.intSY - leftSY;
-				System.out.println("new leftDeltaSY = " + leftDeltaSY );
+				leftDeltaSY = leftDestSY - leftSY;
+				
 				if(leftDeltaSY > 0)
 				{
 						int rec 	= NUM / leftDeltaSY;
-						leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-						leftDeltaSZ = (leftDestN2V.intSZ - leftSZ)	* rec;		
+						leftDeltaSX = (leftDestSX - leftSX)	* rec;
+						leftDeltaSY = (leftDestSY - leftSY);	// down counter
+						leftDeltaSZ = (leftDestSZ - leftSZ)	* rec;		
 				}
 				else
 				{
@@ -181,7 +167,6 @@ public void render(
 		// *********** handle if we reach right destination ******************
 		if(rightDeltaSY <= 0)
 		{
-			System.out.println("handling rightDeltaSY <= 0");
 			rightN2V 		= rightDestN2V;
 			
 			// now update right to eliminate rounding errors
@@ -191,14 +176,11 @@ public void render(
 			rightSZ			= rightN2V.intSZ;
 			bigRightSZ		= ((long)rightSZ) << SHIFT;
 			
-			System.out.println("completed rightDestN2V is " + rightDestN2V);
-			
 			// find a new destination
 			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 			
 			if(rightDestN2V == null)
 			{
-				System.out.println("handling (rightDestN2V == null)");
 				rightDeltaSX = 0;
 				rightDeltaSY = 0;
 				rightDeltaSZ = 0;
@@ -206,14 +188,14 @@ public void render(
 			}
 			else
 			{
-				System.out.println("new rightDest is" + rightDestN2V);
-				rightDeltaSY = rightDestN2V.intSY - rightSY;
-				System.out.println("new rightDeltaSY = " + rightDeltaSY );
+				rightDeltaSY = rightDestSY - rightSY;
+				
 				if(rightDeltaSY > 0)
 				{
 						int rec 	= NUM / rightDeltaSY;
-						rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;		
+						rightDeltaSX = (rightDestSX - rightSX)	* rec;
+						rightDeltaSY = (rightDestSY - rightSY);	// down counter
+						rightDeltaSZ = (rightDestSZ - rightSZ)	* rec;		
 				}
 				else
 				{
@@ -227,16 +209,15 @@ public void render(
 	}//end of while loop
 	
 	// ************ Render final line *******
-	System.out.println("render final line");
 	renderLine(
 			bigLeftSX, 
 			bigLeftSZ, 
-			leftSY * contextWidth, 
+			leftSY * contextWidth,
+			leftSY,
 			
 			bigRightSX,
 			bigRightSZ,
 			
-			leftSY,
 			context,
 			contextPixels,
 			contextZBuffer,
@@ -254,26 +235,26 @@ private final void renderLine(
 		int 	bigLeftSX, 
 		long 	bigLeftSZ, 
 		int 	indexOffset,
+		int		y,
 		
 		int 	bigRightSX,
 		long 	bigRightSZ,
 
-		int 	y,
 		NitrogenContext context,
 		final int[] contextPixels,
 		final int[] contextZBuffer,
 		final int contextWidth
 		)
 {
-	if(y != context.pickY)return;
-	int lineStart 	= bigLeftSX >> SHIFT;
-	int lineFinish 	= bigRightSX >> SHIFT;
-			
 	int contextPickX = context.pickX;
+	
+	if(y != context.pickY)return;
+	
+	int lineStart 	= bigLeftSX >> SHIFT;
+	int lineFinish 	= bigRightSX >> SHIFT;	
+	
 	if(lineStart > contextPickX)return;
 	if(lineFinish < contextPickX)return;
-			
-	System.out.println("rendering line " + lineStart + "->" + lineFinish);
 	
 	int lineLength = lineFinish - lineStart;
 	
@@ -287,22 +268,21 @@ private final void renderLine(
 	{
 		zDelta = 0;
 	}
+	
 	while(lineLength >= 0)
 	{
-		// ***************** RENDER PIXEL ****************
-		if(lineStart == context.pickX)
+		// ***************** TEST PIXEL ****************
+		int pixelZ = (int)(bigLeftSZ >> SHIFT);
+		int index = indexOffset + lineStart;
+		
+		if(lineStart == contextPickX)
 		{
-			int pixelZ = (int)(bigLeftSZ >> SHIFT);
-			int index = indexOffset + lineStart;
-			
 			if(pixelZ > contextZBuffer[index])
 			{
 				contextZBuffer[index] = pixelZ;
 				context.pickedPolygon = context.currentPolygon;
 				context.pickedItem = context.currentItem;
 				context.pickDetected = true;
-				System.out.println("Pick Hit Polygon =" + context.currentPolygon);
-				System.out.println("Pick Hit Z = " + pixelZ);
 			}
 		}
 		
@@ -312,13 +292,7 @@ private final void renderLine(
 		lineLength--;	
 	}
 }
-
-//*****************************************************************************
-//*****************************************************************************
-//*****************************************************************************
-//*****************************************************************************
-
-public boolean isTextured(){return false;}
-
+	
+	public boolean isTextured(){return false;}
 
 }
