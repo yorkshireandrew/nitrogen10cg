@@ -267,14 +267,14 @@ public void render(
 //*****************************************************************************
 
 private final void renderLine(
-		int 	bigLeftSX, 
+		final int 	bigLeftSX, 
 		long 	bigLeftSZ, 
-		int 	indexOffset,
+		final int 	indexOffset,
 		
-		int 	bigRightSX,
-		long 	bigRightSZ,
+		final int 	bigRightSX,
+		final long 	bigRightSZ,
 
-		int 	colour,
+		final int 	colour,
 		final int[] contextPixels,
 		final int[] contextZBuffer,
 		final int contextWidth

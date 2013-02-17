@@ -8,6 +8,7 @@ private static final int ALPHA = 0xFF000000;
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;
 private static final int NUM = 1 << SHIFT;
+private static final int TEXTURE_SHIFT = 20; // align with Nitrogen2Vertex
 
 public void render(
 		
@@ -26,14 +27,21 @@ public void render(
 {
 	
 	// **************** initialise colour ********************************************
-	System.out.println("render called");
-	int colour = -1; // white
-	if(polyData != null)colour = polyData[0] | ALPHA;
+	System.out.println("Affine render called");
 	
 	// **************** initialise nitrogen context references ***********************
 	final int[] contextPixels = context.pix;
 	final int[] contextZBuffer = context.zbuff;
 	final int contextWidth = context.w;
+	final int[] tex;
+	final int textureWidth;
+	
+	if(textureMap !=  null)
+	{
+		tex = textureMap.tex;
+		textureWidth = textureMap.w;
+	}
+	else{return;}
 	
 	
 	// **************** Initialise Left start position and calculate delta ***********
@@ -42,14 +50,23 @@ public void render(
 	int 	leftSY			= leftN2V.intSY;
 	int 	leftSZ			= leftN2V.intSZ;
 	long 	bigLeftSZ		= ((long)leftSZ) << ZSHIFT;
+	
+	int		leftTX			= leftN2V.intTX;
+	int		leftTY			= leftN2V.intTY;
 
 	int 	leftDestSX 		= leftDestN2V.intSX;
 	int 	leftDestSY 		= leftDestN2V.intSY;
 	long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
-		
+
+	int		leftDestTX		= leftDestN2V.intTX;
+	int		leftDestTY		= leftDestN2V.intTY;
+	
 	int 	leftDeltaSX; 
 	int 	leftDeltaSY;
 	long 	leftDeltaSZ;
+	
+	int		leftDeltaTX;
+	int 	leftDeltaTY;
 	
 	leftDeltaSY = leftDestSY - leftSY;
 	
@@ -58,13 +75,19 @@ public void render(
 			int rec 	= NUM / leftDeltaSY;
 			leftDeltaSX = (leftDestSX - leftSX)	* rec;
 			leftDeltaSY = (leftDestSY - leftSY);	// down counter
-			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
+			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;
+			
+			leftDeltaTX = (leftDestTX - leftTX) / leftDeltaSY;
+			leftDeltaTY = (leftDestTY - leftTY) / leftDeltaSY;
 	}
 	else
 	{
 			leftDeltaSX = 0;
 			leftDeltaSY = 0;
 			leftDeltaSZ = 0;
+			
+			leftDeltaTX = 0;
+			leftDeltaTY = 0;		
 	}
 	
 	// **************** Initialise Right start position and calculate delta ***********
@@ -73,14 +96,23 @@ public void render(
 	int 	rightSY			= rightN2V.intSY;
 	int 	rightSZ			= rightN2V.intSZ;
 	long 	bigRightSZ		= ((long)rightSZ) << SHIFT;
+	
+	int		rightTX			= rightN2V.intTX;
+	int		rightTY			= rightN2V.intTY;
 
 	int 	rightDestSX 	= rightDestN2V.intSX;
 	int 	rightDestSY 	= rightDestN2V.intSY;
 	long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
-		
+
+	int		rightDestTX			= rightDestN2V.intTX;
+	int		rightDestTY			= rightDestN2V.intTY;
+	
 	int 	rightDeltaSX; 
 	int 	rightDeltaSY;
 	long 	rightDeltaSZ;
+	
+	int 	rightDeltaTX; 
+	int 	rightDeltaTY;
 	
 	rightDeltaSY = rightDestSY - rightSY;
 	
@@ -90,12 +122,18 @@ public void render(
 			rightDeltaSX = (rightDestSX - rightSX)	* rec;
 			rightDeltaSY = (rightDestSY - rightSY);	// down counter
 			rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
+
+			rightDeltaTX = (rightDestTX - rightTX) / rightDeltaSY;
+			rightDeltaTY = (rightDestTY - rightTY) / rightDeltaSY;
 	}
 	else
 	{
 			rightDeltaSX = 0;
 			rightDeltaSY = 0;
 			rightDeltaSZ = 0;
+			
+			rightDeltaTX = 0;
+			rightDeltaTY = 0;
 	}
 	
 	boolean trucking = true;
@@ -113,7 +151,15 @@ public void render(
 				bigRightSX,
 				bigRightSZ,
 				
-				colour,
+				tex,
+				textureWidth,
+				
+				leftTX,
+				leftTY,
+				
+				rightTX,
+				rightTY,
+				
 				contextPixels,
 				contextZBuffer,
 				contextWidth	
@@ -123,10 +169,14 @@ public void render(
 		bigLeftSX += leftDeltaSX;
 		leftSY++;
 		bigLeftSZ += leftDeltaSZ;
+		leftTX += leftDeltaTX;
+		leftTY += leftDeltaTY;
 				
 		bigRightSX += rightDeltaSX;
 		// rightSY++;
 		bigRightSZ += rightDeltaSZ;
+		rightTX += rightDeltaTX;
+		rightTY += rightDeltaTY;
 		
 		// *********** decrement steps to destination down counters ****
 		leftDeltaSY--;
@@ -145,6 +195,9 @@ public void render(
 			leftSZ			= leftN2V.intSZ;
 			bigLeftSZ		= ((long)leftSZ) << SHIFT;
 			
+			leftTX			= leftN2V.intTX;
+			leftTY			= leftN2V.intTY;
+					
 			System.out.println("completed leftDestN2V is " + leftDestN2V);
 			// find a new destination
 			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
@@ -155,6 +208,10 @@ public void render(
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
 				leftDeltaSZ = 0;
+				
+				leftDeltaTX = 0;
+				leftDeltaTY = 0;				
+				
 				trucking = false;
 			}
 			else
@@ -169,12 +226,19 @@ public void render(
 						leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
 						leftDeltaSZ -= bigLeftSZ;
 						leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
+						
+						leftDeltaTX = (leftDestN2V.intTX - leftTX) / leftDeltaSY;
+						leftDeltaTY = (leftDestN2V.intTY - leftTY) / leftDeltaSY;
 				}
 				else
 				{
 						leftDeltaSX = 0;
 						leftDeltaSY = 0;
 						leftDeltaSZ = 0;
+						
+						leftDeltaTX = 0;
+						leftDeltaTY = 0;
+						
 						trucking = false;
 				}
 			}		
@@ -193,6 +257,9 @@ public void render(
 			rightSZ			= rightN2V.intSZ;
 			bigRightSZ		= ((long)rightSZ) << SHIFT;
 			
+			rightTX			= rightN2V.intTX;
+			rightTY			= rightN2V.intTY;
+			
 			System.out.println("completed rightDestN2V is " + rightDestN2V);
 			
 			// find a new destination
@@ -204,6 +271,10 @@ public void render(
 				rightDeltaSX = 0;
 				rightDeltaSY = 0;
 				rightDeltaSZ = 0;
+				
+				rightDeltaTX = 0;
+				rightDeltaTY = 0;
+				
 				trucking = false;
 			}
 			else
@@ -220,12 +291,20 @@ public void render(
 						rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
 						rightDeltaSZ -= bigRightSZ;
 						rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
+						
+						rightDeltaTX = (rightDestN2V.intTX - rightTX) / rightDeltaSY;
+						rightDeltaTY = (rightDestN2V.intTY - rightTY) / rightDeltaSY;
 				}
 				else
 				{
 						rightDeltaSX = 0;
 						rightDeltaSY = 0;
 						rightDeltaSZ = 0;
+						
+						rightDeltaTX = 0;
+						rightDeltaTY = 0;
+
+						
 						trucking = false;
 				}
 			}		
@@ -242,7 +321,15 @@ public void render(
 			bigRightSX,
 			bigRightSZ,
 			
-			colour,
+			tex,
+			textureWidth,
+			
+			leftTX,
+			leftTY,
+			
+			rightTX,
+			rightTY,
+			
 			contextPixels,
 			contextZBuffer,
 			contextWidth		
@@ -256,36 +343,53 @@ public void render(
 //*****************************************************************************
 
 private final void renderLine(
-		int 	bigLeftSX, 
+		final int 	bigLeftSX, 
 		long 	bigLeftSZ, 
-		int 	indexOffset,
+		final int 	indexOffset,
 		
-		int 	bigRightSX,
-		long 	bigRightSZ,
+		final int 	bigRightSX,
+		final long 	bigRightSZ,
 
-		int 	colour,
+		final int[] tex,
+		final int textureWidth,
+		
+		int leftTX,
+		int leftTY,
+		
+		final int rightTX,
+		final int rightTY,
+		
 		final int[] contextPixels,
 		final int[] contextZBuffer,
 		final int contextWidth
 		)
 {
 	int lineStart 	= bigLeftSX >> SHIFT;
-	int lineFinish 	= bigRightSX >> SHIFT;	
+	int lineFinish 	= bigRightSX >> SHIFT;
+	
 			
 	System.out.println("rendering line " + lineStart + "->" + lineFinish);
 	
 	int lineLength = lineFinish - lineStart;
 	
-	// calculate zDelta
+	// calculate zDelta and texture delta
 	long zDelta;
+	int txDelta;
+	int tyDelta;
 	if(lineLength > 0)
 	{
 		zDelta = (bigRightSZ - bigLeftSZ) / lineLength;
+		txDelta = (rightTX - leftTX) / lineLength;
+		tyDelta = (rightTY - leftTY) / lineLength;
 	}
 	else
 	{
 		zDelta = 0;
+		txDelta = 0;
+		tyDelta = 0;
 	}
+	
+	
 	
 	while(lineLength >= 0)
 	{
@@ -296,11 +400,14 @@ private final void renderLine(
 		if(pixelZ > contextZBuffer[index])
 		{
 			contextZBuffer[index] = pixelZ;
-			contextPixels[index] = colour;
+			contextPixels[index] = tex[(leftTY >> TEXTURE_SHIFT) * textureWidth + (leftTX >> TEXTURE_SHIFT)];
 		}
 		
 		// ***********************************************
 		bigLeftSZ += zDelta;
+		leftTX += txDelta;
+		leftTY += tyDelta;
+		
 		lineStart++;
 		lineLength--;	
 	}
