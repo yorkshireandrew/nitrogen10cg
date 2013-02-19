@@ -4,7 +4,6 @@ public class Renderer_AffineTexture implements Renderer{
 
 private static final long serialVersionUID = -7435141406825586043L;
 
-private static final int ALPHA = 0xFF000000;
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;
 private static final int NUM = 1 << SHIFT;

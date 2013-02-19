@@ -3,6 +3,8 @@ package cg;
 import com.bombheadgames.nitrogen2.RendererHelper;
 import com.bombheadgames.nitrogen2.RendererTriplet;
 import com.bombheadgames.nitrogen2.Renderer_AffineTexture;
+import com.bombheadgames.nitrogen2.Renderer_Dirty2;
+import com.bombheadgames.nitrogen2.Renderer_DirtyTexture;
 import com.bombheadgames.nitrogen2.Renderer_Outline;
 import com.bombheadgames.nitrogen2.Renderer_SimpleSingleColour;
 
@@ -29,8 +31,8 @@ public class LoadRendererClasses {
         RendererTriplet affineTextureTriplet = new RendererTriplet(aff);
         
  //       // RendererTriplet using just the outline renderer 
- //       Renderer_DirtyTextureRenderer dirtyTextureRenderer = new Renderer_DirtyTextureRenderer();           
- //       RendererTriplet dirtyTextureRendererTriplet = new RendererTriplet(dirtyTextureRenderer);
+        Renderer_Dirty2 dirtyTextureRenderer = new Renderer_Dirty2();           
+        RendererTriplet dirtyTextureRendererTriplet = new RendererTriplet(dirtyTextureRenderer);
 
         try
         {
@@ -38,7 +40,7 @@ public class LoadRendererClasses {
         	RendererHelper.addRendererTriplet("singleSingleColour",simpleSingleColourTriplet);
         	RendererHelper.addRendererTriplet("outline",outlineTriplet);
         	RendererHelper.addRendererTriplet("affineTexture",affineTextureTriplet);
-//        	RendererHelper.addRendererTriplet("dirtyTexture",dirtyTextureRendererTriplet);
+        	RendererHelper.addRendererTriplet("dirtyTexture",dirtyTextureRendererTriplet);
         }
         catch(Exception e)
         {

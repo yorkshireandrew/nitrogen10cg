@@ -19,7 +19,7 @@ public class Nitrogen2PolygonRenderer {
 		{
 			if (	useHLP 
 					&& renderer.allowsHLP()
-					&& Nitrogen2TexturedRenderer.isHLP(start, context.qualityOfHLP))
+					/*&& Nitrogen2TexturedRenderer.isHLP(start, context.qualityOfHLP)*/)
 			{
 				Nitrogen2TexturedHLPRenderer.process
 				(

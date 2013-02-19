@@ -9,14 +9,7 @@ final public class Nitrogen2Vertex {
 	float vsX;
 	float vsY;
 	float vsZ;
-	
-    /** view-space x coordinate. Positive is right-ward */
-    transient int intVSX;
-    /** views-pace y coordinate. Positive is up-ward. */
-    transient int intVSY;
-    /** view-space z coordinate. Increasing negativity is moving away from the view-point. */
-    transient int intVSZ;
-    
+	  
 	/** screen x coordinate */
     transient int intSX;
     /** screen y coordinate */
@@ -38,10 +31,6 @@ final public class Nitrogen2Vertex {
 		vsX = vertex.vs_x;
 		vsY = vertex.vs_y;
 		vsZ = vertex.vs_z;		
-		
-		intVSX = (int)(vertex.vs_x * VIEWSPACE_XY_MULTIPLIER);
-		intVSY = (int)(vertex.vs_y * VIEWSPACE_XY_MULTIPLIER);
-		intVSZ = (int)(vertex.vs_z * VIEWSPACE_Z_MULTIPLIER);
 		
 		// used to find topmost N2V and by findXXXXDestN2V methods
 		intSX 		= vertex.sx;

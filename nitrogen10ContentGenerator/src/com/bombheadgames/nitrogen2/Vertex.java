@@ -185,7 +185,7 @@ public final class Vertex implements Serializable{
     		if(context.contentGeneratorForcesNoPerspective)
     		{
         		sz = Integer.MIN_VALUE - (int)(context.zk/vs_z);   		 		
-        		sx = (int)(vs_x) + context.midw;
+        		sx = context.midw + (int)(vs_x);
         		sy = context.midh - (int)(vs_y);
         		screenCoordinatesNeedUpdate = false;   	
         		return;
@@ -194,8 +194,8 @@ public final class Vertex implements Serializable{
     		// close to view-point is more positive
     		// vs_z gets more -ve as you move away from view-point
     		sz = Integer.MIN_VALUE - (int)(context.zk/vs_z);   		 		
-    		sx = (int)((m * vs_x)/(-vs_z)) + context.midw;
-    		sy = context.midh - (int)((m * vs_y)/(-vs_z));
+    		sx = context.midw - (int)((m * vs_x)/vs_z);
+    		sy = context.midh + (int)((m * vs_y)/vs_z);
     		screenCoordinatesNeedUpdate = false;		
     }
     
@@ -277,3 +277,5 @@ public final class Vertex implements Serializable{
 
 
 }
+
+
