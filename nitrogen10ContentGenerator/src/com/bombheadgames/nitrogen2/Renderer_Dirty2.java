@@ -10,6 +10,7 @@ public class Renderer_Dirty2 implements Renderer{
 		private static final int NUM = 1 << SHIFT;
 		private static final int TEXTURE_SHIFT = 20; // align with Nitrogen2Vertex
 
+		private static final int QUAKE_STEP = 16;
 		public void renderHLP(
 				
 				final NitrogenContext context,	
@@ -82,6 +83,10 @@ public class Renderer_Dirty2 implements Renderer{
 			float	leftDelta_TX	= (float)(leftDestTX - leftStartTX);
 			float	leftDelta_TY	= (float)(leftDestTY - leftStartTY);
 			
+			float 	leftDeltaVSX = leftDestVSX - leftVSX;
+			float 	leftDeltaVSY = leftDestVSY - leftVSY;
+			float 	leftDeltaVSZ = leftDestVSZ - leftVSZ;
+			
 			int 	leftDeltaSX; 
 			int 	leftDeltaSY;
 			long 	leftDeltaSZ;
@@ -135,6 +140,10 @@ public class Renderer_Dirty2 implements Renderer{
 			int 	rightDeltaSY;
 			long 	rightDeltaSZ;
 			
+			float 	rightDeltaVSX = rightDestVSX - rightVSX;
+			float 	rightDeltaVSY = rightDestVSY - rightVSY;
+			float 	rightDeltaVSZ = rightDestVSZ - rightVSZ;
+			
 			rightDeltaSY = rightDestSY - rightSY;
 			
 			if(rightDeltaSY > 0)
@@ -154,6 +163,10 @@ public class Renderer_Dirty2 implements Renderer{
 			// ***********************
 			int leftTX, leftTY;
 			int rightTX, rightTY;
+			
+			float lineStartVSX, lineStartVSY, lineStartVSZ;
+			float lineFinishVSX, lineFinishVSY, lineFinishVSZ;
+			
 			
 			boolean trucking = true;
 			
@@ -175,6 +188,11 @@ public class Renderer_Dirty2 implements Renderer{
 				
 				leftTX = (int)(leftDelta_TX * alpha) + leftStartTX;
 				leftTY = (int)(leftDelta_TY * alpha) + leftStartTY;
+				
+				// calculate view space of line start
+				lineStartVSX = leftDeltaVSX * alpha + leftVSX;
+				lineStartVSY = leftDeltaVSY * alpha + leftVSY;
+				lineStartVSZ = leftDeltaVSZ * alpha + leftVSZ;
 
 				// ************* Calculate right texture point
 				float alpha2 = calculateAlphaUsingY(
@@ -188,6 +206,12 @@ public class Renderer_Dirty2 implements Renderer{
 				
 				rightTX = (int)(rightDelta_TX * alpha2) + rightStartTX;
 				rightTY = (int)(rightDelta_TY * alpha2) + rightStartTY;
+				
+				// calculate view space of line finish
+				lineFinishVSX = rightDeltaVSX * alpha2 + rightVSX;
+				lineFinishVSY = rightDeltaVSY * alpha2 + rightVSY;
+				lineFinishVSZ = rightDeltaVSZ * alpha2 + rightVSZ;
+				
 				// ************ Render a line *******
 				System.out.println("...........................");
 				System.out.println("" + leftSY + "(" + (bigLeftSX >> SHIFT) + "->" + (bigRightSX >> SHIFT) + ")");
@@ -217,6 +241,20 @@ public class Renderer_Dirty2 implements Renderer{
 						
 						rightTX,
 						rightTY,
+						
+						// stuff for texture mapping
+						lineStartVSX,
+						lineStartVSY,
+						lineStartVSZ,
+						
+						lineFinishVSX,
+						lineFinishVSY,
+						lineFinishVSZ,
+						
+						invContextMag,
+						contextMidW,
+						contentGeneratorForcesNoPerspective,					
+						// -------------------------
 						
 						contextPixels,
 						contextZBuffer,
@@ -291,6 +329,10 @@ public class Renderer_Dirty2 implements Renderer{
 								
 								leftDelta_TX = (leftDestTX - leftStartTX);
 								leftDelta_TY = (leftDestTY - leftStartTY);
+								
+								leftDeltaVSX = leftDestVSX - leftVSX;
+								leftDeltaVSY = leftDestVSY - leftVSY;
+								leftDeltaVSZ = leftDestVSZ - leftVSZ;
 						}
 						else
 						{
@@ -300,6 +342,10 @@ public class Renderer_Dirty2 implements Renderer{
 								
 								leftDelta_TX = 0;
 								leftDelta_TY = 0;
+								
+								leftDeltaVSX = 0;
+								leftDeltaVSY = 0;
+								leftDeltaVSZ = 0;
 								
 								trucking = false;
 						}
@@ -369,6 +415,10 @@ public class Renderer_Dirty2 implements Renderer{
 								rightDelta_TX = (rightDestTX - rightStartTX);
 								rightDelta_TY = (rightDestTY - rightStartTY);
 								
+								rightDeltaVSX = rightDestVSX - rightVSX;
+								rightDeltaVSY = rightDestVSY - rightVSY;
+								rightDeltaVSZ = rightDestVSZ - rightVSZ;
+								
 						}
 						else
 						{
@@ -378,7 +428,10 @@ public class Renderer_Dirty2 implements Renderer{
 								
 								rightDelta_TX = 0;
 								rightDelta_TY = 0;
-
+								
+								rightDeltaVSX = 0;
+								rightDeltaVSY = 0;
+								rightDeltaVSZ = 0;
 								
 								trucking = false;
 						}
@@ -411,6 +464,20 @@ public class Renderer_Dirty2 implements Renderer{
 					rightTX,
 					rightTY,
 					
+					// stuff for texture mapping
+					leftVSX,
+					leftVSY,
+					leftVSZ,
+					
+					rightVSX,
+					rightVSY,
+					rightVSZ,
+					
+					invContextMag,
+					contextMidW,
+					contentGeneratorForcesNoPerspective,					
+					// -------------------------
+					
 					contextPixels,
 					contextZBuffer,
 					contextWidth		
@@ -425,20 +492,33 @@ public class Renderer_Dirty2 implements Renderer{
 
 		private final void renderLine(
 				final int 	bigLeftSX, 
-				long 	bigLeftSZ, 
+				long 		bigLeftSZ, 
 				final int 	indexOffset,
 				
 				final int 	bigRightSX,
 				final long 	bigRightSZ,
 
 				final int[] tex,
-				final int textureWidth,
+				final int 	textureWidth,
 				
-				int leftTX,
-				int leftTY,
+				int 		leftTX,
+				int 		leftTY,
 				
-				final int rightTX,
-				final int rightTY,
+				final int 	rightTX,
+				final int 	rightTY,
+				
+				// stuff for texture mapping
+				final float lineStartVSX,
+				final float lineStartVSY,
+				final float lineStartVSZ,
+				
+				final float lineFinishVSX,
+				final float lineFinishVSY,
+				final float lineFinishVSZ,
+				
+				final float invContextMag,
+				final int contextMidW,
+				final boolean contentGeneratorForcesNoPerspective,
 				
 				final int[] contextPixels,
 				final int[] contextZBuffer,
@@ -453,27 +533,37 @@ public class Renderer_Dirty2 implements Renderer{
 			
 			int lineLength = lineFinish - lineStart;
 			
-			// calculate zDelta and texture delta
+			// calculate zDelta
 			long zDelta;
-			int txDelta;
-			int tyDelta;
 			if(lineLength > 0)
 			{
 				zDelta = (bigRightSZ - bigLeftSZ) / lineLength;
-				txDelta = (rightTX - leftTX) / lineLength;
-				tyDelta = (rightTY - leftTY) / lineLength;
 			}
 			else
 			{
 				zDelta = 0;
-				txDelta = 0;
-				tyDelta = 0;
 			}
 			
-			
-			
+			float quakeStartVSX = lineStartVSX;
+			float quakeStartVSY = lineStartVSY;
+			float quakeStartVSZ = lineStartVSZ;
+				
 			while(lineLength >= 0)
 			{
+				int quakeStep;
+				if(lineLength >= QUAKE_STEP)
+				{
+					quakeStep = QUAKE_STEP;
+				}
+				else
+				{
+					quakeStep = lineLength;
+				}
+				
+				// calculate start of quakestep
+				float alpha = 
+				
+				
 				// ***************** RENDER PIXEL ****************
 				int pixelZ = (int)(bigLeftSZ >> ZSHIFT);
 				int index = indexOffset + lineStart;
@@ -497,6 +587,10 @@ public class Renderer_Dirty2 implements Renderer{
 		
 		// ***********************************************************
 		// ***********************************************************
+		//                      calculateAlphaUsingY
+		// ***********************************************************
+		// ***********************************************************
+		
 		final private float calculateAlphaUsingY(
 				final float startVSX,
 				final float startVSY, 
@@ -526,6 +620,49 @@ public class Renderer_Dirty2 implements Renderer{
 			if(denom == 0) return (0);
 			
 			final float numerator = yDivZ * startVSZ2 - startVSY;
+			
+			float retval = numerator / denom;
+			
+			if(retval > 1)return(1f);
+			if(retval < 0)return(0f);
+			return retval;	
+		}
+		
+		// ***********************************************************
+		// ***********************************************************
+		//                      calculateAlphaUsingX
+		// ***********************************************************
+		// ***********************************************************
+		
+		final private float calculateAlphaUsingX(
+				final float startVSX,
+				final float startVSY, 
+				final float startVSZ,
+				
+				final float destVSX, 
+				final float destVSY, 
+				final float destVSZ,
+				
+				int SX,
+				
+				final float invContextMag,
+				final int contextMidW,
+				final boolean contentGeneratorForcesNoPerspective
+				)
+		{
+			final float 	startVSZ2 = -startVSZ;
+			final float 	destVSZ2 = -destVSZ;
+			
+			final float 	deltaX = destVSX - startVSX;
+			final float 	deltaZ = destVSZ2 - startVSZ2;
+			
+			final float xDivZ = invContextMag *((float)(SX - contextMidW));
+			
+			final float denom = deltaX - xDivZ * deltaZ;
+			
+			if(denom == 0) return (0);
+			
+			final float numerator = xDivZ * startVSZ2 - startVSX;
 			
 			float retval = numerator / denom;
 			
