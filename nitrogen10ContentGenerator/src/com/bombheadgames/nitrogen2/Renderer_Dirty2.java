@@ -501,8 +501,8 @@ public class Renderer_Dirty2 implements Renderer{
 				final int[] tex,
 				final int 	textureWidth,
 				
-				int 		leftTX,
-				int 		leftTY,
+				final int 	leftTX,
+				final int 	leftTY,
 				
 				final int 	rightTX,
 				final int 	rightTY,
@@ -527,7 +527,9 @@ public class Renderer_Dirty2 implements Renderer{
 		{
 			int lineStart 	= bigLeftSX >> SHIFT;
 			int lineFinish 	= bigRightSX >> SHIFT;
-			
+					
+			float deltaTX = rightTX - leftTX;
+			float deltaTY = rightTY - leftTY;		
 					
 			System.out.println("rendering line " + lineStart + "->" + lineFinish);
 			
@@ -543,44 +545,107 @@ public class Renderer_Dirty2 implements Renderer{
 			{
 				zDelta = 0;
 			}
-			
-			float quakeStartVSX = lineStartVSX;
-			float quakeStartVSY = lineStartVSY;
-			float quakeStartVSZ = lineStartVSZ;
-				
-			while(lineLength >= 0)
+	
+		    while(lineLength >= 0)
 			{
 				int quakeStep;
+				int quakeEnd; // one above where to stop
 				if(lineLength >= QUAKE_STEP)
 				{
 					quakeStep = QUAKE_STEP;
+					quakeEnd = lineStart + quakeStep;
 				}
 				else
 				{
 					quakeStep = lineLength;
+					quakeEnd = lineStart + quakeStep + 1;
 				}
 				
-				// calculate start of quakestep
-				float alpha = 
+				// calculate start of quake step
+				float alpha = calculateAlphaUsingX(
+								lineStartVSX,
+								lineStartVSY, 
+								lineStartVSZ,
+								
+								lineFinishVSX, 
+								lineFinishVSY, 
+								lineFinishVSZ,
+								
+								lineStart,
+								
+								invContextMag,
+								contextMidW,
+								contentGeneratorForcesNoPerspective
+								);
 				
+				int quakeStartTX = (int)(alpha * deltaTX) + leftTX;
+				int quakeStartTY = (int)(alpha * deltaTY) + leftTY;
 				
-				// ***************** RENDER PIXEL ****************
-				int pixelZ = (int)(bigLeftSZ >> ZSHIFT);
-				int index = indexOffset + lineStart;
+				// calculate finish of quake step
+				float alpha2 = calculateAlphaUsingX(
+								lineStartVSX,
+								lineStartVSY, 
+								lineStartVSZ,
+								
+								lineFinishVSX, 
+								lineFinishVSY, 
+								lineFinishVSZ,
+								
+								(lineStart + quakeStep),
+								
+								invContextMag,
+								contextMidW,
+								contentGeneratorForcesNoPerspective
+								);
 				
-				if(pixelZ > contextZBuffer[index])
+				int quakeFinishTX = (int)(alpha2 * deltaTX) + leftTX;
+				int quakeFinishTY = (int)(alpha2 * deltaTY) + leftTY;
+				int quakeDeltaTX;
+				int quakeDeltaTY;
+				
+				if(quakeStep > 0)
 				{
-					contextZBuffer[index] = pixelZ;
-					contextPixels[index] = tex[(leftTY >> TEXTURE_SHIFT) * textureWidth + (leftTX >> TEXTURE_SHIFT)];
+					quakeDeltaTX = (quakeFinishTX - quakeStartTX) / quakeStep;
+					quakeDeltaTY = (quakeFinishTY - quakeStartTY) / quakeStep;
+				}
+				else
+				{
+					quakeDeltaTX = 0;
+					quakeDeltaTY = 0;
 				}
 				
-				// ***********************************************
-				bigLeftSZ += zDelta;
-				leftTX += txDelta;
-				leftTY += tyDelta;
+				int quakeX = lineStart;
+				int quakeDownCount = quakeStep;
+				while(quakeDownCount >= 0)
+				{
+					
+					// ***************** RENDER PIXEL ****************
+					int pixelZ = (int)(bigLeftSZ >> ZSHIFT);
+					int index = indexOffset + quakeX;
+					
+					if(pixelZ > contextZBuffer[index])
+					{
+						contextZBuffer[index] = pixelZ;
+						contextPixels[index] = tex[(quakeStartTY >> TEXTURE_SHIFT) * textureWidth + (quakeStartTX >> TEXTURE_SHIFT)];
+					}
+					
+					// ***********************************************
+					bigLeftSZ += zDelta;
+					quakeX++;
+					quakeDownCount--;
+					quakeStartTX += quakeDeltaTX;
+					quakeStartTY += quakeDeltaTY;		
+				}
+				lineStart += quakeStep;
 				
-				lineStart++;
-				lineLength--;	
+				if(quakeStep > 0)
+				{
+					lineLength -= quakeStep;
+				}
+				else
+				{
+					lineLength--;
+				}
 			}
 		}
 		
@@ -607,6 +672,25 @@ public class Renderer_Dirty2 implements Renderer{
 				final boolean contentGeneratorForcesNoPerspective
 				)
 		{
+			if(contentGeneratorForcesNoPerspective)
+			{
+				return (calculateAlphaUsingYNoPerspective(
+						startVSX,
+						startVSY, 
+						startVSZ,
+						
+						destVSX, 
+						destVSY, 
+						destVSZ,
+						
+						SY,
+						
+						invContextMag,
+						contextMidH
+						) );
+			}
+			
+			
 			final float 	startVSZ2 = -startVSZ;
 			final float 	destVSZ2 = -destVSZ;
 			
@@ -650,6 +734,23 @@ public class Renderer_Dirty2 implements Renderer{
 				final boolean contentGeneratorForcesNoPerspective
 				)
 		{
+			if(contentGeneratorForcesNoPerspective)
+			{
+				return (calculateAlphaUsingXNoPerspective(
+						startVSX,
+						startVSY, 
+						startVSZ,
+						
+						destVSX, 
+						destVSY, 
+						destVSZ,
+						
+						SX,
+						
+						invContextMag,
+						contextMidW
+						) );
+			}
 			final float 	startVSZ2 = -startVSZ;
 			final float 	destVSZ2 = -destVSZ;
 			
@@ -675,7 +776,69 @@ public class Renderer_Dirty2 implements Renderer{
 		//*****************************************************************************
 		//*****************************************************************************
 		//*****************************************************************************
+		final private float calculateAlphaUsingXNoPerspective(
+				final float startVSX,
+				final float startVSY, 
+				final float startVSZ,
+				
+				final float destVSX, 
+				final float destVSY, 
+				final float destVSZ,
+				
+				int SX,
+				
+				final float invContextMag,
+				final int contextMidW
+				){
+			
+			float deltaVSX = destVSX - startVSX;
+			
+			if(deltaVSX <= 0)return(0);
+			
+			float vsx = SX - contextMidW;
+			
+			float retval = (vsx - startVSX)/deltaVSX;
+			
+			if(retval < 0) retval = 0;
+			if(retval > 1) retval = 1;
+			return retval;		
+		}
+		
+		final private float calculateAlphaUsingYNoPerspective(
+				final float startVSX,
+				final float startVSY, 
+				final float startVSZ,
+				
+				final float destVSX, 
+				final float destVSY, 
+				final float destVSZ,
+				
+				int SY,
+				
+				final float invContextMag,
+				final int contextMidH
+				){
+			
+			float deltaVSY = destVSY - startVSY;
+			
+			if(deltaVSY == 0)return(0);
+			
+			float vsy = contextMidH - SY;
+			
+			float retval = (vsy - startVSY)/deltaVSY;
+			
+			if(retval < 0) retval = 0;
+			if(retval > 1) retval = 1;
+			return retval;		
+		}
+		
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
+//*****************************************************************************
 
+		
+		
 		public void render(
 				final NitrogenContext context,	
 				
