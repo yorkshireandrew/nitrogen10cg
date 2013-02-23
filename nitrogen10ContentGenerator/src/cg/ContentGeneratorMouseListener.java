@@ -26,7 +26,9 @@ class ContentGeneratorMouseListener extends MouseInputAdapter
 			int rawX = e.getX();
 			int rawY = e.getY();
 			
-			if(cg.viewType == ContentGenerator.ORTHOGONAL_PROJECTION)
+			if(
+					(cg.viewType == ContentGenerator.ORTHOGONAL_PROJECTION)
+					||(cg.viewType == ContentGenerator.PERSPECTIVE))
 			{
 				if(rawY < ContentGenerator.CONSTRAINED_BORDER_WIDTH)
 				{

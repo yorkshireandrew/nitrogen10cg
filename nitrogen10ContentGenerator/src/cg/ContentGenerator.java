@@ -613,6 +613,7 @@ public class ContentGenerator extends JFrame{
 			}
 
 			showWorkingVertex();
+			showCursor(nc,cursor_x,cursor_y);
 			nc.repaint();
 		}
 		
