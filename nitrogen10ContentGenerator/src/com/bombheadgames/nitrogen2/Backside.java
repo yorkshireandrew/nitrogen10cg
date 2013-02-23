@@ -119,10 +119,17 @@ public class Backside implements Serializable{
     	/** returns true if the backside is facing the viewer. If the backside might have moved then call the backsides calculate method beforehand. */
     	final public boolean facingViewer(){return value;}
     	
+    	/** An initial basic lighting calculation */
     	float calculateLighting(NitrogenContext context)
     	{
-    		// ** TO DO **
-    		return 0;
+    		float lightingDown = NitrogenContext.lightingDown * 	-ny;
+    		float lightingRight = NitrogenContext.lightingRight * 	nx;
+       		if (lightingDown < 0)lightingDown = 0;
+       		if (lightingRight < 0)lightingRight = 0;
+       		float retval = lightingDown + lightingRight + NitrogenContext.lightingAmbient;
+       		if(retval < 0)retval = 0;
+       		if(retval >1) retval = 1;
+       		return retval;     	    		
     	}
     	
         final private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException

@@ -1,6 +1,6 @@
 package com.bombheadgames.nitrogen2;
 
-public class Renderer_Dirty2 implements Renderer{
+public class Renderer_Quake implements Renderer{
 
 		private static Renderer_AffineTexture r = new Renderer_AffineTexture();
 		private static final long serialVersionUID = -7435141406825586043L;

@@ -30,6 +30,11 @@ public class NitrogenContext extends JPanel implements Serializable{
 	
 	static final int SHIFT = 20;	// shift used when rendering textures
 	
+	/** Stuff added for basic lighting effect */
+	public static float lightingDown = 0.5f;
+	public static float lightingRight = 0.5f;
+	public static float lightingAmbient = 0.25f;
+	
 	/** multiplier used in perspective magnifying the image so that the xclip value equals the right of button */
 	final float magnification;
 	

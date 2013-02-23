@@ -3,7 +3,7 @@ package cg;
 import com.bombheadgames.nitrogen2.RendererHelper;
 import com.bombheadgames.nitrogen2.RendererTriplet;
 import com.bombheadgames.nitrogen2.Renderer_AffineTexture;
-import com.bombheadgames.nitrogen2.Renderer_Dirty2;
+import com.bombheadgames.nitrogen2.Renderer_Quake;
 import com.bombheadgames.nitrogen2.Renderer_DirtyTexture;
 import com.bombheadgames.nitrogen2.Renderer_Outline;
 import com.bombheadgames.nitrogen2.Renderer_SimpleSingleColour;
@@ -31,7 +31,7 @@ public class LoadRendererClasses {
         RendererTriplet affineTextureTriplet = new RendererTriplet(aff);
         
  //       // RendererTriplet using just the outline renderer 
-        Renderer_Dirty2 dirtyTextureRenderer = new Renderer_Dirty2();           
+        Renderer_Quake dirtyTextureRenderer = new Renderer_Quake();           
         RendererTriplet dirtyTextureRendererTriplet = new RendererTriplet(dirtyTextureRenderer);
 
         try
