@@ -182,7 +182,7 @@ public class Nitrogen2PolygonClipper {
 	{
 		Vertex toTest = start;
 		do{
-			if(toTest.vs_z >= nearClip) return toTest;
+			if(toTest.vs_z > nearClip) return toTest;
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
@@ -194,7 +194,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex toTest = start;
 		Vertex anticlockwise = toTest.anticlockwise;
 		do{
-			if(anticlockwise.vs_z < nearClip) return toTest;
+			if(anticlockwise.vs_z <= nearClip) return toTest;
 			toTest = anticlockwise;
 			anticlockwise = toTest.anticlockwise;
 		}while(toTest != endPoint);	
@@ -207,7 +207,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex toTest = start;
 		Vertex clockwise = toTest.clockwise;
 		do{
-			if(clockwise.vs_z < nearClip) return toTest;
+			if(clockwise.vs_z <= nearClip) return toTest;
 			toTest = clockwise;
 			clockwise = toTest.clockwise;
 		}while(toTest != endPoint);	
@@ -282,7 +282,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex toTest = start;
 		do{
 			// test returning true if clipped
-			if(toTest.vs_x >= (-toTest.vs_z * xClip)) 
+			if(toTest.vs_x > (-toTest.vs_z * xClip)) 
 				{
 				System.out.println("returned = " + toTest);
 				return toTest;
@@ -301,7 +301,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex anticlockwise = toTest.anticlockwise;
 		do{
 			// test returning true if NOT clipped
-			if(anticlockwise.vs_x < (-anticlockwise.vs_z * xClip)) 
+			if(anticlockwise.vs_x <= (-anticlockwise.vs_z * xClip)) 
 				{
 				System.out.println("returned " + toTest);	
 				return toTest;
@@ -321,7 +321,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex clockwise = toTest.clockwise;
 		do{
 			// test returning true if NOT clipped
-			if(clockwise.vs_x < (-clockwise.vs_z * xClip)) 
+			if(clockwise.vs_x <= (-clockwise.vs_z * xClip)) 
 				{
 				System.out.println("returned " + toTest);	
 				return toTest;
@@ -392,7 +392,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex toTest = start;
 		do{
 			// test returning true if clipped
-			if(-toTest.vs_x >= (-toTest.vs_z * xClip)) return toTest;
+			if(-toTest.vs_x > (-toTest.vs_z * xClip)) return toTest;
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
@@ -405,7 +405,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex anticlockwise = toTest.anticlockwise;
 		do{
 			// test returning true if NOT clipped
-			if(-anticlockwise.vs_x < (-anticlockwise.vs_z * xClip)) return toTest;
+			if(-anticlockwise.vs_x <= (-anticlockwise.vs_z * xClip)) return toTest;
 			toTest = anticlockwise;
 			anticlockwise = toTest.anticlockwise;
 		}while(toTest != endPoint);	
@@ -419,7 +419,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex clockwise = toTest.clockwise;
 		do{
 			// test returning true if NOT clipped
-			if(-clockwise.vs_x < (-clockwise.vs_z * xClip)) return toTest;
+			if(-clockwise.vs_x <= (-clockwise.vs_z * xClip)) return toTest;
 			toTest = clockwise;
 			clockwise = toTest.clockwise;
 		}while(toTest != endPoint);	
@@ -504,7 +504,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex toTest = start;
 		do{
 			// test returning true if clipped
-			if(toTest.vs_y >= (-toTest.vs_z * yClip)) 
+			if(toTest.vs_y > (-toTest.vs_z * yClip)) 
 				{
 				System.out.println("returned = " + toTest);
 				return toTest;
@@ -524,7 +524,7 @@ public class Nitrogen2PolygonClipper {
 		do{
 			// test returning true if NOT clipped
 			System.out.println("testing " + anticlockwise);
-			if(anticlockwise.vs_y < (-anticlockwise.vs_z * yClip)) 
+			if(anticlockwise.vs_y <= (-anticlockwise.vs_z * yClip)) 
 				{
 				System.out.println("returned " + toTest);	
 				return toTest;
@@ -545,7 +545,7 @@ public class Nitrogen2PolygonClipper {
 		do{
 			// test returning true if NOT clipped
 			System.out.println("testing " + clockwise);
-			if(clockwise.vs_y < (-clockwise.vs_z * yClip)) 
+			if(clockwise.vs_y <= (-clockwise.vs_z * yClip)) 
 				{
 				System.out.println("returned " + toTest);	
 				return toTest;
@@ -616,7 +616,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex toTest = start;
 		do{
 			// test returning true if clipped
-			if(-toTest.vs_y >= (-toTest.vs_z * yClip)) return toTest;
+			if(-toTest.vs_y > (-toTest.vs_z * yClip)) return toTest;
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
@@ -629,7 +629,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex anticlockwise = toTest.anticlockwise;
 		do{
 			// test returning true if NOT clipped
-			if(-anticlockwise.vs_y < (-anticlockwise.vs_z * yClip)) return toTest;
+			if(-anticlockwise.vs_y <= (-anticlockwise.vs_z * yClip)) return toTest;
 			toTest = anticlockwise;
 			anticlockwise = toTest.anticlockwise;
 		}while(toTest != endPoint);	
@@ -643,7 +643,7 @@ public class Nitrogen2PolygonClipper {
 		Vertex clockwise = toTest.clockwise;
 		do{
 			// test returning true if NOT clipped
-			if(-clockwise.vs_y < (-clockwise.vs_z * yClip)) return toTest;
+			if(-clockwise.vs_y <= (-clockwise.vs_z * yClip)) return toTest;
 			toTest = clockwise;
 			clockwise = toTest.clockwise;
 		}while(toTest != endPoint);	
