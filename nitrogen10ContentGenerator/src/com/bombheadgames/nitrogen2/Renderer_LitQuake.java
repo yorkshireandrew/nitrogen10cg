@@ -1,10 +1,8 @@
 package com.bombheadgames.nitrogen2;
 
 public class Renderer_LitQuake implements Renderer{
-
-		private static Renderer_AffineTexture r = new Renderer_AffineTexture();
-		private static final long serialVersionUID = -7435141406825586043L;
-
+	private static final long serialVersionUID = -7435141406825586043L;
+		private static Renderer_LitAffineTexture r = new Renderer_LitAffineTexture();
 		private static final int SHIFT = 20;
 		private static final int ZSHIFT = 20;
 		private static final int NUM = 1 << SHIFT;
@@ -853,7 +851,7 @@ public class Renderer_LitQuake implements Renderer{
 		{
 			// convert to RGB
 			int red = (colour 	& 0xFF0000) >> 16;
-			int green = (colour & 0x00FF00) >> 16;
+			int green = (colour & 0x00FF00) >> 8;
 			int blue = (colour & 0x0000FF);
 			
 			// calculate lit RGB

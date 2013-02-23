@@ -120,9 +120,9 @@ public class Backside implements Serializable{
     	final public boolean facingViewer(){return value;}
     	
     	/** An initial basic lighting calculation */
-    	float calculateLighting(NitrogenContext context)
+    	final float calculateLighting(NitrogenContext context)
     	{
-    		float lightingDown = NitrogenContext.lightingDown * 	-ny;
+    		float lightingDown = NitrogenContext.lightingDown * 	ny;
     		float lightingRight = NitrogenContext.lightingRight * 	nx;
        		if (lightingDown < 0)lightingDown = 0;
        		if (lightingRight < 0)lightingRight = 0;

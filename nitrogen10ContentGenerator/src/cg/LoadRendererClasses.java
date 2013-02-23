@@ -3,6 +3,7 @@ package cg;
 import com.bombheadgames.nitrogen2.RendererHelper;
 import com.bombheadgames.nitrogen2.RendererTriplet;
 import com.bombheadgames.nitrogen2.Renderer_AffineTexture;
+import com.bombheadgames.nitrogen2.Renderer_LitAffineTexture;
 import com.bombheadgames.nitrogen2.Renderer_LitQuake;
 import com.bombheadgames.nitrogen2.Renderer_LitSimpleSingleColour;
 import com.bombheadgames.nitrogen2.Renderer_Quake;
@@ -35,6 +36,12 @@ public class LoadRendererClasses {
         // RendererTriplet for affine texture
         Renderer_AffineTexture aff = new Renderer_AffineTexture();           
         RendererTriplet affineTextureTriplet = new RendererTriplet(aff);
+
+        // RendererTriplet for litaffine texture
+        Renderer_LitAffineTexture litAFF = new Renderer_LitAffineTexture();           
+        RendererTriplet litAffineTextureTriplet = new RendererTriplet(litAFF);
+
+        
         
         // quake renderer
         Renderer_Quake quakeTextureRenderer = new Renderer_Quake();           
@@ -50,6 +57,7 @@ public class LoadRendererClasses {
         	RendererHelper.addRendererTriplet("litSimpleSingleColour",litSimpleSingleColourTriplet);
         	RendererHelper.addRendererTriplet("outline",outlineTriplet);
         	RendererHelper.addRendererTriplet("affineTexture",affineTextureTriplet);
+        	RendererHelper.addRendererTriplet("litAffineTexture",litAffineTextureTriplet);
         	RendererHelper.addRendererTriplet("quakeTexture",quakeTextureRendererTriplet);
         	RendererHelper.addRendererTriplet("litQuakeTexture",litQuakeTextureRendererTriplet);
         }
