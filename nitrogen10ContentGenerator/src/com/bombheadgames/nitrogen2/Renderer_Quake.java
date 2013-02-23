@@ -616,11 +616,12 @@ public class Renderer_Quake implements Renderer{
 				
 				int quakeX = lineStart;
 				int quakeDownCount = quakeStep;
+				long quakeLeftSZ = bigLeftSZ;
 				while(quakeDownCount >= 0)
 				{
 					
 					// ***************** RENDER PIXEL ****************
-					int pixelZ = (int)(bigLeftSZ >> ZSHIFT);
+					int pixelZ = (int)(quakeLeftSZ >> ZSHIFT);
 					int index = indexOffset + quakeX;
 					
 					if(pixelZ > contextZBuffer[index])
@@ -630,13 +631,14 @@ public class Renderer_Quake implements Renderer{
 					}
 					
 					// ***********************************************
-					bigLeftSZ += zDelta;
+					quakeLeftSZ += zDelta;
 					quakeX++;
 					quakeDownCount--;
 					quakeStartTX += quakeDeltaTX;
 					quakeStartTY += quakeDeltaTY;		
 				}
 				lineStart += quakeStep;
+				bigLeftSZ += (zDelta * quakeStep);
 				
 				if(quakeStep > 0)
 				{
