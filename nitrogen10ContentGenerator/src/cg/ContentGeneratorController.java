@@ -814,6 +814,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		ContentGeneratorTextureMap texMap = cg.contentGeneratorSISI.textureMapMap.get(name);
 		if(texMap == null)return;
 		
+		
 		// create texture only if it fits on the screen
 		int h = cg.nc.h;
 		int w = cg.nc.w;
@@ -988,6 +989,15 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		}
 		cg.contentGeneratorSISI = cg.undoStack.pop();
 		
+		try {
+			cg.contentGeneratorSISI.setUpTransientFields(cg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		cg.cgc.updateGeneratedItemAndEditArea();
 		cg.workingVertexModel.pickedVertex = null;
 		cg.workingVertexView.updateFromModel();

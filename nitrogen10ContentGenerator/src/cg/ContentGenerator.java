@@ -532,6 +532,7 @@ public class ContentGenerator extends JFrame{
     edit.add(item = new JMenuItem("Template..."));
     item.addActionListener(new TemplateMenuItemAction(this));
     edit.add(item = new JMenuItem("Circle..."));
+    item.addActionListener(new CircleMenuItemAction(this));
     edit.add(item = new JMenuItem("Collision Vertexes..."));
     item.addActionListener(new CollisionVertexesMenuItemAction(this)); 
     edit.add(item = new JMenuItem("Near and Far Polygons..."));

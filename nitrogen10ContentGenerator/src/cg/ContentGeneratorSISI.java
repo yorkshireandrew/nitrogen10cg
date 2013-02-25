@@ -47,7 +47,6 @@ public class ContentGeneratorSISI implements Serializable{
     
     /** contains named textureMap used for ImmutablePolygon generation */
     Map<String,ContentGeneratorTextureMap> textureMapMap;
-    Map<String,String> textureMapFullPathMap;
     
     /** maps for backsideName */
     Map<String, ImmutableBackside> immutableBacksideMap;
@@ -96,9 +95,7 @@ public class ContentGeneratorSISI implements Serializable{
     	polygonDataMap.put("green", new int[]{65280});
     	polygonDataMap.put("red", new int[]{16711680});
     	
-    	textureMapMap 				= new HashMap<String,ContentGeneratorTextureMap>();
-        textureMapMap.put("null", null);
-        textureMapFullPathMap 		= new HashMap<String,String>();
+    	textureMapMap 	= new LinkedHashMap<String,ContentGeneratorTextureMap>();
         textureMapMap.put("null", null);
         immutableBacksideMap 		= new HashMap<String,ImmutableBackside>(); 
   
@@ -312,21 +309,17 @@ public class ContentGeneratorSISI implements Serializable{
     final void removeUnusedTextureMaps()
     {
     	Set<Entry<String,ContentGeneratorTextureMap>> set = textureMapMap.entrySet();
-    	Set<Entry<String,String>> fullPathSet = textureMapFullPathMap.entrySet();
     	
     	Iterator<Entry<String,ContentGeneratorTextureMap>> it = set.iterator();
-    	Iterator<Entry<String,String>> rootPathIt = fullPathSet.iterator();
     	
     	while(it.hasNext())
     	{
     		Entry<String,ContentGeneratorTextureMap> element = it.next();
-    		rootPathIt.next();
     		
     		String name = (String)element.getKey();
     		if(!isTextureMapUsed(name))
     		{
     			it.remove();
-    			rootPathIt.remove();
     		}
     	}
     }
