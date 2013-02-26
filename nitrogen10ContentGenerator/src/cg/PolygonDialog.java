@@ -166,7 +166,8 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		cg.contentGeneratorSISI.contentGeneratorPolygonMap.put(name, newPolygon);
 		
 		// remember the model for next time the dialog gets opened
-		cg.polygonDialogModel = newPolygon;
+		// using a copy so it we alter cg.polygonDialogModel the actual content doesn't get trashed
+		cg.polygonDialogModel = new ContentGeneratorPolygon(newPolygon);
 		cg.workingPolygon = name;
 		
 		// move polygon finish points

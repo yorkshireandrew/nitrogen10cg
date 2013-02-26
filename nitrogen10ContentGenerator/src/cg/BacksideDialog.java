@@ -131,7 +131,11 @@ public class BacksideDialog extends JDialog implements ActionListener{
 		}
 		
 		// for improved work flow set backside in polygon dialog model
-		cg.polygonDialogModel.backside_name = name;
+		
+		if(cg.polygonDialogModel != null)
+		{
+				cg.polygonDialogModel.backside_name = name;
+		}
 		
 		/** remember lighting checkbox setting for next time */
 		cg.calculateLighting = calculateLightingCheckBox.isSelected();
