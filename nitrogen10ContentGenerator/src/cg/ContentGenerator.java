@@ -26,6 +26,7 @@ public class ContentGenerator extends JFrame{
 	static final int CONSTRAINED_BORDER_COLOUR = 0xFFFF0000;
 	static final int CURSOR = 50;	// colour change caused by cursor
 
+	static final int POLYGON_VERTEX_NUMBER = 6;
 	// view direction enumeration
 	int viewDirection;
 	static final int FRONT 	= 0;
@@ -142,7 +143,7 @@ public class ContentGenerator extends JFrame{
 	TemplateModel[] templateModels = new TemplateModel[6];
 	
 	/** the polygon vertex UI */
-	PolygonVertexView[] 	polygonVertexViews = new PolygonVertexView[4] ;
+	PolygonVertexView[] 	polygonVertexViews = new PolygonVertexView[POLYGON_VERTEX_NUMBER] ;
 
 	WorkingVertexView 		workingVertexView;
 	WorkingVertexModel 		workingVertexModel;
@@ -490,7 +491,7 @@ public class ContentGenerator extends JFrame{
 		Box outerouterbox = new Box(BoxLayout.X_AXIS);
 		Box outerBox = new Box(BoxLayout.Y_AXIS);
 		
-		for(int i = 0 ; i < 4; i++)
+		for(int i = 0 ; i < POLYGON_VERTEX_NUMBER; i++)
 		{		
 			polygonVertexViews[i] = new PolygonVertexView(this);	
 			polygonVertexViews[i].createPolygonGUI(outerBox);
