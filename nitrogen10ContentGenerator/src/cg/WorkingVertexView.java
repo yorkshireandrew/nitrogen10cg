@@ -85,7 +85,7 @@ public class WorkingVertexView {
 		distTextField.setText("0");
 		distTextField.setEnabled(false);
 		distTextField.setMaximumSize(new Dimension(40,20));
-		
+				
 		setRefButton = new FixedSizeButton("/res/setRefButton.PNG");
 		setRefButton.setAction(workingVertexController);
 		setRefButton.setIcon("/res/setRefButton.PNG");

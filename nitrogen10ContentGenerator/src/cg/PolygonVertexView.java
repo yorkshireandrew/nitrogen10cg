@@ -21,6 +21,8 @@ public class PolygonVertexView {
 	JTextField xTextField;
 	JTextField yTextField;
 	JTextField zTextField;
+	
+	FixedSizeButton snapToClosestVertex;
 	FixedSizeButton addButton;
 	FixedSizeButton moveWorkingToThisButton;
 	
@@ -28,7 +30,7 @@ public class PolygonVertexView {
 	ImmutableVertex pvm;
 	PolygonVertexController polygonVertexController;	
 	
-	PolygonVertexView(ContentGenerator cg)
+	PolygonVertexView(final ContentGenerator cg)
 	{
 		this.cg =cg;
 		polygonVertexController = new PolygonVertexController(cg, this);
@@ -57,6 +59,20 @@ public class PolygonVertexView {
 		zTextField.setAction(polygonVertexController);
 		zTextField.setMaximumSize(new Dimension(40,20));
 		
+		snapToClosestVertex = new FixedSizeButton("/res/pickXYZVertexButton.PNG");
+		snapToClosestVertex.setAction(
+				new AbstractAction(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						cg.cgc.pickXYZVertex();
+						
+					}
+				}
+			);
+		snapToClosestVertex.setIcon("/res/pickXYZVertexButton.PNG");
+
+		
 		addButton = new FixedSizeButton("/res/fullRenderButton.PNG");
 		addButton.setAction(polygonVertexController);
 		addButton.setIcon("/res/addButton.PNG");
@@ -73,6 +89,7 @@ public class PolygonVertexView {
 		outerbox.add(xTextField);
 		outerbox.add(yTextField);
 		outerbox.add(zTextField);
+		outerbox.add(snapToClosestVertex);
 		outerbox.add(addButton);
 		outerbox.add(moveWorkingToThisButton);
 		outerbox.add(Box.createHorizontalGlue());
