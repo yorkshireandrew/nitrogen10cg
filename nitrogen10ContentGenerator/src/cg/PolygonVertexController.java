@@ -129,7 +129,7 @@ class PolygonVertexController extends AbstractAction
 		wvm.y = (int)pvm.is_y;
 		wvm.z = (int)pvm.is_z;
 		wvm.pickedVertex = pvm;
-		wvm.workingVertexController.updateViewFromModel();
+		cg.workingVertexView.workingVertexController.updateViewFromModel();
 //		cg.renderEditArea();
 	}
 	

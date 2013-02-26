@@ -67,6 +67,7 @@ public class BacksideDialog extends JDialog implements ActionListener{
 				});	
 		
 		calculateLightingCheckBox = new JCheckBox("calculate lighting");
+		if(cg.calculateLighting)calculateLightingCheckBox.setSelected(true);
 		
 		Box nameBox = Box.createHorizontalBox();
 		nameBox.add(nameButton);
@@ -128,6 +129,12 @@ public class BacksideDialog extends JDialog implements ActionListener{
 			ImmutableBackside ib2 = ib.flippedImmutableBackside();
 			addImmutableBacksideToSISI(name, ib2);
 		}
+		
+		// for improved work flow set backside in polygon dialog model
+		cg.polygonDialogModel.backside_name = name;
+		
+		/** remember lighting checkbox setting for next time */
+		cg.calculateLighting = calculateLightingCheckBox.isSelected();
 		setVisible(false);
 		dispose();		
 	}

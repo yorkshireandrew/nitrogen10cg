@@ -191,6 +191,9 @@ public class ContentGenerator extends JFrame{
 
 	FixedSizeButton undoButton;
 	
+	/** used to initialise backside dialog */
+	boolean calculateLighting = false;
+	
 	ContentGenerator()
 	{
 
