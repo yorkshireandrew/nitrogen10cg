@@ -165,6 +165,9 @@ public class ContentGenerator extends JFrame{
 	 * treats any opening of PolygonDialog as a new polygon */
 	String workingPolygon;
 	
+	/** used to suppress OK if polygon has been deleted */
+	boolean workingPolygonExists;
+	
 	
 	/** Box in which rightHandControls for orthogonal view type are kept */
 	Box orthogonalViewTypeControls;

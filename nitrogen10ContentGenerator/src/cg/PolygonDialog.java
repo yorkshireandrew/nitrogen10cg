@@ -102,6 +102,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	
 	private void handleOK()
 	{
+		if(cg.workingPolygonExists == false)return;
 		String name = (String)polygonNameTextField.getText();
 		
 		// validate the name
@@ -545,6 +546,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	 */
 	private void generateCompleteContent()
 	{
+		
 		// polygon name is not editable
 		polygonNameButton = null;
 		
