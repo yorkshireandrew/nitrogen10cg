@@ -79,7 +79,7 @@ public class Nitrogen2UntexturedRenderer {
 			Nitrogen2Vertex nextN2V = workingN2VsL[index++];
 			next.calculateScreenSpaceCoordinate(nc);
 			int nextSY = nextN2V.initializeScreenSpaceFromVertex(next);
-			if(nextSY < minSY)
+			if(nextSY <= minSY)
 			{
 				retval = nextN2V;
 				minSY = nextSY;

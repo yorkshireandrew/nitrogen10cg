@@ -40,7 +40,7 @@ public void render(
 {
 	
 	// **************** initialise colour ********************************************
-	System.out.println("render called");
+	System.out.println("lit simple render called");
 	int colour = -1; // white
 	if(polyData != null)colour = polyData[0] | ALPHA;
 	
@@ -55,13 +55,12 @@ public void render(
 	
 	
 	// **************** Initialise Left start position and calculate delta ***********
-	int		leftSX			= leftN2V.intSX;
 	int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
 	int 	leftSY			= leftN2V.intSY;
 	int 	leftSZ			= leftN2V.intSZ;
 	long 	bigLeftSZ		= ((long)leftSZ) << ZSHIFT;
 
-	int 	leftDestSX 		= leftDestN2V.intSX;
+	int 	bigLeftDestSX 	= leftDestN2V.intSX << SHIFT;
 	int 	leftDestSY 		= leftDestN2V.intSY;
 	long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
 		
@@ -73,8 +72,7 @@ public void render(
 	
 	if(leftDeltaSY > 0)
 	{
-			int rec 	= NUM / leftDeltaSY;
-			leftDeltaSX = (leftDestSX - leftSX)	* rec;
+			leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
 			leftDeltaSY = (leftDestSY - leftSY);	// down counter
 			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
 	}
@@ -86,13 +84,12 @@ public void render(
 	}
 	
 	// **************** Initialise Right start position and calculate delta ***********
-	int		rightSX			= rightN2V.intSX;
 	int 	bigRightSX 		= rightN2V.intSX << SHIFT;
 	int 	rightSY			= rightN2V.intSY;
 	int 	rightSZ			= rightN2V.intSZ;
 	long 	bigRightSZ		= ((long)rightSZ) << SHIFT;
 
-	int 	rightDestSX 	= rightDestN2V.intSX;
+	int 	bigRightDestSX 	= rightDestN2V.intSX << SHIFT;
 	int 	rightDestSY 	= rightDestN2V.intSY;
 	long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
 		
@@ -104,8 +101,7 @@ public void render(
 	
 	if(rightDeltaSY > 0)
 	{
-			int rec 	= NUM / rightDeltaSY;
-			rightDeltaSX = (rightDestSX - rightSX)	* rec;
+			rightDeltaSX = (bigRightDestSX - bigRightSX) / rightDeltaSY;
 			rightDeltaSY = (rightDestSY - rightSY);	// down counter
 			rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
 	}
@@ -154,14 +150,9 @@ public void render(
 		if(leftDeltaSY <= 0)
 		{
 			System.out.println("handling leftDeltaSY <= 0");
-			leftN2V 		= leftDestN2V;
-			
-			// now update left to eliminate rounding errors
-			leftSX			= leftN2V.intSX;
-			bigLeftSX 		= leftN2V.intSX << SHIFT;
-			leftSY			= leftN2V.intSY;
-			leftSZ			= leftN2V.intSZ;
-			bigLeftSZ		= ((long)leftSZ) << SHIFT;
+			bigLeftSX		= bigLeftDestSX;
+			leftSY 			= leftDestSY;
+			bigLeftSZ		= bigLeftDestSZ;			
 			
 			System.out.println("completed leftDestN2V is " + leftDestN2V);
 			// find a new destination
@@ -178,18 +169,22 @@ public void render(
 			else
 			{
 				System.out.println("new leftDest is" + leftDestN2V);
-				leftDeltaSY = leftDestN2V.intSY - leftSY;
+				leftDestSY = leftDestN2V.intSY;
+				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+				
+				leftDeltaSY = leftDestSY - leftSY;
 				System.out.println("new leftDeltaSY = " + leftDeltaSY );
+				
 				if(leftDeltaSY > 0)
 				{
-						int rec 	= NUM / leftDeltaSY;
-						leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-						leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-						leftDeltaSZ -= bigLeftSZ;
-						leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
+					leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+					leftDeltaSY = (leftDestSY - leftSY);	// down counter
+					leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;	
 				}
 				else
 				{
+						System.out.println("leftDeltaSY = 0");
 						leftDeltaSX = 0;
 						leftDeltaSY = 0;
 						leftDeltaSZ = 0;
@@ -202,14 +197,10 @@ public void render(
 		if(rightDeltaSY <= 0)
 		{
 			System.out.println("handling rightDeltaSY <= 0");
-			rightN2V 		= rightDestN2V;
-			
-			// now update right to eliminate rounding errors
-			rightSX			= rightN2V.intSX;
-			bigRightSX 		= rightN2V.intSX << SHIFT;
-			rightSY			= rightN2V.intSY;
-			rightSZ			= rightN2V.intSZ;
-			bigRightSZ		= ((long)rightSZ) << SHIFT;
+
+			bigRightSX		= bigRightDestSX;
+			rightSY 		= rightDestSY;
+			bigRightSZ		= bigRightDestSZ;	
 			
 			System.out.println("completed rightDestN2V is " + rightDestN2V);
 			
@@ -227,20 +218,21 @@ public void render(
 			else
 			{
 				System.out.println("new rightDest is" + rightDestN2V);
-				rightDeltaSY = rightDestN2V.intSY - rightSY;
+				rightDestSY = rightDestN2V.intSY;
+				bigRightDestSX = rightDestN2V.intSX << SHIFT;
+				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+				
+				rightDeltaSY = rightDestSY - rightSY;
 				System.out.println("new rightDeltaSY = " + rightDeltaSY );
 				if(rightDeltaSY > 0)
 				{
-						int rec 	= NUM / rightDeltaSY;
-						rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
-						
-						rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-						rightDeltaSZ -= bigRightSZ;
-						rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
+					rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
+					rightDeltaSY = (rightDestSY - rightSY);	// down counter
+					rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;		
 				}
 				else
 				{
+						System.out.println("rightDeltaSY = 0");
 						rightDeltaSX = 0;
 						rightDeltaSY = 0;
 						rightDeltaSZ = 0;
@@ -275,7 +267,7 @@ public void render(
 
 private final void renderLine(
 		final int 	bigLeftSX, 
-		long 	bigLeftSZ, 
+		long 		bigLeftSZ, 
 		final int 	indexOffset,
 		
 		final int 	bigRightSX,

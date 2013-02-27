@@ -537,6 +537,8 @@ public class ContentGenerator extends JFrame{
     JMenuItem item;
     
     //
+    file.add(item = new JMenuItem("New"));
+    item.addActionListener(new NewMenuItemAction(this));
     file.add(item = new JMenuItem("Save..."));
     item.addActionListener(new SaveMenuItemAction(this));
     file.add(item = new JMenuItem("Load..."));
