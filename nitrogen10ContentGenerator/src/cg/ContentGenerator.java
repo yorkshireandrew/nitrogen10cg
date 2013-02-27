@@ -86,6 +86,8 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton pickFrontVertexButton;
 	FixedSizeButton pickBackVertexButton;
 	FixedSizeButton pickXYZVertexButton;
+	FixedSizeIconToggleButton pickVertexSizeButton;	
+	
 	FixedSizeButton pickPolygonButton;
 	
 	/** buttons for selecting view detail */
@@ -428,18 +430,15 @@ public class ContentGenerator extends JFrame{
 		pickXYZVertexButton.addActionListener(cgc);
 		pickXYZVertexButton.setToolTipText("Pick the vertex that is closest in XYZ terms to the cursor");
 		outerBox.add(pickXYZVertexButton);
-			
-		pickPolygonButton = new FixedSizeButton("/res/pickPolygonButton.PNG");
-		pickPolygonButton.addActionListener(cgc);
-		pickPolygonButton.setToolTipText("Pick the polygon under the cursor");
-		outerBox.add(pickPolygonButton);
 		
-		undoButton = new FixedSizeButton("/res/undoButton.PNG");
-		undoButton.addActionListener(cgc);
-		undoButton.setToolTipText("undo");
-		outerBox.add(undoButton);
+		pickVertexSizeButton = new FixedSizeIconToggleButton(this, "/res/smallVertexSizeButton.PNG","/res/largeVertexSizeButton.PNG");
+//		pickVertexSizeButton.addActionListener(cgc);
+		pickVertexSizeButton.setToolTipText("Alters the selection area used for front and back picking");
+		outerBox.add(pickVertexSizeButton);
+		
 		outerBox.add(Box.createHorizontalGlue());
-		container.add(outerBox);	
+		
+		container.add(outerBox);
 	}
 	
 	void createNewItemComponentButtons(Container container)
@@ -452,24 +451,6 @@ public class ContentGenerator extends JFrame{
 		newVertexButton.setToolTipText("Create a new vertex");	
 		outerBox.add(newVertexButton);
 		
-		// move vertex button
-		moveVertexButton = new FixedSizeButton("/res/moveVertexButton.PNG");
-		moveVertexButton.addActionListener(cgc);
-		moveVertexButton.setToolTipText("Move the selected vertex");
-		outerBox.add(moveVertexButton);
-		
-		// new vertex data button
-		newVertexDataButton = new FixedSizeButton("/res/newVertexDataButton.PNG");
-		newVertexDataButton.addActionListener( new VertexDataToolbarAction(this));
-		newVertexDataButton.setToolTipText("Create a new vertex data datablock");
-		outerBox.add(newVertexDataButton);
-		
-		// new polygon data button
-		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
-		newPolygonDataButton.addActionListener( new PolygonDataToolbarAction(this));
-		newPolygonDataButton.setToolTipText("Create a new polygon data datablock");
-		outerBox.add(newPolygonDataButton);
-		
 		// new backside button
 		newBacksideButton = new FixedSizeButton("/res/newBacksideButton.PNG");
 		newBacksideButton.addActionListener(new BacksideToolbarAction(this));
@@ -481,12 +462,43 @@ public class ContentGenerator extends JFrame{
 		newPolygonButton.addActionListener(new PolygonToolbarAction(this));
 		newPolygonButton.setToolTipText("Create a new polygon");
 		outerBox.add(newPolygonButton);
+				
+		// new vertex data button
+		newVertexDataButton = new FixedSizeButton("/res/newVertexDataButton.PNG");
+		newVertexDataButton.addActionListener( new VertexDataToolbarAction(this));
+		newVertexDataButton.setToolTipText("Create a new vertex data datablock");
+		outerBox.add(newVertexDataButton);
+		
+		// new polygon data button
+		newPolygonDataButton = new FixedSizeButton("/res/newPolygonDataButton.PNG");
+		newPolygonDataButton.addActionListener( new PolygonDataToolbarAction(this));
+		newPolygonDataButton.setToolTipText("Create a new polygon data datablock");
+		outerBox.add(newPolygonDataButton);
+	
+		// pick polygon button
+		pickPolygonButton = new FixedSizeButton("/res/pickPolygonButton.PNG");
+		pickPolygonButton.addActionListener(cgc);
+		pickPolygonButton.setToolTipText("Pick the polygon under the cursor");
+		outerBox.add(pickPolygonButton);
+		
+		// move vertex button
+		moveVertexButton = new FixedSizeButton("/res/moveVertexButton.PNG");
+		moveVertexButton.addActionListener(cgc);
+		moveVertexButton.setToolTipText("Move the selected vertex");
+		outerBox.add(moveVertexButton);
 		
 		// new texture map button
 		newTextureMapButton = new FixedSizeButton("/res/newTextureMapButton.PNG");
 		newTextureMapButton.addActionListener(new TextureMapToolbarAction(this));
 		newTextureMapButton.setToolTipText("Create a new texture map reference");
 		outerBox.add(newTextureMapButton);
+		
+		undoButton = new FixedSizeButton("/res/undoButton.PNG");
+		undoButton.addActionListener(cgc);
+		undoButton.setToolTipText("undo");
+		outerBox.add(undoButton);
+		outerBox.add(Box.createHorizontalGlue());
+		container.add(outerBox);	
 		
 		outerBox.add(Box.createHorizontalGlue());
 		container.add(outerBox);	
@@ -554,8 +566,6 @@ public class ContentGenerator extends JFrame{
     my_menu.add(Box.createHorizontalGlue());
     createViewTypeButtons(my_menu);
     my_menu.add(Box.createHorizontalGlue());
-	createPickingButtons(my_menu);
-	my_menu.add(Box.createHorizontalGlue());
 	createNewItemComponentButtons(my_menu);
 	
     
@@ -852,6 +862,7 @@ public class ContentGenerator extends JFrame{
 		rightViewButton.setSelected(false);
 		topViewButton.setSelected(false);
 		bottomViewButton.setSelected(false);
+		pickVertexSizeButton.setSelected(false);
 
 		viewType = ORTHOGONAL_PROJECTION;
 		orthogonalProjectionButton.setSelected(true);
@@ -961,6 +972,8 @@ public class ContentGenerator extends JFrame{
 		orthogonalViewTypeControls = new Box(BoxLayout.Y_AXIS);
 		createViewButtons(orthogonalViewTypeControls);
 		createWorkingVertexGUI(orthogonalViewTypeControls);
+		orthogonalViewTypeControls.add(Box.createVerticalGlue());
+		createPickingButtons(orthogonalViewTypeControls);
 		createNewPolygonVertexGUI(orthogonalViewTypeControls);
 		orthogonalViewTypeControls.add(Box.createVerticalGlue());
 	}

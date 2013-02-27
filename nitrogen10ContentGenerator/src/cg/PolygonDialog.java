@@ -74,6 +74,8 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	JButton 	cancelButton;
 	JButton 	okButton;
 	
+	JButton		copyVertexesButton;
+	
 	boolean		isNewPolygon;
 		
 	PolygonDialog(ContentGenerator cg)
@@ -179,6 +181,9 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		// update the bounding radius
 		updateBoundingRadius();
 		
+		// clear polygon vertexes for next work cycle
+		cg.cgc.clearPolygonVertexes();
+		
 		// update the display
 		cg.cgc.updateGeneratedItemAndEditArea();
 		
@@ -246,6 +251,12 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		{
 			System.out.println("delete polygon pressed");
 			handleDeletePolygonEvent();		
+		}
+		
+		if(e.getSource() == copyVertexesButton)
+		{
+			System.out.println("copy vertexes pressed");
+			handleCopyVertexesEvent();		
 		}
 		
 		if(e.getSource() == textureMapAutoFillButton)
@@ -427,6 +438,32 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		}
 	}
 	
+	void handleCopyVertexesEvent()
+	{
+		String currentNameInCombo = (String)polygonNameTextField.getText();
+		ContentGeneratorSISI cgSISI = cg.contentGeneratorSISI;
+		Map<String,ContentGeneratorPolygon> cgpMap = cgSISI.contentGeneratorPolygonMap;
+		if(cgpMap.containsKey(currentNameInCombo))
+		{
+			
+			ContentGeneratorPolygon cgp = cgpMap.get(currentNameInCombo);
+			ImmutableVertex[] sourceIVS = cgp.vertexes;
+			
+			cg.cgc.clearPolygonVertexes();
+			
+			int len = sourceIVS.length;
+			
+			if(len > cg.polygonVertexViews.length) len = cg.polygonVertexViews.length;
+			
+			for(int x = 0; x < len; x++)
+			{
+				PolygonVertexView pvv = cg.polygonVertexViews[x];
+				pvv.pvm = sourceIVS[x];
+				pvv.updateFromModel();
+			}	
+		}
+	}
+	
 	
 	static void pickPolygon(ContentGenerator cg, int index)
 	{
@@ -599,7 +636,11 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		
 		deletePolygonButton = new JButton("DELETE");
 		deletePolygonButton.addActionListener(this);
-		
+
+		copyVertexesButton = new JButton("COPY VERTEXES");
+		copyVertexesButton.setToolTipText("fills content generator polygon vertexes from this polygon");
+		copyVertexesButton.addActionListener(this);
+
 		// pre-populate if possible
 		ContentGeneratorPolygon previous  = cg.polygonDialogModel;
 		
@@ -724,8 +765,10 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		add(new JLabel(" "));
 		add(new JLabel(" "));
 		
+		// new row
 		add(new JLabel(" "));
 		
+		// delete button
 		if(deletePolygonButton != null)
 		{
 			add(deletePolygonButton);
@@ -734,6 +777,17 @@ public class PolygonDialog extends JDialog implements ActionListener{
 		{
 			add(new JLabel(" "));
 		}
+		
+		// copy vertexes button
+		if(copyVertexesButton != null)
+		{
+			add(copyVertexesButton);
+		}
+		else
+		{
+			add(new JLabel(" "));
+		}
+
 		add(new JLabel(" "));
 		
 		add(buttonBox);

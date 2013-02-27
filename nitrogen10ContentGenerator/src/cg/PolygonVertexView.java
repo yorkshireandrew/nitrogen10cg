@@ -22,7 +22,6 @@ public class PolygonVertexView {
 	JTextField yTextField;
 	JTextField zTextField;
 	
-	FixedSizeButton snapToClosestVertex;
 	FixedSizeButton addButton;
 	FixedSizeButton moveWorkingToThisButton;
 	
@@ -36,43 +35,29 @@ public class PolygonVertexView {
 		polygonVertexController = new PolygonVertexController(cg, this);
 		indexTextField = new JTextField();
 		indexTextField.setColumns(4);
-		indexTextField.setText("none");
+		indexTextField.setText("");
 		indexTextField.setAction(polygonVertexController);
 		indexTextField.setEnabled(false);
 		indexTextField.setMaximumSize(new Dimension(40,20));
 
 		xTextField = new JTextField();
 		xTextField.setColumns(4);
-		xTextField.setText("0");
+		xTextField.setText("");
 		xTextField.setAction(polygonVertexController);
 		xTextField.setMaximumSize(new Dimension(40,20));
 		
 		yTextField = new JTextField();
 		yTextField.setColumns(4);
-		yTextField.setText("0");
+		yTextField.setText("");
 		yTextField.setAction(polygonVertexController);
 		yTextField.setMaximumSize(new Dimension(40,20));
 
 		zTextField = new JTextField();
 		zTextField.setColumns(4);
-		zTextField.setText("0");
+		zTextField.setText("");
 		zTextField.setAction(polygonVertexController);
 		zTextField.setMaximumSize(new Dimension(40,20));
-		
-		snapToClosestVertex = new FixedSizeButton("/res/pickXYZVertexButton.PNG");
-		snapToClosestVertex.setAction(
-				new AbstractAction(){
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cg.cgc.pickXYZVertex();
-						
-					}
-				}
-			);
-		snapToClosestVertex.setIcon("/res/pickXYZVertexButton.PNG");
-
-		
+				
 		addButton = new FixedSizeButton("/res/fullRenderButton.PNG");
 		addButton.setAction(polygonVertexController);
 		addButton.setIcon("/res/addButton.PNG");
@@ -85,12 +70,12 @@ public class PolygonVertexView {
 	void createPolygonGUI(Container container)
 	{
 		Box outerbox = new Box(BoxLayout.X_AXIS);
+		outerbox.add(addButton);
+		outerbox.add(Box.createHorizontalGlue());
 		outerbox.add(indexTextField);
 		outerbox.add(xTextField);
 		outerbox.add(yTextField);
 		outerbox.add(zTextField);
-		outerbox.add(snapToClosestVertex);
-		outerbox.add(addButton);
 		outerbox.add(moveWorkingToThisButton);
 		outerbox.add(Box.createHorizontalGlue());
 		container.add(outerbox);

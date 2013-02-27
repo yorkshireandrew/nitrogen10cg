@@ -1036,7 +1036,7 @@ final public class Item implements Serializable{
 	}
 	
 	/** For ContentGenerator. Finds the vertex with largest sz at approximately the given screen coordinates. Returns null if no suitable vertex is found */
-	public int findNearestVertexAt(int x,int y, float nearplane)
+	public int findNearestVertexAt(int x,int y, float nearplane, int size)
 	{
 		int retval = -1;
 		int nearest_z = Integer.MIN_VALUE;
@@ -1055,10 +1055,10 @@ final public class Item implements Serializable{
 			if(-vertex.vs_z < nearplane)continue;
 			
 			// ignore misses greater than a pixel
-			if(vertex.sx > (x+1))continue;
-			if(vertex.sx < (x-1))continue;
-			if(vertex.sy > (y+1))continue;			
-			if(vertex.sy < (y-1))continue;
+			if(vertex.sx > (x + size))continue;
+			if(vertex.sx < (x - size))continue;
+			if(vertex.sy > (y + size))continue;			
+			if(vertex.sy < (y - size))continue;
 			
 			// remember it if its closest (most +ve z)
 			if(vertex.sz > nearest_z)
@@ -1071,7 +1071,7 @@ final public class Item implements Serializable{
 	}
 	
 	/** For ContentGenerator. Finds the vertex with largest sz at approximately the given screen coordinates. Returns null if no suitable vertex is found */
-	public int findFurthestVertexAt(int x,int y, float nearplane)
+	public int findFurthestVertexAt(int x,int y, float nearplane, int size)
 	{
 		int retval = -1;
 		int furthest_z = Integer.MAX_VALUE;
@@ -1090,10 +1090,10 @@ final public class Item implements Serializable{
 			if(-vertex.vs_z < nearplane)continue;
 			
 			// ignore misses greater than a pixel
-			if(vertex.sx > (x+1))continue;
-			if(vertex.sx < (x-1))continue;
-			if(vertex.sy > (y+1))continue;			
-			if(vertex.sy < (y-1))continue;
+			if(vertex.sx > (x + size))continue;
+			if(vertex.sx < (x - size))continue;
+			if(vertex.sy > (y + size))continue;			
+			if(vertex.sy < (y - size))continue;
 			
 			// remember it if its farthest (most -ve z)
 			if(vertex.sz < furthest_z)

@@ -475,7 +475,9 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		gi.calculateVertexes();
 		gi.renderVertexes(cgL.nc);
 		float nearClip = cgL.nc.nearClip;
-		int i = gi.findNearestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip);
+		int size = 1;
+		if(cg.pickVertexSizeButton.isSelected())size = 3;
+		int i = gi.findNearestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip, size);
 		
 		// return if we did not find a vertex
 		if(i == -1)return;
@@ -506,7 +508,9 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		gi.calculateVertexes();
 		gi.renderVertexes(cgL.nc);
 		float nearClip = cgL.nc.nearClip;
-		int i = gi.findFurthestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip);
+		int size = 1;
+		if(cg.pickVertexSizeButton.isSelected())size = 3;
+		int i = gi.findFurthestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip, size);
 		
 		// return if we did not find a vertex
 		if(i == -1)return;
@@ -1010,6 +1014,17 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		{
 			cg.undoButton.setEnabled(false);
 			return;
+		}
+	}
+	
+	void clearPolygonVertexes()
+	{
+		PolygonVertexView[] pvv = cg.polygonVertexViews;
+		int len  = pvv.length;
+		for(int x = 0; x < len; x++)
+		{
+			pvv[x].pvm = null;
+			pvv[x].updateFromModel();
 		}
 	}
 
