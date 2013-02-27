@@ -104,7 +104,6 @@ public class PolygonDialog extends JDialog implements ActionListener{
 	
 	private void handleOK()
 	{
-		if(cg.workingPolygonExists == false)return;
 		String name = (String)polygonNameTextField.getText();
 		
 		// validate the name
@@ -653,6 +652,7 @@ public class PolygonDialog extends JDialog implements ActionListener{
 			textureMapComboBox.getEditor().setItem(getPolygonTextureMapValue());
 			isTransparentCheckBox.setSelected(getIsTransparentValue());
 		}
+		
 	}
 	
 	/* fills the dialog with content */
@@ -680,6 +680,15 @@ public class PolygonDialog extends JDialog implements ActionListener{
 						PolygonDialog.this.handleOK();
 					}			
 				});	
+		
+		// prevent deleted polygons being oked
+		if(!isNewPolygon)
+		{
+			if(!cg.contentGeneratorSISI.contentGeneratorPolygonMap.containsKey(polygonNameTextField.getText()))
+			{
+				okButton.setEnabled(false);
+			}
+		}
 		
 		Box polygonNameBox = new Box(BoxLayout.X_AXIS);
 		polygonNameBox.add(polygonNameTextField);

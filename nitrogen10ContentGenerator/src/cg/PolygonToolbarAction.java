@@ -15,15 +15,7 @@ class PolygonToolbarAction extends AbstractAction
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		cg.workingPolygonExists = true;
-		if((cg.workingPolygon != null)&&(!cg.contentGeneratorSISI.contentGeneratorPolygonMap.containsKey(cg.workingPolygon)))
-		{
-			// OK the cg.workingPolygon has been removed by undo, so go back to default
-			JOptionPane.showMessageDialog(cg, "Warning the working polygon no longer exists.", "Error",JOptionPane.ERROR_MESSAGE);
-			cg.workingPolygonExists = false;
-		}
-		
+	public void actionPerformed(ActionEvent e) {		
 		PolygonDialog pd = new PolygonDialog(cg);
 		pd.setVisible(true);
 	}	

@@ -19,6 +19,7 @@
 		{
 			cg.contentGeneratorSISI = new ContentGeneratorSISI();
 			cg.cgc.clearPolygonVertexes();
+			cg.polygonDialogModel = null;
 			cg.cgc.updateGeneratedItemAndEditArea();
 		}	
 }
