@@ -145,12 +145,10 @@ public class SharedImmutableSubItem implements Serializable{
 	
 	public SharedImmutableSubItem(final String filename) throws NitrogenCreationException{
 		
-        System.out.println("loading SISI from " + filename);
         Scanner in = null;
         
         try{
             File f = new File(filename);
-            System.out.println(f.getAbsolutePath());
             in = new Scanner(new File(filename));
                 
             /** number of PolygonVertexData entries the file contains */
@@ -193,7 +191,6 @@ public class SharedImmutableSubItem implements Serializable{
     		improvedDetailDistPlus = improvedDetailDist * HYSTERESIS;
     		
         	// load all the PolgonVertexData referenced by the SISI polygons
-    		System.out.println("now reading polgonVertexData");
     		String polygonVertexDataName;
         	polygonVertexDataMax = readInt(in, "unable to find polygonVertexDataMax loading " + filename);    		
         	for(int i = 0; i < polygonVertexDataMax; i++)
@@ -209,7 +206,6 @@ public class SharedImmutableSubItem implements Serializable{
   //      		}
         	}
         	
-        	System.out.println("now reading polyData");
         	// load all the polygonData referenced by the SISI polygons
     		String polygonDataName;
         	polygonDataMax = readInt(in, "unable to find polygonDataMax loading " + filename);    		

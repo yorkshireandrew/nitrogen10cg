@@ -7,6 +7,8 @@
 
 	class NewMenuItemAction extends AbstractAction
 	{
+		private static final long serialVersionUID = 1L;
+
 		ContentGenerator cg;
 		
 		 NewMenuItemAction(ContentGenerator cg)

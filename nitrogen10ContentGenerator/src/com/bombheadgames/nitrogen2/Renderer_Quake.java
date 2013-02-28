@@ -1,10 +1,8 @@
 package com.bombheadgames.nitrogen2;
 
 public class Renderer_Quake implements Renderer{
-
+	
 		private static Renderer_AffineTexture r = new Renderer_AffineTexture();
-		private static final long serialVersionUID = -7435141406825586043L;
-
 		private static final int SHIFT = 20;
 		private static final int ZSHIFT = 20;
 		private static final int NUM = 1 << SHIFT;
@@ -33,7 +31,6 @@ public class Renderer_Quake implements Renderer{
 			// **************** stuff for texture coordinate calc ****************************
 			final float contextMag = context.magnification;
 			final float invContextMag = 1f / contextMag;
-			final float contextZK = context.zk;
 			final int contextMidW = context.midw; 
 			final int contextMidH = context.midh;
 			final boolean contentGeneratorForcesNoPerspective = context.contentGeneratorForcesNoPerspective;
@@ -549,16 +546,13 @@ public class Renderer_Quake implements Renderer{
 		    while(lineLength >= 0)
 			{
 				int quakeStep;
-				int quakeEnd; // one above where to stop
 				if(lineLength >= QUAKE_STEP)
 				{
 					quakeStep = QUAKE_STEP;
-					quakeEnd = lineStart + quakeStep;
 				}
 				else
 				{
 					quakeStep = lineLength;
-					quakeEnd = lineStart + quakeStep + 1;
 				}
 				
 				// calculate start of quake step

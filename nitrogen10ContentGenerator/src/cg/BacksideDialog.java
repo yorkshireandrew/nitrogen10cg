@@ -2,7 +2,6 @@ package cg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -12,17 +11,16 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import com.bombheadgames.nitrogen2.Backside;
 import com.bombheadgames.nitrogen2.ImmutableBackside;
 import com.bombheadgames.nitrogen2.ImmutableVertex;
-import com.bombheadgames.nitrogen2.SharedImmutableSubItem;
 
 
 public class BacksideDialog extends JDialog implements ActionListener{
+	private static final long serialVersionUID = 1L;
 	
 	JTextField	nameTextField;	
 	JButton 	nameButton; 

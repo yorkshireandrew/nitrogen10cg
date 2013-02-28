@@ -2,9 +2,7 @@ package cg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultBoundedRangeModel;
@@ -13,17 +11,17 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 // import javax.swing.JFrame;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 
 public class TemplateDialog extends JDialog implements ChangeListener
 {
+	private static final long serialVersionUID = 1L;
+
 	JTextField 	fileNameTextField;
 	JSpinner 	templateXSpinner;
 	String 		templateXString;

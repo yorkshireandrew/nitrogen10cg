@@ -2,19 +2,14 @@ package cg;
 
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import com.bombheadgames.nitrogen2.ImmutableVertex;
-
 
 public class PolygonVertexView {
 	JTextField indexTextField;

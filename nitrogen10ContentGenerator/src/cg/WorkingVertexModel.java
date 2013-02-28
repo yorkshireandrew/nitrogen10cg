@@ -1,12 +1,7 @@
 package cg;
 
-import java.awt.event.ActionEvent;
 import java.io.Serializable;
-
-import javax.swing.AbstractAction;
-
 import com.bombheadgames.nitrogen2.ImmutableVertex;
-
 
 public class WorkingVertexModel implements Serializable{
 	private static final long serialVersionUID = 3688807584246986775L;

@@ -14,11 +14,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import com.bombheadgames.nitrogen2.NitrogenCreationException;
-import com.bombheadgames.nitrogen2.SharedImmutableSubItem;
 import com.bombheadgames.nitrogen2.TexMap;
 
 
 public class TextureMapDialog extends JDialog{
+	private static final long serialVersionUID = 1L;
 
 	JTextField	nameTextField;
 	
@@ -200,7 +200,6 @@ public class TextureMapDialog extends JDialog{
 	/** checks the name returning OK if it is not present or user wishes to overwrite*/
 	private boolean nameIsOK(String name)
 	{
-		SharedImmutableSubItem sisi = cg.generatedSISI;
 		ContentGeneratorSISI cgsisi = cg.contentGeneratorSISI;
 		Map<String,ContentGeneratorTextureMap> textureMapMap = cgsisi.textureMapMap;
 		

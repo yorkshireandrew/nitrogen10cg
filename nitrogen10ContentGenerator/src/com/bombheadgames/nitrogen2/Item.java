@@ -214,7 +214,6 @@ final public class Item implements Serializable{
 			float v21, float v22, float v23, float v24,
 			float v31, float v32, float v33, float v34)
 	{
-		System.out.println("rendering "+ name);
 		// return if the Item is not set visible
 		if(visibility == false)return;
 		
@@ -224,11 +223,7 @@ final public class Item implements Serializable{
 		// far plane cull using the Items own farPlane
 		final float itemDist = -v34;
 		final SharedImmutableSubItem 	sisiL = sisi;
-		if(itemDist > sisiL.farPlane)
-		{
-			System.out.println("far plane culled by SISI");
-			return;
-		}
+		if(itemDist > sisiL.farPlane)return;
 
 		// DEBUG
 		context.itemsRendered++;
@@ -324,12 +319,6 @@ final public class Item implements Serializable{
 		{
 			// added for Content Generator 
 			context.currentPolygon = x;
-			System.out.println("set current polygon to " + context.currentPolygon);
-			
-			//DEBUG
-			System.out.println("--- ******************---");			
-			System.out.println("--- RENDERING POLYGON ---"+x);
-			System.out.println("--- ******************---");	
 			
 			immutablePolygon = sisiL.immutablePolygons[x];
 			
@@ -351,10 +340,7 @@ final public class Item implements Serializable{
 			}
 			
 			if(backside.facingViewer() || context.contentGeneratorForcesNoCulling)
-			{
-				if(backside.facingViewer())System.out.println("backside facing viewer");
-				if(context.contentGeneratorForcesNoCulling) System.out.println("context forces no backside culling");
-				
+			{				
 				// Calculate the vertexes, then Pass the polygon on to the next process.
 				vertexIndexArray = immutablePolygon.vertexIndexArray;
 				int vertexIndexArrayLength = vertexIndexArray.length;
@@ -390,7 +376,6 @@ final public class Item implements Serializable{
 			}
 			else
 			{
-				System.out.println("backside facing AWAY FROM viewer");
 				// Skip rendering the polygon if it is backside culled
 				if(immutablePolygon.isBacksideCulled && noBacksideCullOverride)continue;
 				
@@ -463,11 +448,7 @@ final public class Item implements Serializable{
 		if(dist < context.nearClip)return(true);
 		
 		// far clip
-		if(dist > context.farClip)
-			{
-			System.out.println("far culled by context " + dist);
-			return(true);
-			}
+		if(dist > context.farClip)return(true); // far culled by context
 		
 		// right clip
 		if((x - boundingRadiusCache) > allowedRightness)return (true);
@@ -492,22 +473,16 @@ final public class Item implements Serializable{
 	 *  */
 	final private void calculateItemFustrumFlags(final float x, final float y, final float z, final NitrogenContext context, final SharedImmutableSubItem sisiL)
 	{
-		int fustrumTouchCountL = 0;
 		final float sisiBoundingRadius = sisiL.boundingRadius;
 		
 		// calculate pessimistic distance from viewpoint
 		final float dist = -z - sisiBoundingRadius;
-		final float test = -z;
-		System.out.println("dist = " + test);
-		System.out.println("sisiBoundingR = " + sisiBoundingRadius);
-		System.out.println("pess dist = " + dist);
 		final float allowedRightness = context.xClip * dist;
 		final float allowedDownness = context.yClip * dist;	
 		
 		// near clip
 		if(dist < context.nearClip)
 		{
-			fustrumTouchCountL++;
 			touchedNear = true;
 		}
 		else
@@ -516,7 +491,6 @@ final public class Item implements Serializable{
 		// right clip
 		if((x + sisiBoundingRadius) > allowedRightness)
 		{
-			fustrumTouchCountL++;
 			touchedRight = true;			
 		}
 		else
@@ -525,7 +499,6 @@ final public class Item implements Serializable{
 		// left clip
 		if((-x + sisiBoundingRadius) > allowedRightness)
 		{
-			fustrumTouchCountL++;
 			touchedLeft = true;			
 		}
 		else
@@ -534,7 +507,6 @@ final public class Item implements Serializable{
 		// bottom clip
 		if((y + sisiBoundingRadius) > allowedDownness)
 		{
-			fustrumTouchCountL++;
 			touchedBottom = true;			
 		}
 		else
@@ -543,7 +515,6 @@ final public class Item implements Serializable{
 		// top clip
 		if((-y + sisiBoundingRadius) > allowedDownness)
 		{
-			fustrumTouchCountL++;
 			touchedTop = true;			
 		}
 		else
@@ -648,7 +619,6 @@ final public class Item implements Serializable{
 	final private void updateRenderingFlags(final float itemDist, final SharedImmutableSubItem sisi)
 	{
 		// see if isImprovedDetail needs changing
-		System.out.println("updateRenderingFlags called");
 		if(isImprovedDetail)
 		{
 			if(itemDist > sisi.improvedDetailDistPlus)isImprovedDetail = false;
@@ -660,19 +630,11 @@ final public class Item implements Serializable{
 		
 		if(isUsingHLP)
 		{
-			if(itemDist > sisi.hlpBreakingDistPlus)
-				{
-				System.out.println("isUsingHLPBreaking toggled false");	
-				isUsingHLP = false;
-				}
+			if(itemDist > sisi.hlpBreakingDistPlus)isUsingHLP = false;
 		}
 		else
 		{
-			if(itemDist < sisi.hlpBreakingDist)
-				{
-				System.out.println("isUsingHLPBreaking toggled true");	
-				isUsingHLP = true;
-				}
+			if(itemDist < sisi.hlpBreakingDist)isUsingHLP = true;
 		}
 	}
 	
@@ -824,18 +786,9 @@ final public class Item implements Serializable{
 		backsides  = null;
 		vertexes = null;
 	}
-	/*
+
 	final private void writeObject(ObjectOutputStream out) throws IOException, ClassNotFoundException
 	{
-    	System.out.println("writing Item:"+ this.getName());
-    	out.defaultWriteObject();
-    	
-	}
-	*/
-	
-	final private void writeObject(ObjectOutputStream out) throws IOException, ClassNotFoundException
-	{
-    	System.out.println("writing Item:"+ this.getName());
     	out.defaultWriteObject();
     	
     	// write the backsides
@@ -855,7 +808,6 @@ final public class Item implements Serializable{
     final private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
     	in.defaultReadObject();
-    	System.out.println("reading Item:"+ this.getName());
     	
     	SharedImmutableSubItem sisiL = sisi;
     	
@@ -886,15 +838,7 @@ final public class Item implements Serializable{
     		collisionVertexes[i] = itemFactory.getVertex(icvs[i]);
     	}   	
 	}
-/*	
-    final private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
-    	System.out.println("reading an Item");
-    	in.defaultReadObject();
-    	System.out.println("The Items name is :" + this.name);
-    }  
-    */
-	
+
 	/** returns an Iterator<Vert> for enumerating the Items collision vertexes */
 	final public Iterator<Vertex> getCollisionVertexIterator()
 	{
@@ -1011,7 +955,6 @@ final public class Item implements Serializable{
 	
 	final public Vertex getVertex(int index)
 	{
-		final int colour = 0xFFFF0000;	//red
 		Vertex[] vertexesL = vertexes;
 		Vertex vertex;
 		if(index >= vertexesL.length) return null;
@@ -1148,8 +1091,7 @@ final public class Item implements Serializable{
 			float v21, float v22, float v23, float v24,
 			float v31, float v32, float v33, float v34)
 	{
-		if(testBackside == null) return;
-		System.out.println("computing test backside for "+ name);	
+		if(testBackside == null) return;	
 				
 		testBackside.rotationNeedsUpdate = true;
 		testBackside.translationNeedsUpdate = true;

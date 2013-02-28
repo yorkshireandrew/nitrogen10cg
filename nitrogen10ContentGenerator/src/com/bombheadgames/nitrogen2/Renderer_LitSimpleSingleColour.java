@@ -18,7 +18,6 @@ private static final long serialVersionUID = -7435141406825586043L;
 private static final int ALPHA = 0xFF000000;
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;
-private static final int NUM = 1 << SHIFT;
 
 private static final int LIGHT_SHIFT = 10;
 private static final int LIGHT_NUM = 1 << LIGHT_SHIFT;
@@ -40,7 +39,6 @@ public void render(
 {
 	
 	// **************** initialise colour ********************************************
-	System.out.println("lit simple render called");
 	int colour = -1; // white
 	if(polyData != null)colour = polyData[0] | ALPHA;
 	
@@ -114,10 +112,8 @@ public void render(
 	
 	boolean trucking = true;
 	
-	int escape = 1000;
-	while(trucking && (escape > 0))
+	while(trucking)
 	{
-		escape--;
 		// ************ Render a line *******
 		renderLine(
 				bigLeftSX, 
@@ -149,18 +145,15 @@ public void render(
 		// *********** handle if we reach left destination ******************
 		if(leftDeltaSY <= 0)
 		{
-			System.out.println("handling leftDeltaSY <= 0");
 			bigLeftSX		= bigLeftDestSX;
 			leftSY 			= leftDestSY;
 			bigLeftSZ		= bigLeftDestSZ;			
 			
-			System.out.println("completed leftDestN2V is " + leftDestN2V);
 			// find a new destination
 			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 			
 			if(leftDestN2V == null)
 			{
-				System.out.println("handling (leftDestN2V == null)");
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
 				leftDeltaSZ = 0;
@@ -168,14 +161,11 @@ public void render(
 			}
 			else
 			{
-				System.out.println("new leftDest is" + leftDestN2V);
 				leftDestSY = leftDestN2V.intSY;
 				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
 				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
 				
 				leftDeltaSY = leftDestSY - leftSY;
-				System.out.println("new leftDeltaSY = " + leftDeltaSY );
-				
 				if(leftDeltaSY > 0)
 				{
 					leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
@@ -184,7 +174,6 @@ public void render(
 				}
 				else
 				{
-						System.out.println("leftDeltaSY = 0");
 						leftDeltaSX = 0;
 						leftDeltaSY = 0;
 						leftDeltaSZ = 0;
@@ -196,20 +185,15 @@ public void render(
 		// *********** handle if we reach right destination ******************
 		if(rightDeltaSY <= 0)
 		{
-			System.out.println("handling rightDeltaSY <= 0");
-
 			bigRightSX		= bigRightDestSX;
 			rightSY 		= rightDestSY;
 			bigRightSZ		= bigRightDestSZ;	
-			
-			System.out.println("completed rightDestN2V is " + rightDestN2V);
 			
 			// find a new destination
 			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 			
 			if(rightDestN2V == null)
 			{
-				System.out.println("handling (rightDestN2V == null)");
 				rightDeltaSX = 0;
 				rightDeltaSY = 0;
 				rightDeltaSZ = 0;
@@ -217,13 +201,11 @@ public void render(
 			}
 			else
 			{
-				System.out.println("new rightDest is" + rightDestN2V);
 				rightDestSY = rightDestN2V.intSY;
 				bigRightDestSX = rightDestN2V.intSX << SHIFT;
 				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
 				
 				rightDeltaSY = rightDestSY - rightSY;
-				System.out.println("new rightDeltaSY = " + rightDeltaSY );
 				if(rightDeltaSY > 0)
 				{
 					rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
@@ -232,7 +214,6 @@ public void render(
 				}
 				else
 				{
-						System.out.println("rightDeltaSY = 0");
 						rightDeltaSX = 0;
 						rightDeltaSY = 0;
 						rightDeltaSZ = 0;
@@ -243,7 +224,6 @@ public void render(
 	}//end of while loop
 	
 	// ************ Render final line *******
-	System.out.println("render final line");
 	renderLine(
 			bigLeftSX, 
 			bigLeftSZ, 
@@ -282,7 +262,6 @@ private final void renderLine(
 	int lineStart 	= bigLeftSX >> SHIFT;
 	int lineFinish 	= bigRightSX >> SHIFT;	
 			
-	System.out.println("rendering line " + lineStart + "->" + lineFinish);
 	
 	int lineLength = lineFinish - lineStart;
 	

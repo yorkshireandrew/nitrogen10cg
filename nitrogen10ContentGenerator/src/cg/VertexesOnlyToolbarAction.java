@@ -11,6 +11,8 @@ import com.bombheadgames.nitrogen2.Renderer_Null;
 
 class VertexesOnlyToolbarAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	VertexesOnlyToolbarAction(ContentGenerator cg)
 	{

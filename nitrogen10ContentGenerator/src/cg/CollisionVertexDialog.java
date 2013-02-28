@@ -21,6 +21,7 @@ import com.bombheadgames.nitrogen2.ImmutableCollisionVertex;
 
 
 public class CollisionVertexDialog  extends JDialog implements ChangeListener{
+	private static final long serialVersionUID = 1L;
 
 	private ContentGenerator contentGenerator;
 	

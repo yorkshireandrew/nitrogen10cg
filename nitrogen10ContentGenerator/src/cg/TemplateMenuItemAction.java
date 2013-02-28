@@ -7,6 +7,8 @@ import javax.swing.AbstractAction;
 /** class to handle Template... menu item */
 class TemplateMenuItemAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+	
 	ContentGenerator cg;
 	TemplateMenuItemAction(ContentGenerator cg)
 	{

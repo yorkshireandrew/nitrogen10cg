@@ -3,8 +3,6 @@ package com.bombheadgames.nitrogen2;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.MemoryImageSource;
 import java.io.Serializable;
 
@@ -57,7 +55,6 @@ public class NitrogenContext extends JPanel implements Serializable{
 	 * Setting this to a value closer to one improves quality but also slows the rendering of HLP polygons 
 	 */
 	float qualityOfHLP = 1.2f;
-	boolean debug = false;
 	
 	/** width in pixels of the NitrogenContext */
     public int w = 0;		// width
@@ -132,7 +129,6 @@ public class NitrogenContext extends JPanel implements Serializable{
     	this.yClip = yClip;
     	this.nearClip = nearClip;
     	this.farClip = farClip;
-    	System.out.print("nitrogen context far clip=" + this.farClip);
     	this.midw = (width / 2);
     	this.midh = (height / 2);
     	
@@ -220,21 +216,18 @@ public class NitrogenContext extends JPanel implements Serializable{
 @Override
 public Dimension getMinimumSize()
 {
-    //System.out.printf("getMinimumSize");
     return new Dimension(w,h);
 }
 
 @Override
 public Dimension getPreferredSize()
 {
-    //System.out.printf("getPreferredSize");
     return new Dimension(w,h);
 }
 
 @Override
 public Dimension getMaximumSize()
 {
-    //System.out.printf("getMaximumSize");
     return new Dimension(w,h);
 }
 

@@ -1,18 +1,16 @@
 package cg;
 
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import com.bombheadgames.nitrogen2.ImmutablePolygon;
 import com.bombheadgames.nitrogen2.ImmutableVertex;
-import com.bombheadgames.nitrogen2.SharedImmutableSubItem;
-
 
 class PolygonVertexController extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	PolygonVertexView polygonVertexView;
 	

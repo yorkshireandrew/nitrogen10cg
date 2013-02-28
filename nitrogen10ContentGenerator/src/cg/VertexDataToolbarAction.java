@@ -7,6 +7,8 @@ import javax.swing.AbstractAction;
 /** class to handle vertex data toolbar button */
 class VertexDataToolbarAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	VertexDataToolbarAction(ContentGenerator cg)
 	{

@@ -2,14 +2,6 @@ package cg;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,11 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.bombheadgames.nitrogen2.ImmutableBackside;
-import com.bombheadgames.nitrogen2.ImmutableVertex;
-
-
 public class NearFarDialog extends JDialog implements ActionListener{
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	
 	JTextField normalDetailPolyStartTextField;

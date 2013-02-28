@@ -1,32 +1,18 @@
 package cg;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
-import javax.swing.DefaultBoundedRangeModel;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.filechooser.FileFilter;
+
 
 import com.bombheadgames.nitrogen2.*;
 
@@ -34,6 +20,8 @@ import com.bombheadgames.nitrogen2.*;
 
 public class ContentGeneratorController extends AbstractAction implements ChangeListener
 {
+	private static final long serialVersionUID = 1L;
+	
 	ContentGenerator cg;
 	
 	ContentGeneratorController(ContentGenerator cg)

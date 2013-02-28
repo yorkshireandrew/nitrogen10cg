@@ -15,12 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.bombheadgames.nitrogen2.Backside;
-import com.bombheadgames.nitrogen2.ImmutableBackside;
 import com.bombheadgames.nitrogen2.ImmutableVertex;
 import com.bombheadgames.nitrogen2.PolygonVertexData;
 
 public class CircleDialog extends JDialog implements ActionListener{
+	private static final long serialVersionUID = 1L;
+	
 	JTextField	nameTextField;	
 	JButton 	nameButton; 
 	

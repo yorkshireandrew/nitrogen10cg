@@ -6,6 +6,8 @@ import javax.swing.AbstractAction;
 
 class DeleteUnusedVertexesMenuItemAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	DeleteUnusedVertexesMenuItemAction(ContentGenerator cg)
 	{

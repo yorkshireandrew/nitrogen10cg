@@ -6,6 +6,8 @@ import javax.swing.AbstractAction;
 
 class DeleteUnusedStuffMenuItemAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	DeleteUnusedStuffMenuItemAction(ContentGenerator cg)
 	{

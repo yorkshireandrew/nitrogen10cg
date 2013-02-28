@@ -9,6 +9,9 @@ import javax.swing.JToggleButton;
 
 public class FixedSizeIconToggleButton extends JToggleButton{
 
+
+	private static final long serialVersionUID = 1L;
+
 	int h;
 	int w;
 	Icon notSelected;

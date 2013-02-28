@@ -23,8 +23,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import cg.ContentGenerator;
-
 public class TexMap implements Serializable{
 	private static final long serialVersionUID = 3915774142992302906L;
 
@@ -40,14 +38,10 @@ public class TexMap implements Serializable{
     
     final static TexMap getTexture(String st) throws NitrogenCreationException
     {
-    	if(textures == null)System.out.println("TexMap textures is null");
-    	System.out.println("seeing if we hava texture called :"+ st);
     	if(textures.containsKey(st))
     	{
-    		System.out.println("yes we do");
     		return(textures.get(st));
     	}
-    	System.out.println("no we dont");
     	return(new TexMap(st));
     }
 
@@ -108,13 +102,9 @@ public class TexMap implements Serializable{
 
     final private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
-    	System.out.println("TexMap.readObject called");
     	in.defaultReadObject();
-    	System.out.println("ok the resource is called :" + resourceName);
     	if(textures.containsKey(resourceName))
     		{
-    			System.out.println("we already have that resource");
-    			System.out.println("I bet we should do something here");
     			TexMap loadedTexture = textures.get(resourceName);
     			tex = loadedTexture.tex;
        			h = loadedTexture.h;
@@ -145,18 +135,4 @@ public class TexMap implements Serializable{
     	String retval = in.replace('\\', '/');
     	return retval;
     }
-   
-    /*
-	public static void main(String[] args) {
-		TexMap t = new TexMap();
-		String st = " this\\is\\some\\windows\\path /but/this/is/unix";
-		System.out.println(st);
-		String aft = t.toUnix(st);
-		System.out.println(aft);		
-	}
-	*/
-    
-    
-
-
 }

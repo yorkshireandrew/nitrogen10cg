@@ -1,7 +1,7 @@
 package com.bombheadgames.nitrogen2;
 
 public class Renderer_LitQuake implements Renderer{
-	private static final long serialVersionUID = -7435141406825586043L;
+
 		private static Renderer_LitAffineTexture r = new Renderer_LitAffineTexture();
 		private static final int SHIFT = 20;
 		private static final int ZSHIFT = 20;
@@ -31,14 +31,11 @@ public class Renderer_LitQuake implements Renderer{
 		{
 			
 			// **************** initialise colour ********************************************
-			System.out.println("LitQuake render called");
-			
 			final int lightVal = (int)(lightingValue * LIGHT_NUM);
 			
 			// **************** stuff for texture coordinate calc ****************************
 			final float contextMag = context.magnification;
 			final float invContextMag = 1f / contextMag;
-			final float contextZK = context.zk;
 			final int contextMidW = context.midw; 
 			final int contextMidH = context.midh;
 			final boolean contentGeneratorForcesNoPerspective = context.contentGeneratorForcesNoPerspective;
@@ -175,10 +172,8 @@ public class Renderer_LitQuake implements Renderer{
 			
 			boolean trucking = true;
 			
-			int escape = 1000;
-			while(trucking && (escape > 0))
+			while(trucking)
 			{
-				escape--;
 				
 				// ************ Calculate left texture point
 				
@@ -216,20 +211,7 @@ public class Renderer_LitQuake implements Renderer{
 				lineFinishVSX = rightDeltaVSX * alpha2 + rightVSX;
 				lineFinishVSY = rightDeltaVSY * alpha2 + rightVSY;
 				lineFinishVSZ = rightDeltaVSZ * alpha2 + rightVSZ;
-				
-				// ************ Render a line *******
-				System.out.println("...........................");
-				System.out.println("" + leftSY + "(" + (bigLeftSX >> SHIFT) + "->" + (bigRightSX >> SHIFT) + ")");
-				System.out.println("leftTX =(" + (leftTX >> TEXTURE_SHIFT) + "," + (leftTY >> TEXTURE_SHIFT)+")");
-				System.out.println("" + alpha + "(" + (leftStartTX >> TEXTURE_SHIFT) + "," + (leftStartTY >> TEXTURE_SHIFT)+")"
-						+ "(" + (leftDestTX >> TEXTURE_SHIFT) + "," + (leftDestTY >> TEXTURE_SHIFT)+")");
-			
-				System.out.println("" + rightSY + "(" + (bigRightSX >> SHIFT) + "->" + (bigRightSX >> SHIFT) + ")");
-				System.out.println("rightTX =(" + (rightTX >> TEXTURE_SHIFT) + "," + (rightTY >> TEXTURE_SHIFT)+")");
-				System.out.println("" + alpha2 + "(" + (rightStartTX >> TEXTURE_SHIFT) + "," + (rightStartTY >> TEXTURE_SHIFT)+")"
-						+ "(" + (rightDestTX >> TEXTURE_SHIFT) + "," + (rightDestTY >> TEXTURE_SHIFT)+")");
-				System.out.println("");
-				
+								
 				renderLine(
 						bigLeftSX, 
 						bigLeftSZ, 
@@ -283,7 +265,6 @@ public class Renderer_LitQuake implements Renderer{
 				// *********** handle if we reach left destination ******************
 				if(leftDeltaSY <= 0)
 				{
-					System.out.println("handling leftDeltaSY <= 0");
 					leftN2V 		= leftDestN2V;
 					
 					// now update left to eliminate rounding errors
@@ -300,13 +281,11 @@ public class Renderer_LitQuake implements Renderer{
 					leftStartTX			= leftN2V.intTX;
 					leftStartTY			= leftN2V.intTY;
 							
-					System.out.println("completed leftDestN2V is " + leftDestN2V);
 					// find a new destination
 					leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 					
 					if(leftDestN2V == null)
 					{
-						System.out.println("handling (leftDestN2V == null)");
 						leftDeltaSX = 0;
 						leftDeltaSY = 0;
 						leftDeltaSZ = 0;			
@@ -315,9 +294,7 @@ public class Renderer_LitQuake implements Renderer{
 					}
 					else
 					{
-						System.out.println("new leftDest is" + leftDestN2V);
 						leftDeltaSY = leftDestN2V.intSY - leftSY;
-						System.out.println("new leftDeltaSY = " + leftDeltaSY );
 						if(leftDeltaSY > 0)
 						{
 								int rec 	= NUM / leftDeltaSY;
@@ -361,7 +338,6 @@ public class Renderer_LitQuake implements Renderer{
 				// *********** handle if we reach right destination ******************
 				if(rightDeltaSY <= 0)
 				{
-					System.out.println("handling rightDeltaSY <= 0");
 					rightN2V 		= rightDestN2V;
 					
 					// now update right to eliminate rounding errors
@@ -377,15 +353,12 @@ public class Renderer_LitQuake implements Renderer{
 					
 					rightStartTX			= rightN2V.intTX;
 					rightStartTY			= rightN2V.intTY;
-					
-					System.out.println("completed rightDestN2V is " + rightDestN2V);
-					
+										
 					// find a new destination
 					rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 					
 					if(rightDestN2V == null)
 					{
-						System.out.println("handling (rightDestN2V == null)");
 						rightDeltaSX = 0;
 						rightDeltaSY = 0;
 						rightDeltaSZ = 0;
@@ -397,9 +370,7 @@ public class Renderer_LitQuake implements Renderer{
 					}
 					else
 					{
-						System.out.println("new rightDest is" + rightDestN2V);
 						rightDeltaSY = rightDestN2V.intSY - rightSY;
-						System.out.println("new rightDeltaSY = " + rightDeltaSY );
 						if(rightDeltaSY > 0)
 						{
 								int rec 	= NUM / rightDeltaSY;
@@ -452,7 +423,6 @@ public class Renderer_LitQuake implements Renderer{
 			rightTY = rightStartTY;
 			
 			// ************ Render final line *******
-			System.out.println("render final line");
 			renderLine(
 					bigLeftSX, 
 					bigLeftSZ, 
@@ -539,8 +509,6 @@ public class Renderer_LitQuake implements Renderer{
 			float deltaTX = rightTX - leftTX;
 			float deltaTY = rightTY - leftTY;		
 					
-			System.out.println("rendering line " + lineStart + "->" + lineFinish);
-			
 			int lineLength = lineFinish - lineStart;
 			
 			// calculate zDelta
@@ -557,16 +525,13 @@ public class Renderer_LitQuake implements Renderer{
 		    while(lineLength >= 0)
 			{
 				int quakeStep;
-				int quakeEnd; // one above where to stop
 				if(lineLength >= QUAKE_STEP)
 				{
 					quakeStep = QUAKE_STEP;
-					quakeEnd = lineStart + quakeStep;
 				}
 				else
 				{
 					quakeStep = lineLength;
-					quakeEnd = lineStart + quakeStep + 1;
 				}
 				
 				// calculate start of quake step

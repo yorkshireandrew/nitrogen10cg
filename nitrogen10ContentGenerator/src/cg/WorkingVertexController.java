@@ -6,7 +6,9 @@ import javax.swing.AbstractAction;
 
 public class WorkingVertexController extends AbstractAction
 {
-	 ContentGenerator cg;
+	private static final long serialVersionUID = 1L;
+
+	ContentGenerator cg;
 	 WorkingVertexModel workingVertexModel;
 	 WorkingVertexView workingVertexView;
 	 

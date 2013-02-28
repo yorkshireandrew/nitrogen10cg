@@ -2,7 +2,6 @@
 package cg;
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -25,11 +24,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.bombheadgames.nitrogen2.PolygonVertexData;
-import com.bombheadgames.nitrogen2.SharedImmutableSubItem;
-
-
 public class PolygonDataDialog  extends JDialog implements ChangeListener, ActionListener{
+	private static final long serialVersionUID = 1L;
 
 	private ContentGenerator contentGenerator;
 	

@@ -7,7 +7,6 @@ import com.bombheadgames.nitrogen2.Renderer_LitAffineTexture;
 import com.bombheadgames.nitrogen2.Renderer_LitQuake;
 import com.bombheadgames.nitrogen2.Renderer_LitSimpleSingleColour;
 import com.bombheadgames.nitrogen2.Renderer_Quake;
-import com.bombheadgames.nitrogen2.Renderer_DirtyTexture;
 import com.bombheadgames.nitrogen2.Renderer_Outline;
 import com.bombheadgames.nitrogen2.Renderer_SimpleSingleColour;
 

@@ -20,11 +20,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.bombheadgames.nitrogen2.PolygonVertexData;
-import com.bombheadgames.nitrogen2.SharedImmutableSubItem;
-
 
 public class VertexDataDialog  extends JDialog implements ChangeListener,ActionListener{
-
+	private static final long serialVersionUID = 1L;
+	
 	private ContentGenerator contentGenerator;
 	
 	JTextField dataNameTextField;

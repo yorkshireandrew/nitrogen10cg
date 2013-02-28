@@ -12,6 +12,8 @@ import javax.swing.JFileChooser;
 
 class ExportMenuItemAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	File initialFile = null;
 	ExportMenuItemAction(ContentGenerator cg)

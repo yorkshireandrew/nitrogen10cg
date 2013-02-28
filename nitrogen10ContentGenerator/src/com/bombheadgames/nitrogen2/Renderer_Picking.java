@@ -1,7 +1,6 @@
 package com.bombheadgames.nitrogen2;
 
 public class Renderer_Picking implements Renderer{
-private static final long serialVersionUID = -7435141406825586043L;
 
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;

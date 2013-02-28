@@ -37,7 +37,6 @@ public void render(
 {
 	
 	// **************** initialise colour ********************************************
-	System.out.println("render called");
 	int colour = -1; // white
 	if(polyData != null)colour = polyData[0] | ALPHA;
 	
@@ -111,10 +110,8 @@ public void render(
 	
 	boolean trucking = true;
 	
-	int escape = 1000;
-	while(trucking && (escape > 0))
+	while(trucking)
 	{
-		escape--;
 		// ************ Render a line *******
 		renderLine(
 				bigLeftSX, 
@@ -146,7 +143,6 @@ public void render(
 		// *********** handle if we reach left destination ******************
 		if(leftDeltaSY <= 0)
 		{
-			System.out.println("handling leftDeltaSY <= 0");
 			leftN2V 		= leftDestN2V;
 			
 			// now update left to eliminate rounding errors
@@ -156,13 +152,11 @@ public void render(
 			leftSZ			= leftN2V.intSZ;
 			bigLeftSZ		= ((long)leftSZ) << SHIFT;
 			
-			System.out.println("completed leftDestN2V is " + leftDestN2V);
 			// find a new destination
 			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 			
 			if(leftDestN2V == null)
 			{
-				System.out.println("handling (leftDestN2V == null)");
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
 				leftDeltaSZ = 0;
@@ -170,9 +164,7 @@ public void render(
 			}
 			else
 			{
-				System.out.println("new leftDest is" + leftDestN2V);
 				leftDeltaSY = leftDestN2V.intSY - leftSY;
-				System.out.println("new leftDeltaSY = " + leftDeltaSY );
 				if(leftDeltaSY > 0)
 				{
 						int rec 	= NUM / leftDeltaSY;
@@ -194,7 +186,6 @@ public void render(
 		// *********** handle if we reach right destination ******************
 		if(rightDeltaSY <= 0)
 		{
-			System.out.println("handling rightDeltaSY <= 0");
 			rightN2V 		= rightDestN2V;
 			
 			// now update right to eliminate rounding errors
@@ -204,14 +195,11 @@ public void render(
 			rightSZ			= rightN2V.intSZ;
 			bigRightSZ		= ((long)rightSZ) << SHIFT;
 			
-			System.out.println("completed rightDestN2V is " + rightDestN2V);
-			
 			// find a new destination
 			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 			
 			if(rightDestN2V == null)
 			{
-				System.out.println("handling (rightDestN2V == null)");
 				rightDeltaSX = 0;
 				rightDeltaSY = 0;
 				rightDeltaSZ = 0;
@@ -219,9 +207,7 @@ public void render(
 			}
 			else
 			{
-				System.out.println("new rightDest is" + rightDestN2V);
 				rightDeltaSY = rightDestN2V.intSY - rightSY;
-				System.out.println("new rightDeltaSY = " + rightDeltaSY );
 				if(rightDeltaSY > 0)
 				{
 						int rec 	= NUM / rightDeltaSY;
@@ -244,7 +230,6 @@ public void render(
 	}//end of while loop
 	
 	// ************ Render final line *******
-	System.out.println("render final line");
 	renderLine(
 			bigLeftSX, 
 			bigLeftSZ, 
@@ -283,8 +268,6 @@ private final void renderLine(
 	int lineStart 	= bigLeftSX >> SHIFT;
 	int lineFinish 	= bigRightSX >> SHIFT;	
 			
-	System.out.println("rendering line " + lineStart + "->" + lineFinish);
-	
 	int lineLength = lineFinish - lineStart;
 	
 	// calculate zDelta

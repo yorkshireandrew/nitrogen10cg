@@ -9,6 +9,8 @@ import com.bombheadgames.nitrogen2.NitrogenContext;
 
 class FullyRenderedToolbarAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+
 	ContentGenerator cg;
 	FullyRenderedToolbarAction(ContentGenerator cg)
 	{

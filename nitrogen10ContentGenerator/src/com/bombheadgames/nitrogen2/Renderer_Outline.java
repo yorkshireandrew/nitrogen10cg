@@ -1,7 +1,6 @@
 package com.bombheadgames.nitrogen2;
 
 public class Renderer_Outline implements Renderer{
-	private static final long serialVersionUID = -7435141406825586043L;
 
 	private static final int ALPHA = 0xFF000000;
 	private static final int SHIFT = 20;
@@ -25,7 +24,6 @@ public class Renderer_Outline implements Renderer{
 	{
 		
 		// **************** initialise colour ********************************************
-		System.out.println("render called");
 		int colour = -1; // white
 		if(polyData != null)colour = polyData[0] | ALPHA;
 		
@@ -99,10 +97,8 @@ public class Renderer_Outline implements Renderer{
 		
 		boolean trucking = true;
 		
-		int escape = 1000;
-		while(trucking && (escape > 0))
+		while(trucking)
 		{
-			escape--;
 			// ************ Render a line *******
 			renderLine(
 					bigLeftSX, 
@@ -137,7 +133,6 @@ public class Renderer_Outline implements Renderer{
 			// *********** handle if we reach left destination ******************
 			if(leftDeltaSY <= 0)
 			{
-				System.out.println("handling leftDeltaSY <= 0");
 				leftN2V 		= leftDestN2V;
 				
 				// now update left to eliminate rounding errors
@@ -147,13 +142,11 @@ public class Renderer_Outline implements Renderer{
 				leftSZ			= leftN2V.intSZ;
 				bigLeftSZ		= ((long)leftSZ) << SHIFT;
 				
-				System.out.println("completed leftDestN2V is " + leftDestN2V);
 				// find a new destination
 				leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 				
 				if(leftDestN2V == null)
 				{
-					System.out.println("handling (leftDestN2V == null)");
 					leftDeltaSX = 0;
 					leftDeltaSY = 0;
 					leftDeltaSZ = 0;
@@ -161,9 +154,7 @@ public class Renderer_Outline implements Renderer{
 				}
 				else
 				{
-					System.out.println("new leftDest is" + leftDestN2V);
 					leftDeltaSY = leftDestN2V.intSY - leftSY;
-					System.out.println("new leftDeltaSY = " + leftDeltaSY );
 					if(leftDeltaSY > 0)
 					{
 							int rec 	= NUM / leftDeltaSY;
@@ -185,7 +176,6 @@ public class Renderer_Outline implements Renderer{
 			// *********** handle if we reach right destination ******************
 			if(rightDeltaSY <= 0)
 			{
-				System.out.println("handling rightDeltaSY <= 0");
 				rightN2V 		= rightDestN2V;
 				
 				// now update right to eliminate rounding errors
@@ -195,14 +185,11 @@ public class Renderer_Outline implements Renderer{
 				rightSZ			= rightN2V.intSZ;
 				bigRightSZ		= ((long)rightSZ) << SHIFT;
 				
-				System.out.println("completed rightDestN2V is " + rightDestN2V);
-				
 				// find a new destination
 				rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 				
 				if(rightDestN2V == null)
 				{
-					System.out.println("handling (rightDestN2V == null)");
 					rightDeltaSX = 0;
 					rightDeltaSY = 0;
 					rightDeltaSZ = 0;
@@ -210,9 +197,7 @@ public class Renderer_Outline implements Renderer{
 				}
 				else
 				{
-					System.out.println("new rightDest is" + rightDestN2V);
 					rightDeltaSY = rightDestN2V.intSY - rightSY;
-					System.out.println("new rightDeltaSY = " + rightDeltaSY );
 					if(rightDeltaSY > 0)
 					{
 							int rec 	= NUM / rightDeltaSY;
@@ -235,7 +220,6 @@ public class Renderer_Outline implements Renderer{
 		}//end of while loop
 		
 		// ************ Render final line *******
-		System.out.println("render final line");
 		renderTerminatorLine(
 				bigLeftSX, 
 				bigLeftSZ, 

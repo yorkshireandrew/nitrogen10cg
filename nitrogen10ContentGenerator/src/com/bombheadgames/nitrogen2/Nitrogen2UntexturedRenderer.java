@@ -24,25 +24,15 @@ public class Nitrogen2UntexturedRenderer {
 		final TexMap textureMap,
 		final float lightingValue
 	){	
-		System.out.println("Nitrogen2UntexturedRenderer.process called");
 		context.polygonsRendered++;	
-		Nitrogen2Vertex startN2V = produceN2Vs(context, start);
-		System.out.println("produced N2Vs");
-		System.out.println("topmost N2V is " + startN2V);
-		
+		Nitrogen2Vertex startN2V = produceN2Vs(context, start);		
 		Nitrogen2Vertex leftN2V = findLeftN2V(startN2V);
-		System.out.println("found left N2V " + leftN2V.toString());
 		Nitrogen2Vertex leftDestN2V = findLeftDestN2V(leftN2V);
 		if(leftDestN2V == null)return;
-		System.out.println("found left DestN2V " + leftDestN2V.toString());
-		System.out.println("found left N2V " + leftN2V.intSX);
 		
 		Nitrogen2Vertex rightN2V = findRightN2V(startN2V);
-		System.out.println("found right N2V " + rightN2V.toString());
 		Nitrogen2Vertex rightDestN2V = findRightDestN2V(rightN2V);
 		if(rightDestN2V == null)return;	
-		System.out.println("found right DestN2V " + rightDestN2V.toString());
-		System.out.println("found right N2V");
 		
 		renderer.render(
 				context,
@@ -111,14 +101,10 @@ public class Nitrogen2UntexturedRenderer {
 		int inSY = in.intSY;
 		Nitrogen2Vertex retval = in;
 		Nitrogen2Vertex testN2V = in.anticlockwise;
-		System.out.println("findLeftN2V testing " + testN2V);
-		int debug = 0;
-		while((testN2V.intSY == inSY)&&(testN2V != in)&&(debug < 10))
+		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
-			debug++;
 			if(testN2V.intSX < retval.intSX)retval = testN2V;
 			testN2V = in.anticlockwise;
-			System.out.println("findLeftN2V testing " + testN2V);
 		}
 		return retval;	
 	}
@@ -129,14 +115,10 @@ public class Nitrogen2UntexturedRenderer {
 		int inSY = in.intSY;
 		Nitrogen2Vertex retval = in;
 		Nitrogen2Vertex testN2V = in.clockwise;
-		System.out.println("findRightN2V testing " + testN2V);
-		int debug = 0;
-		while((testN2V.intSY == inSY)&&(testN2V != in)&&(debug < 10))
+		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
-			debug++;
 			if(testN2V.intSX < retval.intSX)retval = testN2V;
 			testN2V = in.clockwise;
-			System.out.println("findRightN2V testing " + testN2V);
 		}
 		return retval;	
 	}
@@ -145,10 +127,8 @@ public class Nitrogen2UntexturedRenderer {
 	final static Nitrogen2Vertex findLeftDestN2V(Nitrogen2Vertex in)
 	{
 		Nitrogen2Vertex testN2V = in.anticlockwise;
-		if(testN2V == null)System.out.println("findLeftDestN2V hit a null");
 		if(testN2V.intSY < in.intSY)
 		{
-			System.out.println("findLeftDestN2V returning null");
 			return null;
 		}
 		else
@@ -161,10 +141,8 @@ public class Nitrogen2UntexturedRenderer {
 	final static Nitrogen2Vertex findRightDestN2V(Nitrogen2Vertex in)
 	{
 		Nitrogen2Vertex testN2V = in.clockwise;
-		if(testN2V == null)System.out.println("findRightDestN2V hit a null");
 		if(testN2V.intSY < in.intSY)
 		{
-			System.out.println("findRightDestN2V returning null");
 			return null;
 		}
 		else

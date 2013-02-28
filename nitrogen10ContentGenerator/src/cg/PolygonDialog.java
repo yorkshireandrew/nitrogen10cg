@@ -1,12 +1,10 @@
 package cg;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -14,9 +12,7 @@ import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -28,13 +24,11 @@ import javax.swing.JTextField;
 
 import com.bombheadgames.nitrogen2.ImmutableBackside;
 import com.bombheadgames.nitrogen2.ImmutableVertex;
-import com.bombheadgames.nitrogen2.NitrogenContext;
 import com.bombheadgames.nitrogen2.PolygonVertexData;
 import com.bombheadgames.nitrogen2.RendererHelper;
-import com.bombheadgames.nitrogen2.TexMap;
-
 
 public class PolygonDialog extends JDialog implements ActionListener{
+	private static final long serialVersionUID = 1L;
 
 	ContentGenerator cg;
 	

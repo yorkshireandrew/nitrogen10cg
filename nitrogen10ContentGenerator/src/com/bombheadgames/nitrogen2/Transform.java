@@ -838,7 +838,6 @@ public class Transform implements Serializable{
     {
     	if(isSerializingRoot)
     	{
-    		System.out.println("serialising root:" + this.getOuterName());
     		Transform parentL = parent;
     		parent = null;
     		isSerializingRoot = false;
@@ -848,7 +847,6 @@ public class Transform implements Serializable{
     	}
     	else
     	{
-    		System.out.println("serialising as not root:" + this.getOuterName());
     		out.defaultWriteObject();
     	}
     }
@@ -858,9 +856,7 @@ public class Transform implements Serializable{
 //		parent = (Transform)in.readObject();
 //		childTransforms = (TransformVector)in.readObject();
 //		childItems = (ItemVector)in.readObject();
-    	System.out.println("reading a transform");
     	in.defaultReadObject();
-    	System.out.println("the transforms name is:" + this.getOuterName());   	
     	translationNeedsUpdate = true;
     	rotationNeedsUpdate = true;
     }

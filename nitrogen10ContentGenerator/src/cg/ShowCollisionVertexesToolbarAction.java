@@ -5,7 +5,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 public class ShowCollisionVertexesToolbarAction extends AbstractAction {
-
+	private static final long serialVersionUID = 1L;
+	
 	ContentGenerator cg;
 	
 	ShowCollisionVertexesToolbarAction(ContentGenerator cg)

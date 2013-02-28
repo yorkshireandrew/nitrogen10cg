@@ -11,6 +11,8 @@ import com.bombheadgames.nitrogen2.Renderer_Outline;
 
 class BacksideCulledWireFrameToolbarAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+	
 	ContentGenerator cg;
 	BacksideCulledWireFrameToolbarAction(ContentGenerator cg)
 	{

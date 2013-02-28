@@ -3,11 +3,12 @@ package cg;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
 
 /** class to handle Template... menu item */
 class PolygonToolbarAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
+	
 	ContentGenerator cg;
 	PolygonToolbarAction(ContentGenerator cg)
 	{

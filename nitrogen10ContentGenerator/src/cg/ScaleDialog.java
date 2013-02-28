@@ -24,6 +24,8 @@ import com.bombheadgames.nitrogen2.ImmutableVertex;
 
 
 public class ScaleDialog extends JDialog implements ActionListener{
+	private static final long serialVersionUID = 1L;
+	
 	ContentGenerator cg;
 	
 	JTextField scaleTextField;
