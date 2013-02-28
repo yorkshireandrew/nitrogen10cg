@@ -3,9 +3,12 @@ package com.bombheadgames.nitrogen2;
 /** responsible for clipping polygon using floating point math */
 public class Nitrogen2PolygonClipper {
 	
-	final static int NUMBER_OF_WORKING_VERTEXES = 64;
+	final static int NUMBER_OF_WORKING_VERTEXES = 14;
 	final static Vertex[] workingVertexes;
 	static int workingVertexIndex;
+	
+	/** slight tweek required to cure invalid intersects due to floating arithmetic */
+	final static float TWEEK = -0.001f;
 	
 	static{
 		workingVertexes = new Vertex[NUMBER_OF_WORKING_VERTEXES];
@@ -155,6 +158,11 @@ public class Nitrogen2PolygonClipper {
 		return null;
 	}
 	
+	final static boolean nearTestVertex(Vertex v, float nearClip)
+	{
+		return(v.vs_z > nearClip);
+	}
+	
 	final static Vertex findAnticlockwiseMostNearClippedVertex(Vertex start, Vertex endPoint, float nearClip)
 	{
 
@@ -186,7 +194,7 @@ public class Nitrogen2PolygonClipper {
 		float n;
 		float onscreenZ = onscreen.vs_z; 
 		n = (onscreenZ - nearClip)/(onscreenZ - offscreen.vs_z);
-		return(calcInbetweenVertex(onscreen,offscreen,n));	
+		return(calcInbetweenVertex(onscreen,offscreen,n + TWEEK));	
 	}
 	
 	
@@ -210,8 +218,8 @@ public class Nitrogen2PolygonClipper {
 			if (c == null)return(null);
 			Vertex cClockwise = c.clockwise;
 			d = calcRightPlaneIntersect(cClockwise, c, xClip);
-			e = calcRightPlaneIntersect(bAnticlockwise, b, xClip);
-			
+			e = calcRightPlaneIntersect(bAnticlockwise, b, xClip);		
+
 			//link c.clockwise - d - e - b.anticlockwise
 			
 			cClockwise.anticlockwise = d;
@@ -241,6 +249,11 @@ public class Nitrogen2PolygonClipper {
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
+	}
+	
+	final static boolean rightTestVertex(Vertex v, float xClip)
+	{
+		return(v.vs_x > (-v.vs_z * xClip)) ;
 	}
 	
 	final static Vertex findAnticlockwiseMostRightClippedVertex(Vertex start, Vertex endPoint, float xClip)
@@ -281,8 +294,9 @@ public class Nitrogen2PolygonClipper {
 		float in_deapth = -onscreen.vs_z;
 		float out_deapth = -offscreen.vs_z;
 		float onscreenX = onscreen.vs_x;
-		float n = (xClip * in_deapth - onscreenX) / ((offscreen.vs_x - onscreenX) - xClip * (out_deapth - in_deapth));	
-		return(calcInbetweenVertex(onscreen,offscreen,n));	
+//		float n = (xClip * in_deapth - onscreenX) / ((offscreen.vs_x - onscreenX) - xClip * (out_deapth - in_deapth));	
+		float n = (onscreenX - xClip * in_deapth) / (xClip * (out_deapth - in_deapth) - (offscreen.vs_x - onscreenX));	
+		return(calcInbetweenVertex(onscreen,offscreen,n + TWEEK));	
 	}
 	
 	
@@ -307,7 +321,6 @@ public class Nitrogen2PolygonClipper {
 			Vertex cClockwise = c.clockwise;
 			d = calcLeftPlaneIntersect(cClockwise, c, xClip);
 			e = calcLeftPlaneIntersect(bAnticlockwise, b, xClip);
-			
 			//link c.clockwise - d - e - b.anticlockwise
 			
 			cClockwise.anticlockwise = d;
@@ -334,6 +347,11 @@ public class Nitrogen2PolygonClipper {
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
+	}
+	
+	final static boolean leftTestVertex(Vertex v, float xClip)
+	{
+		return(-v.vs_x > (-v.vs_z * xClip)) ;
 	}
 	
 	final static Vertex findAnticlockwiseMostLeftClippedVertex(Vertex start, Vertex endPoint, float xClip)
@@ -371,7 +389,7 @@ public class Nitrogen2PolygonClipper {
 		float onscreenX = onscreen.vs_x;
 		// same as calcRightPlaneIntersect but x coordinates are inverted
 		float n = (xClip * in_deapth + onscreenX) / ((onscreenX - offscreen.vs_x) - xClip * (out_deapth - in_deapth));	
-		return(calcInbetweenVertex(onscreen,offscreen,n));	
+		return(calcInbetweenVertex(onscreen,offscreen,n + TWEEK));	
 	}	
 	
 	
@@ -395,7 +413,6 @@ public class Nitrogen2PolygonClipper {
 		Vertex retval = start;
 		while(a != null)
 		{
-			
 			Vertex b,c,d,e;
 			b = findAnticlockwiseMostTopClippedVertex(a,a,yClip);
 			if (b == null)return(null);
@@ -405,7 +422,7 @@ public class Nitrogen2PolygonClipper {
 			Vertex cClockwise = c.clockwise;
 			d = calcTopPlaneIntersect(cClockwise, c, yClip);
 			e = calcTopPlaneIntersect(bAnticlockwise, b, yClip);
-			
+
 			//link c.clockwise - d - e - b.anticlockwise
 			
 			cClockwise.anticlockwise = d;
@@ -435,6 +452,11 @@ public class Nitrogen2PolygonClipper {
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
+	}
+	
+	final static boolean topTestVertex(Vertex v, float yClip)
+	{
+		return(v.vs_y > (-v.vs_z * yClip)) ;
 	}
 	
 	final static Vertex findAnticlockwiseMostTopClippedVertex(Vertex start, Vertex endPoint, float yClip)
@@ -475,8 +497,9 @@ public class Nitrogen2PolygonClipper {
 		float in_deapth = -onscreen.vs_z;
 		float out_deapth = -offscreen.vs_z;
 		float onscreenY = onscreen.vs_y;
-		float n = (yClip * in_deapth - onscreenY) / ((offscreen.vs_y - onscreenY) - yClip * (out_deapth - in_deapth));	
-		return(calcInbetweenVertex(onscreen,offscreen,n));	
+//		float n = (yClip * in_deapth - onscreenY) / ((offscreen.vs_y - onscreenY) - yClip * (out_deapth - in_deapth));	
+		float n = (onscreenY - yClip * in_deapth) / (yClip * (out_deapth - in_deapth) - (offscreen.vs_y - onscreenY));	
+		return(calcInbetweenVertex(onscreen,offscreen,n + TWEEK));	
 	}
 	
 	
@@ -500,8 +523,8 @@ public class Nitrogen2PolygonClipper {
 			if (c == null)return(null);
 			Vertex cClockwise = c.clockwise;
 			d = calcBottomPlaneIntersect(cClockwise, c, yClip);
-			e = calcBottomPlaneIntersect(bAnticlockwise, b, yClip);
-			
+			e = calcBottomPlaneIntersect(bAnticlockwise, b, yClip);		
+
 			//link c.clockwise - d - e - b.anticlockwise
 			
 			cClockwise.anticlockwise = d;
@@ -528,6 +551,11 @@ public class Nitrogen2PolygonClipper {
 			toTest = toTest.anticlockwise;
 		}while(toTest != endPoint);	
 		return null;
+	}
+	
+	final static boolean bottomTestVertex(Vertex v, float yClip)
+	{
+		return(-v.vs_y > (-v.vs_z * yClip)) ;
 	}
 	
 	final static Vertex findAnticlockwiseMostBottomClippedVertex(Vertex start, Vertex endPoint, float yClip)
@@ -564,8 +592,9 @@ public class Nitrogen2PolygonClipper {
 		float out_deapth = -offscreen.vs_z;
 		float onscreenY = onscreen.vs_y;
 		// same as calcRightPlaneIntersect but x coordinates are inverted
-		float n = (yClip * in_deapth + onscreenY) / ((onscreenY - offscreen.vs_y) - yClip * (out_deapth - in_deapth));	
-		return(calcInbetweenVertex(onscreen,offscreen,n));	
+//		float n = (yClip * in_deapth + onscreenY) / ((onscreenY - offscreen.vs_y) - yClip * (out_deapth - in_deapth));	
+		float n = (-onscreenY - yClip * in_deapth) / (yClip * (out_deapth - in_deapth) - (onscreenY - offscreen.vs_y));	
+		return(calcInbetweenVertex(onscreen,offscreen,n + TWEEK));	
 	}	
 
 	
@@ -576,7 +605,7 @@ public class Nitrogen2PolygonClipper {
 	// *********************************************************
 
 	final static Vertex calcInbetweenVertex(Vertex onscreen, Vertex offscreen, float ratio)
-	{
+	{		
 		Vertex retval = workingVertexes[workingVertexIndex++];
 		
 		/** The generated vertex view-space coordinates */
@@ -591,6 +620,7 @@ public class Nitrogen2PolygonClipper {
 		va2  = (offscreen.aux2 - onscreen.aux2) * ratio + onscreen.aux2;
 		va3  = (offscreen.aux3 - onscreen.aux3) * ratio + onscreen.aux3;
 		retval.setViewSpaceAndAux(vvsx, vvsy, vvsz, va1, va2, va3);
+		
 		return retval;	
 	}	
 }

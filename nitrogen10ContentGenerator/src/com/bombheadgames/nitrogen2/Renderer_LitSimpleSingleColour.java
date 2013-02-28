@@ -21,6 +21,7 @@ private static final int ZSHIFT = 20;
 
 private static final int LIGHT_SHIFT = 10;
 private static final int LIGHT_NUM = 1 << LIGHT_SHIFT;
+//private static int debugPixelCount;
 
 public void render(
 		
@@ -37,7 +38,7 @@ public void render(
 		final float lightingValue	
 		)
 {
-	
+//	debugPixelCount = 0;
 	// **************** initialise colour ********************************************
 	int colour = -1; // white
 	if(polyData != null)colour = polyData[0] | ALPHA;
@@ -240,6 +241,7 @@ public void render(
 			contextZBuffer,
 			contextWidth		
 	);
+//	System.out.println("pixels= " + debugPixelCount);
 }
 
 //*****************************************************************************
@@ -289,6 +291,7 @@ private final void renderLine(
 		{
 			contextZBuffer[index] = pixelZ;
 			contextPixels[index] = colour;
+//			debugPixelCount++;
 		}
 		
 		// ***********************************************
