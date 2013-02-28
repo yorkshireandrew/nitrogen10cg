@@ -172,9 +172,10 @@ public class Renderer_LitQuake implements Renderer{
 			
 			boolean trucking = true;
 			
-			while(trucking)
+			int debug =1000;
+			while(trucking && (debug >0))
 			{
-				
+				debug--;
 				// ************ Calculate left texture point
 				
 				float alpha = calculateAlphaUsingY(

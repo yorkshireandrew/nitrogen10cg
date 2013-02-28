@@ -112,9 +112,12 @@ public void render(
 	
 	boolean trucking = true;
 	
-	while(trucking)
+	int debug = 1000;
+	while(trucking && (debug >0))
 	{
 		// ************ Render a line *******
+		debug--;
+		
 		renderLine(
 				bigLeftSX, 
 				bigLeftSZ, 

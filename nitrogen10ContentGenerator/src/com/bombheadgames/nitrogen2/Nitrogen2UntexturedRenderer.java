@@ -104,7 +104,7 @@ public class Nitrogen2UntexturedRenderer {
 		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
 			if(testN2V.intSX < retval.intSX)retval = testN2V;
-			testN2V = in.anticlockwise;
+			testN2V = testN2V.anticlockwise;
 		}
 		return retval;	
 	}
@@ -118,7 +118,7 @@ public class Nitrogen2UntexturedRenderer {
 		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
 			if(testN2V.intSX < retval.intSX)retval = testN2V;
-			testN2V = in.clockwise;
+			testN2V = testN2V.clockwise;
 		}
 		return retval;	
 	}
