@@ -284,7 +284,7 @@ public class Renderer_LitQuake implements Renderer{
 					leftStartTY			= leftN2V.intTY;
 							
 					// find a new destination
-					leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+//					leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 					
 					if(leftDestN2V == null)
 					{
@@ -357,7 +357,7 @@ public class Renderer_LitQuake implements Renderer{
 					rightStartTY			= rightN2V.intTY;
 										
 					// find a new destination
-					rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+//					rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 					
 					if(rightDestN2V == null)
 					{

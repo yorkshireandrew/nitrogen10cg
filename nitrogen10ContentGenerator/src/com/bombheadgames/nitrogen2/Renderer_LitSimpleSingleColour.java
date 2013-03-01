@@ -159,8 +159,9 @@ public void render(
 			// find a new destination
 			leftDestN2V = leftDestN2V.anticlockwise;
 			
-			leftDestSY = leftDestN2V.intSY;
-			leftDeltaSY = leftDestSY - leftSY;
+			leftDestSY 			= leftDestN2V.intSY;
+			
+			leftDeltaSY 		= leftDestSY - leftSY;
 			
 			if(leftDeltaSY > 0)
 			{

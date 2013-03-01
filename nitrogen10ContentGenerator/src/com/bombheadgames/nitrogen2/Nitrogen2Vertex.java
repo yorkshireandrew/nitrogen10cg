@@ -25,32 +25,39 @@ final public class Nitrogen2Vertex {
     Nitrogen2Vertex clockwise;
     /** next Nitrogen2PolygonRenderer in LLL moving anticlockwise */
     Nitrogen2Vertex anticlockwise;
-	
-	final int initializeAllFromVertex(final Vertex vertex)
-	{
-		vsX = vertex.vs_x;
-		vsY = vertex.vs_y;
-		vsZ = vertex.vs_z;		
+
+    /** initializes Nitrogen2Vertex from a vertex, appropriately 
+     * for the polygon. passing back SY
+     */
+	public int initialize(Vertex v, boolean polygonUntextured,
+			boolean polygonIsHLP) {
 		
-		// used to find topmost N2V and by findXXXXDestN2V methods
-		intSX 		= vertex.sx;
-		int intSYL 	= vertex.sy;
-		intSY 		= intSYL;
-		intSZ 		= vertex.sz;
-		
-		intTX = (int)(vertex.aux1 * TEXTURE_MULTIPLIER);
-		intTY = (int)(vertex.aux2 * TEXTURE_MULTIPLIER);
-		return intSYL;
-	}
-	
-	/** initializes screen space coordinates, returning sy */
-	final int initializeScreenSpaceFromVertex(final Vertex vertex)
-	{
-		intSX 		= vertex.sx;
-		int intSYL 	= vertex.sy;
-		intSY 		= intSYL;
-		intSZ 		= vertex.sz;
-		return intSYL;
+			if(polygonUntextured)
+			{
+				intSX 		= v.sx;
+				int intSYL 	= v.sy;
+				intSY 		= intSYL;
+				intSZ 		= v.sz;
+				return intSYL;
+			}
+			else
+			{
+				intSX 		= v.sx;
+				int intSYL 	= v.sy;
+				intSY 		= intSYL;
+				intSZ 		= v.sz;
+				
+				intTX = (int)(v.aux1 * TEXTURE_MULTIPLIER);
+				intTY = (int)(v.aux2 * TEXTURE_MULTIPLIER);
+				
+				if(polygonIsHLP)
+				{
+					vsX = v.vs_x;
+					vsY = v.vs_y;
+					vsZ = v.vs_z;	
+				}
+				return intSYL;
+			}
 	}
 	
 	public String toString()
@@ -59,7 +66,4 @@ final public class Nitrogen2Vertex {
 		s = s + "[" + intSX + "," + intSY +"]";
 		return s;
 	}
-	
-	
-
 }

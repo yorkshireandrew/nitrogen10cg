@@ -154,7 +154,7 @@ public void render(
 			bigLeftSZ		= ((long)leftSZ) << SHIFT;
 			
 			// find a new destination
-			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+//			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 			
 			if(leftDestN2V == null)
 			{
@@ -197,7 +197,7 @@ public void render(
 			bigRightSZ		= ((long)rightSZ) << SHIFT;
 			
 			// find a new destination
-			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+//			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 			
 			if(rightDestN2V == null)
 			{

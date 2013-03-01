@@ -193,7 +193,7 @@ public void render(
 			leftTY			= leftN2V.intTY;
 					
 			// find a new destination
-			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+//			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 			
 			if(leftDestN2V == null)
 			{
@@ -250,7 +250,7 @@ public void render(
 			rightTY			= rightN2V.intTY;
 						
 			// find a new destination
-			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+//			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 			
 			if(rightDestN2V == null)
 			{

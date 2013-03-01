@@ -145,7 +145,7 @@ public void render(
 			
 			System.out.println("completed leftDestN2V is " + leftDestN2V);
 			// find a new destination
-			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+//			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
 			
 			if(leftDestN2V == null)
 			{
@@ -194,7 +194,7 @@ public void render(
 			System.out.println("completed rightDestN2V is " + rightDestN2V);
 			
 			// find a new destination
-			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+//			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
 			
 			if(rightDestN2V == null)
 			{
