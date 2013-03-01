@@ -39,7 +39,6 @@ public void render(
 		final float lightingValue	
 		)
 {
-//	debugPixelCount = 0;
 	// **************** initialise colour ********************************************
 	int colour = -1; // white
 	if(polyData != null)colour = polyData[0] | ALPHA;
@@ -114,11 +113,9 @@ public void render(
 	
 	boolean trucking = true;
 	
-	int debug = 1000;
-	while(trucking && (debug >0))
+	while(trucking)
 	{
 		// ************ Render a line *******
-		debug--;
 		
 		renderLine(
 				bigLeftSX, 
@@ -152,6 +149,7 @@ public void render(
 		{
 			leftN2V			= leftDestN2V;
 			if(leftN2V == stopN2V)return;
+			
 			bigLeftSX		= bigLeftDestSX;
 			leftSY 			= leftDestSY;
 			bigLeftSZ		= bigLeftDestSZ;			
@@ -174,7 +172,7 @@ public void render(
 			{
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
-				leftDeltaSZ = 0;				
+				leftDeltaSZ = 0;
 			}
 		}
 		
@@ -204,26 +202,10 @@ public void render(
 			{
 				rightDeltaSX = 0;
 				rightDeltaSY = 0;
-				rightDeltaSZ = 0;				
+				rightDeltaSZ = 0;
 			}
 		}
 	}//end of while loop
-	
-	// ************ Render final line *******
-	renderLine(
-			bigLeftSX, 
-			bigLeftSZ, 
-			leftSY * contextWidth, 
-			
-			bigRightSX,
-			bigRightSZ,
-			
-			colour,
-			contextPixels,
-			contextZBuffer,
-			contextWidth		
-	);
-//	System.out.println("pixels= " + debugPixelCount);
 }
 
 //*****************************************************************************
@@ -273,7 +255,6 @@ private final void renderLine(
 		{
 			contextZBuffer[index] = pixelZ;
 			contextPixels[index] = colour;
-//			debugPixelCount++;
 		}
 		
 		// ***********************************************

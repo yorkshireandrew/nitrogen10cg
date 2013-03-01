@@ -106,7 +106,6 @@ public class Nitrogen2PolygonRenderer {
 		// ****** Find left and rightmost N2Vs as same SY ******
 		// ****** Also remove twists ***************************
 
-		if(polygonIsHLP)System.out.println("polygon HLP");
 		Nitrogen2Vertex leftN2V = findLeftN2V(topmostN2V);
 		removeLeftTwists(leftN2V, stopN2V);
 		Nitrogen2Vertex leftDestN2V = leftN2V.anticlockwise;
@@ -142,7 +141,6 @@ public class Nitrogen2PolygonRenderer {
 					lightingValue
 					);
 		}
-		System.out.println("-----");
 	}
 	
 	/** finds leftmost Nitrogen2Vertex with the same screen Y as parameter */
@@ -183,7 +181,6 @@ public class Nitrogen2PolygonRenderer {
 			if(nextN2V.intSY < inN2V.intSY)
 			{
 				// undo twist
-				System.out.println("undoing Left Twist");
 				Nitrogen2Vertex cw = inN2V.clockwise;
 				Nitrogen2Vertex acw = nextN2V.anticlockwise;
 				
@@ -215,7 +212,6 @@ public class Nitrogen2PolygonRenderer {
 			if(nextN2V.intSY < inN2V.intSY)
 			{
 				// undo twist
-				System.out.println("undoing Right Twist");
 				Nitrogen2Vertex cw = nextN2V.clockwise;
 				Nitrogen2Vertex acw = inN2V.anticlockwise;
 				

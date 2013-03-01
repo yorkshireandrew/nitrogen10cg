@@ -5,7 +5,6 @@ public class Renderer_LitQuake implements Renderer{
 		private static Renderer_LitAffineTexture r = new Renderer_LitAffineTexture();
 		private static final int SHIFT = 20;
 		private static final int ZSHIFT = 20;
-		private static final int NUM = 1 << SHIFT;
 		private static final int TEXTURE_SHIFT = 20; // align with Nitrogen2Vertex
 
 		private static final int QUAKE_STEP = 16;
@@ -191,21 +190,15 @@ public class Renderer_LitQuake implements Renderer{
 			}
 			
 			//**************************************************************
-			
-			// ***********************
+
 			int leftQuakeLineTX, leftQuakeLineTY;
 			int rightQuakeLineTX, rightQuakeLineTY;
 			
 			float lineStartVSX, lineStartVSY, lineStartVSZ;
 			float lineFinishVSX, lineFinishVSY, lineFinishVSZ;
 			
-			
-			boolean trucking = true;
-			
-			int debug =1000;
-			while(trucking && (debug >0))
+			while(true)
 			{
-				debug--;
 				// ************ Calculate left texture point
 				
 				float alpha = calculateAlphaUsingY(
@@ -294,209 +287,141 @@ public class Renderer_LitQuake implements Renderer{
 				rightDeltaSY--;
 				
 				// *********** handle if we reach left destination ******************
-				if(leftDeltaSY <= 0)
+				while(leftDeltaSY <= 0)
 				{
-					return;
-					/*
+
 					leftN2V 		= leftDestN2V;
+					if(leftN2V == stopN2V)return;
 					
-					// now update left to eliminate rounding errors
-					leftSX			= leftN2V.intSX;
-					bigLeftSX 		= leftN2V.intSX << SHIFT;
-					leftSY			= leftN2V.intSY;
-					bigLeftSZ		= ((long)leftN2V.intSZ) << SHIFT;
+					// **************** avoid accumulator errors ***********
+					leftVSX			= leftDestVSX;
+					leftVSY			= leftDestVSY;
+					leftVSZ			= leftDestVSZ;
+			
+					bigLeftSX 		= bigLeftDestSX;
+					leftSY			= leftDestSY;
+					bigLeftSZ		= bigLeftDestSZ;
+			
+					leftStartTX			= leftDestTX;
+					leftStartTY			= leftDestTY;
 					
-					leftVSX			= leftN2V.vsX;
-					leftVSY			= leftN2V.vsY;
-					leftVSZ			= leftN2V.vsZ;
+					// calculate destination
+					leftDestN2V			= leftN2V.anticlockwise;
+			
+					leftDestVSX			= leftDestN2V.vsX;
+					leftDestVSY			= leftDestN2V.vsY;
+					leftDestVSZ			= leftDestN2V.vsZ;
+
+					bigLeftDestSX 	= leftDestN2V.intSX << SHIFT;
+					leftDestSY 		= leftDestN2V.intSY;
+					bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
+			
+					leftDestTX			= leftDestN2V.intTX;
+					leftDestTY			= leftDestN2V.intTY;
 					
-					leftStartTX			= leftN2V.intTX;
-					leftStartTY			= leftN2V.intTY;
-							
-					// find a new destination
-//					leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
-					
-					if(leftDestN2V == null)
+					// calculate delta
+					leftDeltaSY = leftDestSY - leftSY;
+			
+					if(leftDeltaSY > 0)
 					{
-						leftDeltaSX = 0;
-						leftDeltaSY = 0;
-						leftDeltaSZ = 0;			
-						
-						trucking = false;
+						leftDeltaVSX = leftDestVSX - leftVSX;
+						leftDeltaVSY = leftDestVSY - leftVSY;
+						leftDeltaVSZ = leftDestVSZ - leftVSZ;
+				
+						leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+						leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;
+				
+						leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+						leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;
+				
+						leftDelta_TX = (leftDestTX - leftStartTX);
+						leftDelta_TY = (leftDestTY - leftStartTY);					
 					}
 					else
 					{
-						leftDeltaSY = leftDestN2V.intSY - leftSY;
-						if(leftDeltaSY > 0)
-						{
-								int rec 	= NUM / leftDeltaSY;
-								leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-								leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-								leftDeltaSZ -= bigLeftSZ;
-								leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
-								
-								leftDestTX = leftDestN2V.intTX;
-								leftDestTY = leftDestN2V.intTY;
-								
-								leftDestVSX			= leftDestN2V.vsX;
-								leftDestVSY			= leftDestN2V.vsY;
-								leftDestVSZ			= leftDestN2V.vsZ;
-								
-								leftDelta_TX = (leftDestTX - leftStartTX);
-								leftDelta_TY = (leftDestTY - leftStartTY);
-								
-								leftDeltaVSX = leftDestVSX - leftVSX;
-								leftDeltaVSY = leftDestVSY - leftVSY;
-								leftDeltaVSZ = leftDestVSZ - leftVSZ;
-						}
-						else
-						{
-								leftDeltaSX = 0;
-								leftDeltaSY = 0;
-								leftDeltaSZ = 0;
-								
-								leftDelta_TX = 0;
-								leftDelta_TY = 0;
-								
-								leftDeltaVSX = 0;
-								leftDeltaVSY = 0;
-								leftDeltaVSZ = 0;
-								
-								trucking = false;
-						}
+						leftDeltaVSX = leftDestVSX - leftVSX;
+						leftDeltaVSY = leftDestVSY - leftVSY;
+						leftDeltaVSZ = leftDestVSZ - leftVSZ;
+				
+						leftDeltaSX = 0;
+						leftDeltaSZ = 0;
+				
+						leftDeltaSX = 0;
+						leftDeltaSZ = 0;
+				
+						leftDelta_TX = (leftDestTX - leftStartTX);
+						leftDelta_TY = (leftDestTY - leftStartTY);					
 					}
-					*/		
-				}
+				}// end of while
 				
 				// *********** handle if we reach right destination ******************
-				if(rightDeltaSY <= 0)
+				while(rightDeltaSY <= 0)
 				{
-					return;
-					/*
-					rightN2V 		= rightDestN2V;
+					rightN2V = rightDestN2V;
 					
-					// now update right to eliminate rounding errors
-					rightSX			= rightN2V.intSX;
-					bigRightSX 		= rightN2V.intSX << SHIFT;
-					rightSY			= rightN2V.intSY;
-					rightSZ			= rightN2V.intSZ;
-					bigRightSZ		= ((long)rightSZ) << SHIFT;
+					// **************** avoid accumulator errors ***********
+					rightVSX			= rightDestVSX;
+					rightVSY			= rightDestVSY;
+					rightVSZ			= rightDestVSZ;
 					
-					rightVSX			= rightN2V.vsX;
-					rightVSY			= rightN2V.vsY;
-					rightVSZ			= rightN2V.vsZ;
+					bigRightSX 			= bigRightDestSX;
+					rightSY				= rightDestSY;
+					bigRightSZ			= bigRightDestSZ;
 					
-					rightStartTX			= rightN2V.intTX;
-					rightStartTY			= rightN2V.intTY;
-										
-					// find a new destination
-//					rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+					rightStartTX		= rightDestTX;
+					rightStartTY		= rightDestTY;
 					
-					if(rightDestN2V == null)
+					// calculate destination
+					rightDestN2V		= rightN2V.clockwise;
+					
+					rightDestVSX		= rightDestN2V.vsX;
+					rightDestVSY		= rightDestN2V.vsY;
+					rightDestVSZ		= rightDestN2V.vsZ;
+
+					bigRightDestSX 		= rightDestN2V.intSX << SHIFT;
+					rightDestSY 		= rightDestN2V.intSY;
+					bigRightDestSZ		= ((long)rightDestN2V.intSZ) << ZSHIFT;
+					
+					rightDestTX			= rightDestN2V.intTX;
+					rightDestTY			= rightDestN2V.intTY;
+					
+					// calculate delta
+					rightDeltaSY = rightDestSY - rightSY;
+					
+					if(rightDeltaSY > 0)
 					{
-						rightDeltaSX = 0;
-						rightDeltaSY = 0;
-						rightDeltaSZ = 0;
+						rightDeltaVSX = rightDestVSX - rightVSX;
+						rightDeltaVSY = rightDestVSY - rightVSY;
+						rightDeltaVSZ = rightDestVSZ - rightVSZ;
 						
-						rightDelta_TX = 0;
-						rightDelta_TY = 0;
+						rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
+						rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;
 						
-						trucking = false;
+						rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
+						rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;
+						
+						rightDelta_TX = (rightDestTX - rightStartTX);
+						rightDelta_TY = (rightDestTY - rightStartTY);					
 					}
 					else
 					{
-						rightDeltaSY = rightDestN2V.intSY - rightSY;
-						if(rightDeltaSY > 0)
-						{
-								int rec 	= NUM / rightDeltaSY;
-								rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-								rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
-								
-								rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-								rightDeltaSZ -= bigRightSZ;
-								rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
-								
-								rightDestVSX			= rightDestN2V.vsX;
-								rightDestVSY			= rightDestN2V.vsY;
-								rightDestVSZ			= rightDestN2V.vsZ;
-								
-								rightDestTX = rightDestN2V.intTX;
-								rightDestTY = rightDestN2V.intTY;
-								
-								
-								rightDelta_TX = (rightDestTX - rightStartTX);
-								rightDelta_TY = (rightDestTY - rightStartTY);
-								
-								rightDeltaVSX = rightDestVSX - rightVSX;
-								rightDeltaVSY = rightDestVSY - rightVSY;
-								rightDeltaVSZ = rightDestVSZ - rightVSZ;
-								
-						}
-						else
-						{
-								rightDeltaSX = 0;
-								rightDeltaSY = 0;
-								rightDeltaSZ = 0;
-								
-								rightDelta_TX = 0;
-								rightDelta_TY = 0;
-								
-								rightDeltaVSX = 0;
-								rightDeltaVSY = 0;
-								rightDeltaVSZ = 0;
-								
-								trucking = false;
-						}
-					}		
-					*/
-				}
-			}//end of while loop
-			
-			leftQuakeLineTX =  leftStartTX;
-			leftQuakeLineTY =  leftStartTY;
-			
-			rightQuakeLineTX = rightStartTX;
-			rightQuakeLineTY = rightStartTY;
-			
-			// ************ Render final line *******
-			renderLine(
-					bigLeftSX, 
-					bigLeftSZ, 
-					leftSY * contextWidth, 
-					
-					bigRightSX,
-					bigRightSZ,
-					
-					tex,
-					textureWidth,
-					
-					leftQuakeLineTX,
-					leftQuakeLineTY,
-					
-					rightQuakeLineTX,
-					rightQuakeLineTY,
-					
-					// stuff for texture mapping
-					leftVSX,
-					leftVSY,
-					leftVSZ,
-					
-					rightVSX,
-					rightVSY,
-					rightVSZ,
-					
-					invContextMag,
-					contextMidW,
-					contentGeneratorForcesNoPerspective,					
-					// -------------------------
-					
-					contextPixels,
-					contextZBuffer,
-					contextWidth,
-					lightVal
-			);
+						rightDeltaVSX = rightDestVSX - rightVSX;
+						rightDeltaVSY = rightDestVSY - rightVSY;
+						rightDeltaVSZ = rightDestVSZ - rightVSZ;
+						
+						rightDeltaSX = 0;
+						rightDeltaSZ = 0;
+						
+						rightDeltaSX = 0;
+						rightDeltaSZ = 0;
+						
+						rightDelta_TX = (rightDestTX - rightStartTX);
+						rightDelta_TY = (rightDestTY - rightStartTY);					
+					}
+				}// end of while
+			}// end of infinite while
 		}
-
+		
 		//*****************************************************************************
 		//*****************************************************************************
 		// ****************************** Render Line *********************************
