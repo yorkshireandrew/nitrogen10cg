@@ -188,8 +188,10 @@ public void render(
 			leftSY 			= leftDestSY;
 			bigLeftSZ		= bigLeftDestSZ;	
 			
-			leftTX			= leftN2V.intTX;
-			leftTY			= leftN2V.intTY;
+			leftTX			= leftDestTX;
+			leftTY			= leftDestTY;
+//			leftTX			= leftN2V.intTX;   // WHAT IT WAS
+//			leftTY			= leftN2V.intTY;   // WHAT IT WAS
 			
 			// find a new destination
 			leftDestN2V = leftDestN2V.anticlockwise;
@@ -224,10 +226,13 @@ public void render(
 			rightN2V			= rightDestN2V;
 			bigRightSX		= bigRightDestSX;
 			rightSY 			= rightDestSY;
-			bigRightSZ		= bigRightDestSZ;	
+			bigRightSZ		= bigRightDestSZ;
 			
-			rightTX			= rightN2V.intTX;
-			rightTY			= rightN2V.intTY;
+			rightTX			= rightDestTX;
+			rightTY			= rightDestTY;
+			
+//			rightTX			= rightN2V.intTX;
+//			rightTY			= rightN2V.intTY;
 			
 			// find a new destination
 			rightDestN2V = rightDestN2V.clockwise;

@@ -1,11 +1,10 @@
 package com.bombheadgames.nitrogen2;
 
-public class Renderer_LitQuake implements Renderer{
+public class BrokenRenderer_LitQuake implements Renderer{
 
 		private static Renderer_LitAffineTexture r = new Renderer_LitAffineTexture();
 		private static final int SHIFT = 20;
 		private static final int ZSHIFT = 20;
-		private static final int NUM = 1 << SHIFT;
 		private static final int TEXTURE_SHIFT = 20; // align with Nitrogen2Vertex
 
 		private static final int QUAKE_STEP = 16;
@@ -56,7 +55,7 @@ public class Renderer_LitQuake implements Renderer{
 			else{return;}
 			
 			
-			// **************** Initialise Left start position and calculate delta ***********
+			// **************** Initialise Left start position and calculate delta ***********		
 			float	leftVSX			= leftN2V.vsX;
 			float	leftVSY			= leftN2V.vsY;
 			float	leftVSZ			= leftN2V.vsZ;
@@ -67,145 +66,103 @@ public class Renderer_LitQuake implements Renderer{
 			
 			int		leftStartTX			= leftN2V.intTX;
 			int		leftStartTY			= leftN2V.intTY;
+
+			int 	bigLeftDestSX 		= leftDestN2V.intSX << SHIFT;
+			int 	leftDestSY 		= leftDestN2V.intSY;
+			long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
+			
 			
 			float	leftDestVSX			= leftDestN2V.vsX;
 			float	leftDestVSY			= leftDestN2V.vsY;
 			float	leftDestVSZ			= leftDestN2V.vsZ;
-
-			int 	bigLeftDestSX 	= leftDestN2V.intSX << SHIFT;
-			int 	leftDestSY 		= leftDestN2V.intSY;
-			long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
 			
-			int		leftDestTX			= leftDestN2V.intTX;
-			int		leftDestTY			= leftDestN2V.intTY;
+			int		leftDestTX		= leftDestN2V.intTX;
+			int		leftDestTY		= leftDestN2V.intTY;
 			
-			float 	leftDeltaVSX;
-			float 	leftDeltaVSY;
-			float 	leftDeltaVSZ; 
+			float	leftDelta_TX	= (float)(leftDestTX - leftStartTX);
+			float	leftDelta_TY	= (float)(leftDestTY - leftStartTY);
+			
+			float 	leftDeltaVSX = leftDestVSX - leftVSX;
+			float 	leftDeltaVSY = leftDestVSY - leftVSY;
+			float 	leftDeltaVSZ = leftDestVSZ - leftVSZ;
 			
 			int 	leftDeltaSX; 
 			int 	leftDeltaSY;
 			long 	leftDeltaSZ;
 			
-			float	leftDelta_TX;
-			float	leftDelta_TY;
-			
 			leftDeltaSY = leftDestSY - leftSY;
 			
 			if(leftDeltaSY > 0)
 			{
-				leftDeltaVSX = leftDestVSX - leftVSX;
-				leftDeltaVSY = leftDestVSY - leftVSY;
-				leftDeltaVSZ = leftDestVSZ - leftVSZ;
-				
-				leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
-				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;
-				
-				leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
-				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;
-				
-				leftDelta_TX = (leftDestTX - leftStartTX);
-				leftDelta_TY = (leftDestTY - leftStartTY);					
+					leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+					leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;
+					
 			}
 			else
 			{
-				leftDeltaVSX = leftDestVSX - leftVSX;
-				leftDeltaVSY = leftDestVSY - leftVSY;
-				leftDeltaVSZ = leftDestVSZ - leftVSZ;
-				
-				leftDeltaSX = 0;
-				leftDeltaSZ = 0;
-				
-				leftDeltaSX = 0;
-				leftDeltaSZ = 0;
-				
-				leftDelta_TX = (leftDestTX - leftStartTX);
-				leftDelta_TY = (leftDestTY - leftStartTY);					
+					leftDeltaSX = 0;
+					leftDeltaSY = 0;
+					leftDeltaSZ = 0;						
 			}
 			
 			// **************** Initialise Right start position and calculate delta ***********
-			float	rightVSX			= rightN2V.vsX;
-			float	rightVSY			= rightN2V.vsY;
-			float	rightVSZ			= rightN2V.vsZ;
-			
 			int 	bigRightSX 		= rightN2V.intSX << SHIFT;
 			int 	rightSY			= rightN2V.intSY;
-			long 	bigRightSZ		= ((long)rightN2V.intSZ) << ZSHIFT;
+			int 	rightSZ			= rightN2V.intSZ;
+			long 	bigRightSZ		= ((long)rightSZ) << SHIFT;
 			
-			int		rightStartTX			= rightN2V.intTX;
-			int		rightStartTY			= rightN2V.intTY;
+			float	rightVSX		= rightN2V.vsX;
+			float	rightVSY		= rightN2V.vsY;
+			float	rightVSZ		= rightN2V.vsZ;
 			
-			float	rightDestVSX			= rightDestN2V.vsX;
-			float	rightDestVSY			= rightDestN2V.vsY;
-			float	rightDestVSZ			= rightDestN2V.vsZ;
+			int		rightStartTX	= rightN2V.intTX;
+			int		rightStartTY	= rightN2V.intTY;
 
 			int 	bigRightDestSX 	= rightDestN2V.intSX << SHIFT;
-			int 	rightDestSY 		= rightDestN2V.intSY;
+			int 	rightDestSY 	= rightDestN2V.intSY;
 			long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
+
+			float	rightDestVSX	= rightDestN2V.vsX;
+			float	rightDestVSY	= rightDestN2V.vsY;
+			float	rightDestVSZ	= rightDestN2V.vsZ;
 			
-			int		rightDestTX			= rightDestN2V.intTX;
-			int		rightDestTY			= rightDestN2V.intTY;
+			int		rightDestTX		= rightDestN2V.intTX;
+			int		rightDestTY		= rightDestN2V.intTY;
 			
-			float 	rightDeltaVSX;
-			float 	rightDeltaVSY;
-			float 	rightDeltaVSZ; 
+			float	rightDelta_TX	= (float)(rightDestTX - rightStartTX);
+			float	rightDelta_TY	= (float)(rightDestTY - rightStartTY);
 			
 			int 	rightDeltaSX; 
 			int 	rightDeltaSY;
 			long 	rightDeltaSZ;
 			
-			float	rightDelta_TX;
-			float	rightDelta_TY;
+			float 	rightDeltaVSX = rightDestVSX - rightVSX;
+			float 	rightDeltaVSY = rightDestVSY - rightVSY;
+			float 	rightDeltaVSZ = rightDestVSZ - rightVSZ;
 			
 			rightDeltaSY = rightDestSY - rightSY;
 			
 			if(rightDeltaSY > 0)
 			{
-				rightDeltaVSX = rightDestVSX - rightVSX;
-				rightDeltaVSY = rightDestVSY - rightVSY;
-				rightDeltaVSZ = rightDestVSZ - rightVSZ;
-				
-				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
-				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;
-				
-				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
-				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;
-				
-				rightDelta_TX = (rightDestTX - rightStartTX);
-				rightDelta_TY = (rightDestTY - rightStartTY);					
+					rightDeltaSX = (bigRightDestSX - bigRightSX) / rightDeltaSY;
+					rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
 			}
 			else
 			{
-				rightDeltaVSX = rightDestVSX - rightVSX;
-				rightDeltaVSY = rightDestVSY - rightVSY;
-				rightDeltaVSZ = rightDestVSZ - rightVSZ;
-				
-				rightDeltaSX = 0;
-				rightDeltaSZ = 0;
-				
-				rightDeltaSX = 0;
-				rightDeltaSZ = 0;
-				
-				rightDelta_TX = (rightDestTX - rightStartTX);
-				rightDelta_TY = (rightDestTY - rightStartTY);					
+					rightDeltaSX = 0;
+					rightDeltaSY = 0;
+					rightDeltaSZ = 0;					
 			}
 			
-			//**************************************************************
-			
 			// ***********************
-			int leftQuakeLineTX, leftQuakeLineTY;
-			int rightQuakeLineTX, rightQuakeLineTY;
+			int leftTX, leftTY;
+			int rightTX, rightTY;
 			
 			float lineStartVSX, lineStartVSY, lineStartVSZ;
 			float lineFinishVSX, lineFinishVSY, lineFinishVSZ;
 			
-			
-			boolean trucking = true;
-			
-			int debug =1000;
-			while(trucking && (debug >0))
+			while(true)
 			{
-				debug--;
 				// ************ Calculate left texture point
 				
 				float alpha = calculateAlphaUsingY(
@@ -217,8 +174,8 @@ public class Renderer_LitQuake implements Renderer{
 						contentGeneratorForcesNoPerspective
 						);
 				
-				leftQuakeLineTX = (int)(leftDelta_TX * alpha) + leftStartTX;
-				leftQuakeLineTY = (int)(leftDelta_TY * alpha) + leftStartTY;
+				leftTX = (int)(leftDelta_TX * alpha) + leftStartTX;
+				leftTY = (int)(leftDelta_TY * alpha) + leftStartTY;
 				
 				// calculate view space of line start
 				lineStartVSX = leftDeltaVSX * alpha + leftVSX;
@@ -235,8 +192,8 @@ public class Renderer_LitQuake implements Renderer{
 						contentGeneratorForcesNoPerspective
 						);
 				
-				rightQuakeLineTX = (int)(rightDelta_TX * alpha2) + rightStartTX;
-				rightQuakeLineTY = (int)(rightDelta_TY * alpha2) + rightStartTY;
+				rightTX = (int)(rightDelta_TX * alpha2) + rightStartTX;
+				rightTY = (int)(rightDelta_TY * alpha2) + rightStartTY;
 				
 				// calculate view space of line finish
 				lineFinishVSX = rightDeltaVSX * alpha2 + rightVSX;
@@ -254,11 +211,11 @@ public class Renderer_LitQuake implements Renderer{
 						tex,
 						textureWidth,
 						
-						leftQuakeLineTX,
-						leftQuakeLineTY,
+						leftTX,
+						leftTY,
 						
-						rightQuakeLineTX,
-						rightQuakeLineTY,
+						rightTX,
+						rightTY,
 						
 						// stuff for texture mapping
 						lineStartVSX,
@@ -286,7 +243,7 @@ public class Renderer_LitQuake implements Renderer{
 				bigLeftSZ += leftDeltaSZ;
 						
 				bigRightSX += rightDeltaSX;		 
-				rightSY++;
+//				rightSY++;
 				bigRightSZ += rightDeltaSZ;
 				
 				// *********** decrement steps to destination down counters ****
@@ -294,207 +251,123 @@ public class Renderer_LitQuake implements Renderer{
 				rightDeltaSY--;
 				
 				// *********** handle if we reach left destination ******************
-				if(leftDeltaSY <= 0)
+				while(leftDeltaSY <= 0)
 				{
-					return;
-					/*
 					leftN2V 		= leftDestN2V;
+					if(leftN2V == stopN2V)return;
 					
 					// now update left to eliminate rounding errors
-					leftSX			= leftN2V.intSX;
-					bigLeftSX 		= leftN2V.intSX << SHIFT;
-					leftSY			= leftN2V.intSY;
-					bigLeftSZ		= ((long)leftN2V.intSZ) << SHIFT;
+//					leftSX			= leftN2V.intSX;
+					bigLeftSX 		= bigLeftDestSX;
+					leftSY			= leftDestSY;
+//					leftSZ			= leftN2V.intSZ;
+					bigLeftSZ		= bigLeftDestSZ;
 					
-					leftVSX			= leftN2V.vsX;
-					leftVSY			= leftN2V.vsY;
-					leftVSZ			= leftN2V.vsZ;
+					leftVSX			= leftDestVSX;
+					leftVSY			= leftDestVSY;
+					leftVSZ			= leftDestVSZ;
 					
-					leftStartTX			= leftN2V.intTX;
-					leftStartTY			= leftN2V.intTY;
-							
+					leftStartTX		= leftDestTX;
+					leftStartTY		= leftDestTY;
+					
 					// find a new destination
-//					leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+					leftDestN2V = leftDestN2V.anticlockwise;
 					
-					if(leftDestN2V == null)
+					leftDestSY 		= leftDestN2V.intSY;
+					leftDestTX		= leftDestN2V.intTX;
+					leftDestTY		= leftDestN2V.intTY;
+
+					
+					leftDestVSX		= leftDestN2V.vsX;
+					leftDestVSY		= leftDestN2V.vsY;
+					leftDestVSZ		= leftDestN2V.vsZ;
+					
+					leftDelta_TX	= (float)(leftDestTX - leftStartTX);
+					leftDelta_TY	= (float)(leftDestTY - leftStartTY);
+					
+					leftDeltaVSX = leftDestVSX - leftVSX;
+					leftDeltaVSY = leftDestVSY - leftVSY;
+					leftDeltaVSZ = leftDestVSZ - leftVSZ;
+					
+					leftDeltaSY = leftDestSY - leftSY;
+					
+					if(leftDeltaSY > 0)
 					{
-						leftDeltaSX = 0;
-						leftDeltaSY = 0;
-						leftDeltaSZ = 0;			
+							bigLeftDestSX 		= leftDestN2V.intSX << SHIFT;
+							bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
 						
-						trucking = false;
+							leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+							leftDeltaSY = (leftDestSY - leftSY);	// down counter
+							leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;
+							
 					}
 					else
 					{
-						leftDeltaSY = leftDestN2V.intSY - leftSY;
-						if(leftDeltaSY > 0)
-						{
-								int rec 	= NUM / leftDeltaSY;
-								leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-								leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-								leftDeltaSZ -= bigLeftSZ;
-								leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
-								
-								leftDestTX = leftDestN2V.intTX;
-								leftDestTY = leftDestN2V.intTY;
-								
-								leftDestVSX			= leftDestN2V.vsX;
-								leftDestVSY			= leftDestN2V.vsY;
-								leftDestVSZ			= leftDestN2V.vsZ;
-								
-								leftDelta_TX = (leftDestTX - leftStartTX);
-								leftDelta_TY = (leftDestTY - leftStartTY);
-								
-								leftDeltaVSX = leftDestVSX - leftVSX;
-								leftDeltaVSY = leftDestVSY - leftVSY;
-								leftDeltaVSZ = leftDestVSZ - leftVSZ;
-						}
-						else
-						{
-								leftDeltaSX = 0;
-								leftDeltaSY = 0;
-								leftDeltaSZ = 0;
-								
-								leftDelta_TX = 0;
-								leftDelta_TY = 0;
-								
-								leftDeltaVSX = 0;
-								leftDeltaVSY = 0;
-								leftDeltaVSZ = 0;
-								
-								trucking = false;
-						}
+							System.out.println("leftDeltaSY = 0");
+							leftDeltaSX = 0;
+							leftDeltaSY = 0;
+							leftDeltaSZ = 0;						
 					}
-					*/		
 				}
 				
 				// *********** handle if we reach right destination ******************
-				if(rightDeltaSY <= 0)
+				while(rightDeltaSY <= 0)
 				{
-					return;
-					/*
 					rightN2V 		= rightDestN2V;
 					
 					// now update right to eliminate rounding errors
-					rightSX			= rightN2V.intSX;
-					bigRightSX 		= rightN2V.intSX << SHIFT;
-					rightSY			= rightN2V.intSY;
-					rightSZ			= rightN2V.intSZ;
-					bigRightSZ		= ((long)rightSZ) << SHIFT;
+//					rightSX			= rightN2V.intSX;
+					bigRightSX 		= bigRightDestSX;
+					rightSY			= rightDestSY;
+//					rightSZ			= rightN2V.intSZ;
+					bigRightSZ		= bigRightDestSZ;
 					
-					rightVSX			= rightN2V.vsX;
-					rightVSY			= rightN2V.vsY;
-					rightVSZ			= rightN2V.vsZ;
+					rightVSX		= rightDestVSX;
+					rightVSY		= rightDestVSY;
+					rightVSZ		= rightDestVSZ;
 					
-					rightStartTX			= rightN2V.intTX;
-					rightStartTY			= rightN2V.intTY;
-										
+					rightStartTX	= rightDestTX;
+					rightStartTY	= rightDestTY;
+					
 					// find a new destination
-//					rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+					rightDestN2V 	= rightDestN2V.clockwise;
 					
-					if(rightDestN2V == null)
+					rightDestSY 	= rightDestN2V.intSY;
+					rightDestTX		= rightDestN2V.intTX;
+					rightDestTY		= rightDestN2V.intTY;
+					
+					rightDestVSX	= rightDestN2V.vsX;
+					rightDestVSY	= rightDestN2V.vsY;
+					rightDestVSZ	= rightDestN2V.vsZ;
+					
+					rightDelta_TX	= (float)(rightDestTX - rightStartTX);
+					rightDelta_TY	= (float)(rightDestTY - rightStartTY);
+					
+					rightDeltaVSX 	= rightDestVSX - rightVSX;
+					rightDeltaVSY 	= rightDestVSY - rightVSY;
+					rightDeltaVSZ 	= rightDestVSZ - rightVSZ;
+					
+					rightDeltaSY 	= rightDestSY - rightSY;
+					
+					if(rightDeltaSY > 0)
 					{
-						rightDeltaSX = 0;
-						rightDeltaSY = 0;
-						rightDeltaSZ = 0;
-						
-						rightDelta_TX = 0;
-						rightDelta_TY = 0;
-						
-						trucking = false;
+							bigRightDestSX 		= rightDestN2V.intSX << SHIFT;
+							bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
+
+							rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
+							rightDeltaSY = (rightDestSY - rightSY);	// down counter
+							rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;
+							
 					}
 					else
 					{
-						rightDeltaSY = rightDestN2V.intSY - rightSY;
-						if(rightDeltaSY > 0)
-						{
-								int rec 	= NUM / rightDeltaSY;
-								rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-								rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
-								
-								rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-								rightDeltaSZ -= bigRightSZ;
-								rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
-								
-								rightDestVSX			= rightDestN2V.vsX;
-								rightDestVSY			= rightDestN2V.vsY;
-								rightDestVSZ			= rightDestN2V.vsZ;
-								
-								rightDestTX = rightDestN2V.intTX;
-								rightDestTY = rightDestN2V.intTY;
-								
-								
-								rightDelta_TX = (rightDestTX - rightStartTX);
-								rightDelta_TY = (rightDestTY - rightStartTY);
-								
-								rightDeltaVSX = rightDestVSX - rightVSX;
-								rightDeltaVSY = rightDestVSY - rightVSY;
-								rightDeltaVSZ = rightDestVSZ - rightVSZ;
-								
-						}
-						else
-						{
-								rightDeltaSX = 0;
-								rightDeltaSY = 0;
-								rightDeltaSZ = 0;
-								
-								rightDelta_TX = 0;
-								rightDelta_TY = 0;
-								
-								rightDeltaVSX = 0;
-								rightDeltaVSY = 0;
-								rightDeltaVSZ = 0;
-								
-								trucking = false;
-						}
-					}		
-					*/
+							System.out.println("rightDeltaSY = 0");
+							rightDeltaSX = 0;
+							rightDeltaSY = 0;
+							rightDeltaSZ = 0;						
+					}
 				}
 			}//end of while loop
-			
-			leftQuakeLineTX =  leftStartTX;
-			leftQuakeLineTY =  leftStartTY;
-			
-			rightQuakeLineTX = rightStartTX;
-			rightQuakeLineTY = rightStartTY;
-			
-			// ************ Render final line *******
-			renderLine(
-					bigLeftSX, 
-					bigLeftSZ, 
-					leftSY * contextWidth, 
-					
-					bigRightSX,
-					bigRightSZ,
-					
-					tex,
-					textureWidth,
-					
-					leftQuakeLineTX,
-					leftQuakeLineTY,
-					
-					rightQuakeLineTX,
-					rightQuakeLineTY,
-					
-					// stuff for texture mapping
-					leftVSX,
-					leftVSY,
-					leftVSZ,
-					
-					rightVSX,
-					rightVSY,
-					rightVSZ,
-					
-					invContextMag,
-					contextMidW,
-					contentGeneratorForcesNoPerspective,					
-					// -------------------------
-					
-					contextPixels,
-					contextZBuffer,
-					contextWidth,
-					lightVal
-			);
 		}
 
 		//*****************************************************************************
@@ -806,7 +679,11 @@ public class Renderer_LitQuake implements Renderer{
 			
 			float deltaVSX = destVSX - startVSX;
 			
-			if(deltaVSX <= 0)return(0);
+			if(deltaVSX <= 0)
+				{
+					System.out.println("deltaVSX<0");
+					return(0);
+				}
 			
 			float vsx = SX - contextMidW;
 			
@@ -834,7 +711,11 @@ public class Renderer_LitQuake implements Renderer{
 			
 			float deltaVSY = destVSY - startVSY;
 			
-			if(deltaVSY == 0)return(0);
+			if(deltaVSY == 0)
+				{
+					System.out.println("deltaVSY<0");	
+					return(0);
+				}
 			
 			float vsy = contextMidH - SY;
 			
