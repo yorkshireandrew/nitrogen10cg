@@ -19,7 +19,9 @@ public void render(
 		Nitrogen2Vertex leftDestN2V,
 		
 		Nitrogen2Vertex rightN2V,
-		Nitrogen2Vertex rightDestN2V,			
+		Nitrogen2Vertex rightDestN2V,
+		Nitrogen2Vertex stopN2V,
+		
 		
 		final int[] polyData,
 		final TexMap textureMap,
@@ -138,10 +140,9 @@ public void render(
 	}
 	
 	boolean trucking = true;
-	int debug = 1000;
-	while(trucking && (debug >0))
+	
+	while(trucking)
 	{
-		debug--;
 		// ************ Render a line *******
 		renderLine(
 				bigLeftSX, 
@@ -438,7 +439,8 @@ public void renderHLP(
 		final Nitrogen2Vertex leftDestN2V,
 		
 		final Nitrogen2Vertex rightN2V,
-		final Nitrogen2Vertex rightDestN2V,			
+		final Nitrogen2Vertex rightDestN2V,
+		Nitrogen2Vertex stopN2V,
 		
 		final int[] polyData,
 		final TexMap textureMap,

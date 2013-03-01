@@ -21,7 +21,7 @@ public interface Renderer {
 					
 					final Nitrogen2Vertex rightN2V,
 					final Nitrogen2Vertex rightDestN2V,			
-					
+					final Nitrogen2Vertex stopN2V,
 					final int[] polyData,
 					final TexMap textureMap,
 					final float lightingValue	
@@ -34,7 +34,8 @@ public interface Renderer {
 					final Nitrogen2Vertex leftDestN2V,
 					
 					final Nitrogen2Vertex rightN2V,
-					final Nitrogen2Vertex rightDestN2V,			
+					final Nitrogen2Vertex rightDestN2V,
+					final Nitrogen2Vertex stopN2V,
 					
 					final int[] polyData,
 					final TexMap textureMap,

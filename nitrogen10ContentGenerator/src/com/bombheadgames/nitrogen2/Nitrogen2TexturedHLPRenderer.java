@@ -6,6 +6,7 @@ public class Nitrogen2TexturedHLPRenderer {
 	static final Nitrogen2Vertex[] workingN2Vs;
 	static final int WORKING_N2V_SIZE = 20;
 	static int workingN2Vindex;
+	static Nitrogen2Vertex stopN2V;
 	
 	static{
 		// instantiate working vertexes
@@ -38,6 +39,7 @@ public class Nitrogen2TexturedHLPRenderer {
 				context,
 				leftN2V,leftDestN2V,
 				rightN2V,rightDestN2V,
+				stopN2V,
 				polyData,
 				textureMap,
 				lightingValue
@@ -51,6 +53,7 @@ public class Nitrogen2TexturedHLPRenderer {
 		Nitrogen2Vertex retval;	
 		int index = 0;
 		int minSY;
+		int maxSY;
 		
 		Nitrogen2Vertex[] workingN2VsL = workingN2Vs; // cache locally for speed
 
@@ -60,6 +63,9 @@ public class Nitrogen2TexturedHLPRenderer {
 		minSY = startN2V.initializeAllFromVertex(start);
 		retval = startN2V;
 		
+		stopN2V = startN2V;
+		maxSY = minSY; // initialise maxSY to startN2V.SY
+	
 		// step round anticlockwise creating N2Vs and clockwise references
 		// also remember the N2V with lowest screen Y coordinate
 		Vertex next = start.anticlockwise;
@@ -73,6 +79,11 @@ public class Nitrogen2TexturedHLPRenderer {
 			{
 				retval = nextN2V;
 				minSY = nextSY;
+			}
+			if(nextSY > maxSY)
+			{
+				stopN2V = nextN2V;
+				maxSY = nextSY;
 			}
 			nextN2V.clockwise = previousOne;
 			previousOne = nextN2V;

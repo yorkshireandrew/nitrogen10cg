@@ -31,7 +31,8 @@ public void render(
 		Nitrogen2Vertex leftDestN2V,
 		
 		Nitrogen2Vertex rightN2V,
-		Nitrogen2Vertex rightDestN2V,			
+		Nitrogen2Vertex rightDestN2V,
+		final Nitrogen2Vertex stopN2V,
 		
 		final int[] polyData,
 		final TexMap textureMap,
@@ -147,83 +148,63 @@ public void render(
 		rightDeltaSY--;
 		
 		// *********** handle if we reach left destination ******************
-		if(leftDeltaSY <= 0)
+		while(leftDeltaSY <= 0)
 		{
+			leftN2V			= leftDestN2V;
+			if(leftN2V == stopN2V)return;
 			bigLeftSX		= bigLeftDestSX;
 			leftSY 			= leftDestSY;
 			bigLeftSZ		= bigLeftDestSZ;			
 			
 			// find a new destination
-			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+			leftDestN2V = leftDestN2V.anticlockwise;
 			
-			if(leftDestN2V == null)
+			leftDestSY = leftDestN2V.intSY;
+			leftDeltaSY = leftDestSY - leftSY;
+			
+			if(leftDeltaSY > 0)
+			{
+				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+				leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;	
+			}
+			else
 			{
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
-				leftDeltaSZ = 0;
-				trucking = false;
+				leftDeltaSZ = 0;				
 			}
-			else
-			{
-				leftDestSY = leftDestN2V.intSY;
-				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
-				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-				
-				leftDeltaSY = leftDestSY - leftSY;
-				if(leftDeltaSY > 0)
-				{
-					leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
-					leftDeltaSY = (leftDestSY - leftSY);	// down counter
-					leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;	
-				}
-				else
-				{
-						leftDeltaSX = 0;
-						leftDeltaSY = 0;
-						leftDeltaSZ = 0;
-						trucking = false;
-				}
-			}		
 		}
 		
 		// *********** handle if we reach right destination ******************
-		if(rightDeltaSY <= 0)
+		while(rightDeltaSY <= 0)
 		{
+			rightN2V		= rightDestN2V;
+
 			bigRightSX		= bigRightDestSX;
 			rightSY 		= rightDestSY;
-			bigRightSZ		= bigRightDestSZ;	
+			bigRightSZ		= bigRightDestSZ;			
 			
 			// find a new destination
-			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+			rightDestN2V = rightDestN2V.clockwise;
 			
-			if(rightDestN2V == null)
+			rightDestSY = rightDestN2V.intSY;
+			rightDeltaSY = rightDestSY - rightSY;
+			
+			if(rightDeltaSY > 0)
 			{
-				rightDeltaSX = 0;
-				rightDeltaSY = 0;
-				rightDeltaSZ = 0;
-				trucking = false;
+				bigRightDestSX = rightDestN2V.intSX << SHIFT;
+				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
+				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;	
 			}
 			else
 			{
-				rightDestSY = rightDestN2V.intSY;
-				bigRightDestSX = rightDestN2V.intSX << SHIFT;
-				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-				
-				rightDeltaSY = rightDestSY - rightSY;
-				if(rightDeltaSY > 0)
-				{
-					rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
-					rightDeltaSY = (rightDestSY - rightSY);	// down counter
-					rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;		
-				}
-				else
-				{
-						rightDeltaSX = 0;
-						rightDeltaSY = 0;
-						rightDeltaSZ = 0;
-						trucking = false;
-				}
-			}		
+				rightDeltaSX = 0;
+				rightDeltaSY = 0;
+				rightDeltaSZ = 0;				
+			}
 		}
 	}//end of while loop
 	
@@ -343,7 +324,8 @@ public void renderHLP(
 		final Nitrogen2Vertex leftDestN2V,
 		
 		final Nitrogen2Vertex rightN2V,
-		final Nitrogen2Vertex rightDestN2V,			
+		final Nitrogen2Vertex rightDestN2V,
+		final Nitrogen2Vertex stopN2V,
 		
 		final int[] polyData,
 		final TexMap textureMap,

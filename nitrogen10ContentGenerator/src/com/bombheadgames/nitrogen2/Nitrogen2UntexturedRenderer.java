@@ -5,6 +5,7 @@ public class Nitrogen2UntexturedRenderer {
 	static final Nitrogen2Vertex[] workingN2Vs;
 	static final int WORKING_N2V_SIZE = 20;
 	static int workingN2Vindex;
+	static Nitrogen2Vertex stopN2V;
 	
 	static{
 		// instantiate working vertexes
@@ -27,17 +28,20 @@ public class Nitrogen2UntexturedRenderer {
 		context.polygonsRendered++;	
 		Nitrogen2Vertex startN2V = produceN2Vs(context, start);		
 		Nitrogen2Vertex leftN2V = findLeftN2V(startN2V);
-		Nitrogen2Vertex leftDestN2V = findLeftDestN2V(leftN2V);
-		if(leftDestN2V == null)return;
+		removeLeftTwists(leftN2V, stopN2V);
+		Nitrogen2Vertex leftDestN2V = leftN2V.anticlockwise;
 		
 		Nitrogen2Vertex rightN2V = findRightN2V(startN2V);
-		Nitrogen2Vertex rightDestN2V = findRightDestN2V(rightN2V);
-		if(rightDestN2V == null)return;	
+		removeRightTwists(rightN2V, stopN2V);
+		Nitrogen2Vertex rightDestN2V = rightN2V.clockwise;
+		
+		if(leftN2V == stopN2V)return;
 		
 		renderer.render(
 				context,
 				leftN2V,leftDestN2V,
 				rightN2V,rightDestN2V,
+				stopN2V,
 				polyData,
 				textureMap,
 				lightingValue
@@ -45,12 +49,15 @@ public class Nitrogen2UntexturedRenderer {
 	}
 	
 	/** generates Nitrogen2Vertexes from Vertex LLL returning one with lowest screen Y.
-	 * calculating the Vertexes screen coordinates in the process */
+	 * calculating the Vertexes screen coordinates in the process. Also sets field stopVertex to
+	 * the lowest leftmost vertex */
 	final static Nitrogen2Vertex produceN2Vs(NitrogenContext nc, Vertex start)
 	{
 		Nitrogen2Vertex retval;	
 		int index = 0;
 		int minSY;
+		int maxSY;
+	
 		
 		Nitrogen2Vertex[] workingN2VsL = workingN2Vs; // cache locally for speed
 
@@ -59,6 +66,9 @@ public class Nitrogen2UntexturedRenderer {
 		start.calculateScreenSpaceCoordinate(nc);
 		minSY = startN2V.initializeScreenSpaceFromVertex(start);
 		retval = startN2V;
+		
+		stopN2V = startN2V;
+		maxSY = minSY; // initialise maxSY to startN2V.SY
 		
 		// step round anticlockwise creating N2Vs and clockwise references
 		// also remember the N2V with lowest screen Y coordinate
@@ -73,6 +83,11 @@ public class Nitrogen2UntexturedRenderer {
 			{
 				retval = nextN2V;
 				minSY = nextSY;
+			}
+			if(nextSY > maxSY)
+			{
+				stopN2V = nextN2V;
+				maxSY = nextSY;
 			}
 			nextN2V.clockwise = previousOne;
 			previousOne = nextN2V;
@@ -117,7 +132,7 @@ public class Nitrogen2UntexturedRenderer {
 		Nitrogen2Vertex testN2V = in.clockwise;
 		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
-			if(testN2V.intSX < retval.intSX)retval = testN2V;
+			if(testN2V.intSX > retval.intSX)retval = testN2V;
 			testN2V = testN2V.clockwise;
 		}
 		return retval;	
@@ -150,5 +165,68 @@ public class Nitrogen2UntexturedRenderer {
 			return testN2V;
 		}
 	}
+	
+	/** remove any twists in left side caused by rounding */
+	final static void removeLeftTwists(Nitrogen2Vertex inN2V, Nitrogen2Vertex stopN2V)
+	{	
+		while(inN2V != stopN2V)
+		{
+			Nitrogen2Vertex nextN2V = inN2V.anticlockwise;
+			
+			if(nextN2V.intSY < inN2V.intSY)
+			{
+				// undo twist
+				Nitrogen2Vertex cw = inN2V.clockwise;
+				Nitrogen2Vertex acw = nextN2V.anticlockwise;
+				
+				cw.anticlockwise = nextN2V;
+				nextN2V.clockwise = cw;
+				
+				acw.clockwise = inN2V;
+				inN2V.anticlockwise = acw;
+				
+				inN2V.clockwise = nextN2V;
+				nextN2V.anticlockwise = inN2V;
+				
+				inN2V = nextN2V;
+			}
+			else
+			{
+				inN2V = nextN2V;
+			}
+		}
+	}
+	
+	/** remove any twists in left side caused by rounding */
+	final static void removeRightTwists(Nitrogen2Vertex inN2V, Nitrogen2Vertex stopN2V)
+	{	
+		while(inN2V != stopN2V)
+		{
+			Nitrogen2Vertex nextN2V = inN2V.clockwise;
+			
+			if(nextN2V.intSY < inN2V.intSY)
+			{
+				// undo twist
+				Nitrogen2Vertex cw = nextN2V.clockwise;
+				Nitrogen2Vertex acw = inN2V.anticlockwise;
+				
+				acw.clockwise = nextN2V;
+				nextN2V.anticlockwise = acw;
+				
+				cw.anticlockwise = inN2V;
+				inN2V.clockwise = cw;
+				
+				inN2V.anticlockwise = nextN2V;
+				nextN2V.clockwise = inN2V;
+				
+				inN2V = nextN2V;
+			}
+			else
+			{
+				inN2V = nextN2V;
+			}
+		}
+	}
+
 	
 }

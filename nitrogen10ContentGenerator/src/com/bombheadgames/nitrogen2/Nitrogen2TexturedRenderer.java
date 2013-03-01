@@ -39,6 +39,7 @@ public class Nitrogen2TexturedRenderer {
 				context,
 				leftN2V,leftDestN2V,
 				rightN2V,rightDestN2V,
+				null,
 				polyData,
 				textureMap,
 				lightingValue
@@ -119,7 +120,7 @@ public class Nitrogen2TexturedRenderer {
 
 		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
-			if(testN2V.intSX < retval.intSX)retval = testN2V;
+			if(testN2V.intSX > retval.intSX)retval = testN2V;
 			testN2V = testN2V.clockwise;
 		}
 		return retval;	

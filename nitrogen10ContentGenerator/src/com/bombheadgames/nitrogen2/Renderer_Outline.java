@@ -15,7 +15,8 @@ public class Renderer_Outline implements Renderer{
 			Nitrogen2Vertex leftDestN2V,
 			
 			Nitrogen2Vertex rightN2V,
-			Nitrogen2Vertex rightDestN2V,			
+			Nitrogen2Vertex rightDestN2V,	
+			final Nitrogen2Vertex stopN2V,
 			
 			final int[] polyData,
 			final TexMap textureMap,
@@ -350,7 +351,8 @@ public class Renderer_Outline implements Renderer{
 			final Nitrogen2Vertex leftDestN2V,
 			
 			final Nitrogen2Vertex rightN2V,
-			final Nitrogen2Vertex rightDestN2V,			
+			final Nitrogen2Vertex rightDestN2V,	
+			final Nitrogen2Vertex stopN2V,
 			
 			final int[] polyData,
 			final TexMap textureMap,
