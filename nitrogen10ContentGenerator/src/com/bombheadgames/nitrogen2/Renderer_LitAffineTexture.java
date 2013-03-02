@@ -1,7 +1,9 @@
 package com.bombheadgames.nitrogen2;
 
-public class Renderer_LitAffineTexture implements Renderer{
+import java.io.Serializable;
 
+public class Renderer_LitAffineTexture implements Renderer, Serializable{
+private static final long serialVersionUID = 1L;
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;
 private static final int TEXTURE_SHIFT = 20; // align with Nitrogen2Vertex
