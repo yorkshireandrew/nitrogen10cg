@@ -207,8 +207,6 @@ public class ContentGenerator extends JFrame{
 		// create nitrogen context
 		//int width, int height, float xClip, float yClip, float nearClip, float farClip
 		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1f,0.85f,1, 1000000);
-//		nc = new NitrogenContext(EDIT_SCREEN_WIDTH,EDIT_SCREEN_HEIGHT,1,1,1, 1000);
-
         nc.cls(0xFF000000);        
         nc.repaint();
         

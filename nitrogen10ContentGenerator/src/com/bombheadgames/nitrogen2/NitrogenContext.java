@@ -23,8 +23,8 @@ import javax.swing.*;
 public class NitrogenContext extends JPanel implements Serializable{
 	private static final long serialVersionUID = -7001666928630703466L;
 
-	public boolean contentGeneratorForcesNoCulling = true;
-	public boolean contentGeneratorForcesNoPerspective = true;
+	public boolean contentGeneratorForcesNoCulling = false;
+	public boolean contentGeneratorForcesNoPerspective = false;
 	
 	static final int SHIFT = 20;	// shift used when rendering textures
 	

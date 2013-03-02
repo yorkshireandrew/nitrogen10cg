@@ -234,13 +234,6 @@ final public class Item implements Serializable{
 		// inform context we are being rendered for PickingRenderer
 		context.currentItem = this;
 		
-		//Cache values needed for rendering locally
-		final boolean 	touchedNearL 		= touchedNear;
-		final boolean 	touchedRightL 		= touchedRight;
-		final boolean 	touchedLeftL		= touchedLeft;
-		final boolean 	touchedTopL			= touchedTop;
-		final boolean 	touchedBottomL  	= touchedBottom;
-		
 		// which near-mid-far renderer to use for this render
 		int 		whichRendererIsIt = whichRendererOld;	// the near-mid-far renderer to use for rendering this item
 		
@@ -283,9 +276,18 @@ final public class Item implements Serializable{
 			
 			// update other flags used during rendering
 			updateRenderingFlags(itemDist,sisiL);
+			
+			// update fustrum clip flags
+			calculateItemFustrumFlags(v14,v24,v34,context, sisiL);
 		}
+
+		//Cache values needed for rendering locally
+		final boolean 	touchedNearL 		= touchedNear;
+		final boolean 	touchedRightL 		= touchedRight;
+		final boolean 	touchedLeftL		= touchedLeft;
+		final boolean 	touchedTopL			= touchedTop;
+		final boolean 	touchedBottomL  	= touchedBottom;
 		
-		calculateItemFustrumFlags(v14,v24,v34,context, sisiL);
 		lazyComputeBacksidesAndVertexs();
 
 		// Select the right number of polygons to render
@@ -505,7 +507,7 @@ final public class Item implements Serializable{
 		{touchedLeft = false;}
 		
 		// bottom clip
-		if((y + sisiBoundingRadius) > allowedDownness)
+		if((-y + sisiBoundingRadius) > allowedDownness)
 		{
 			touchedBottom = true;			
 		}
@@ -513,7 +515,7 @@ final public class Item implements Serializable{
 		{touchedBottom = false;}
 		
 		// top clip
-		if((-y + sisiBoundingRadius) > allowedDownness)
+		if((y + sisiBoundingRadius) > allowedDownness)
 		{
 			touchedTop = true;			
 		}
