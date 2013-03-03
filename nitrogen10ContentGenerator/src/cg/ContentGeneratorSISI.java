@@ -95,7 +95,7 @@ public class ContentGeneratorSISI implements Serializable{
     	
     	textureMapMap 	= new LinkedHashMap<String,ContentGeneratorTextureMap>();
         textureMapMap.put("null", null);
-        immutableBacksideMap 		= new HashMap<String,ImmutableBackside>(); 
+        immutableBacksideMap 		= new LinkedHashMap<String,ImmutableBackside>(); 
   
         // its important we preserve the order in polygon map
         contentGeneratorPolygonMap 	= new LinkedHashMap<String,ContentGeneratorPolygon>();

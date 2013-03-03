@@ -1,10 +1,21 @@
 package com.bombheadgames.nitrogen2;
 
-public class Renderer_Picking implements Renderer{
+import java.io.Serializable;
 
+/**
+ *
+ * @author andrew
+ */
+final public class Renderer_Picking implements Renderer,Serializable{
+private static final long serialVersionUID = 1L;
+
+private static final int ALPHA = 0xFF000000;
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;
-private static final int NUM = 1 << SHIFT;
+
+private static final int LIGHT_SHIFT = 10;
+private static final int LIGHT_NUM = 1 << LIGHT_SHIFT;
+//private static int debugPixelCount;
 
 public void render(
 		
@@ -21,26 +32,19 @@ public void render(
 		final TexMap textureMap,
 		final float lightingValue	
 		)
-{
-	
-	// **************** initialise colour ********************************************
-	System.out.println("PICKING render called");
-
-	
+{	
 	// **************** initialise nitrogen context references ***********************
-	final int[] contextPixels = context.pix;
-	final int[] contextZBuffer = context.zbuff;
-	final int contextWidth = context.w;
-	
+	int contextWidth = context.w;
+	int[] contextZBuffer = context.zbuff;
+	int pickX = context.pickX;
+	int pickY = context.pickY;
 	
 	// **************** Initialise Left start position and calculate delta ***********
-	int		leftSX			= leftN2V.intSX;
 	int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
 	int 	leftSY			= leftN2V.intSY;
-	int 	leftSZ			= leftN2V.intSZ;
-	long 	bigLeftSZ		= ((long)leftSZ) << ZSHIFT;
+	long 	bigLeftSZ		= ((long)leftN2V.intSZ) << ZSHIFT;
 
-	int 	leftDestSX 		= leftDestN2V.intSX;
+	int 	bigLeftDestSX 	= leftDestN2V.intSX << SHIFT;
 	int 	leftDestSY 		= leftDestN2V.intSY;
 	long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
 		
@@ -52,8 +56,7 @@ public void render(
 	
 	if(leftDeltaSY > 0)
 	{
-			int rec 	= NUM / leftDeltaSY;
-			leftDeltaSX = (leftDestSX - leftSX)	* rec;
+			leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
 			leftDeltaSY = (leftDestSY - leftSY);	// down counter
 			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
 	}
@@ -65,13 +68,11 @@ public void render(
 	}
 	
 	// **************** Initialise Right start position and calculate delta ***********
-	int		rightSX			= rightN2V.intSX;
 	int 	bigRightSX 		= rightN2V.intSX << SHIFT;
 	int 	rightSY			= rightN2V.intSY;
-	int 	rightSZ			= rightN2V.intSZ;
-	long 	bigRightSZ		= ((long)rightSZ) << SHIFT;
+	long 	bigRightSZ		= ((long)rightN2V.intSZ) << SHIFT;
 
-	int 	rightDestSX 	= rightDestN2V.intSX;
+	int 	bigRightDestSX 	= rightDestN2V.intSX << SHIFT;
 	int 	rightDestSY 	= rightDestN2V.intSY;
 	long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
 		
@@ -83,8 +84,7 @@ public void render(
 	
 	if(rightDeltaSY > 0)
 	{
-			int rec 	= NUM / rightDeltaSY;
-			rightDeltaSX = (rightDestSX - rightSX)	* rec;
+			rightDeltaSX = (bigRightDestSX - bigRightSX) / rightDeltaSY;
 			rightDeltaSY = (rightDestSY - rightSY);	// down counter
 			rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
 	}
@@ -95,27 +95,25 @@ public void render(
 			rightDeltaSZ = 0;
 	}
 	
-	boolean trucking = true;
-	
-	int escape = 1000;
-	while(trucking && (escape > 0))
+	while(true)
 	{
-		escape--;
 		// ************ Render a line *******
-		renderLine(
-				bigLeftSX, 
-				bigLeftSZ, 
-				leftSY * contextWidth, 
-				
-				bigRightSX,
-				bigRightSZ,
-				
-				context,
-				leftSY,
-				contextPixels,
-				contextZBuffer,
-				contextWidth	
-		);
+		
+		if(leftSY == pickY)
+		{
+			renderLine(
+					bigLeftSX, 
+					bigLeftSZ, 
+					leftSY * contextWidth,
+					
+					bigRightSX,
+					bigRightSZ,
+					
+					context,
+					contextZBuffer,
+					pickX
+			);
+		}
 		
 		// *********** move by delta *******
 		bigLeftSX += leftDeltaSX;
@@ -131,121 +129,67 @@ public void render(
 		rightDeltaSY--;
 		
 		// *********** handle if we reach left destination ******************
-		if(leftDeltaSY <= 0)
+		while(leftDeltaSY <= 0)
 		{
-			System.out.println("handling leftDeltaSY <= 0");
-			leftN2V 		= leftDestN2V;
+			leftN2V			= leftDestN2V;
+			if(leftN2V == stopN2V)return;
 			
-			// now update left to eliminate rounding errors
-			leftSX			= leftN2V.intSX;
-			bigLeftSX 		= leftN2V.intSX << SHIFT;
-			leftSY			= leftN2V.intSY;
-			leftSZ			= leftN2V.intSZ;
-			bigLeftSZ		= ((long)leftSZ) << SHIFT;
+			bigLeftSX		= bigLeftDestSX;
+			leftSY 			= leftDestSY;
+			bigLeftSZ		= bigLeftDestSZ;			
 			
-			System.out.println("completed leftDestN2V is " + leftDestN2V);
 			// find a new destination
-//			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+			leftDestN2V = leftDestN2V.anticlockwise;
 			
-			if(leftDestN2V == null)
+			leftDestSY 			= leftDestN2V.intSY;
+			
+			leftDeltaSY 		= leftDestSY - leftSY;
+			
+			if(leftDeltaSY > 0)
 			{
-				System.out.println("handling (leftDestN2V == null)");
+				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+				leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;	
+			}
+			else
+			{
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
 				leftDeltaSZ = 0;
-				trucking = false;
 			}
-			else
-			{
-				System.out.println("new leftDest is" + leftDestN2V);
-				leftDeltaSY = leftDestN2V.intSY - leftSY;
-				System.out.println("new leftDeltaSY = " + leftDeltaSY );
-				if(leftDeltaSY > 0)
-				{
-						int rec 	= NUM / leftDeltaSY;
-						leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-						leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-						leftDeltaSZ -= bigLeftSZ;
-						leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
-				}
-				else
-				{
-						leftDeltaSX = 0;
-						leftDeltaSY = 0;
-						leftDeltaSZ = 0;
-						trucking = false;
-				}
-			}		
 		}
 		
 		// *********** handle if we reach right destination ******************
-		if(rightDeltaSY <= 0)
+		while(rightDeltaSY <= 0)
 		{
-			System.out.println("handling rightDeltaSY <= 0");
-			rightN2V 		= rightDestN2V;
-			
-			// now update right to eliminate rounding errors
-			rightSX			= rightN2V.intSX;
-			bigRightSX 		= rightN2V.intSX << SHIFT;
-			rightSY			= rightN2V.intSY;
-			rightSZ			= rightN2V.intSZ;
-			bigRightSZ		= ((long)rightSZ) << SHIFT;
-			
-			System.out.println("completed rightDestN2V is " + rightDestN2V);
+			rightN2V		= rightDestN2V;
+
+			bigRightSX		= bigRightDestSX;
+			rightSY 		= rightDestSY;
+			bigRightSZ		= bigRightDestSZ;			
 			
 			// find a new destination
-//			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+			rightDestN2V = rightDestN2V.clockwise;
 			
-			if(rightDestN2V == null)
+			rightDestSY = rightDestN2V.intSY;
+			rightDeltaSY = rightDestSY - rightSY;
+			
+			if(rightDeltaSY > 0)
 			{
-				System.out.println("handling (rightDestN2V == null)");
-				rightDeltaSX = 0;
-				rightDeltaSY = 0;
-				rightDeltaSZ = 0;
-				trucking = false;
+				bigRightDestSX = rightDestN2V.intSX << SHIFT;
+				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
+				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;	
 			}
 			else
 			{
-				System.out.println("new rightDest is" + rightDestN2V);
-				rightDeltaSY = rightDestN2V.intSY - rightSY;
-				System.out.println("new rightDeltaSY = " + rightDeltaSY );
-				if(rightDeltaSY > 0)
-				{
-						int rec 	= NUM / rightDeltaSY;
-						rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
-						
-						rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-						rightDeltaSZ -= bigRightSZ;
-						rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
-				}
-				else
-				{
-						rightDeltaSX = 0;
-						rightDeltaSY = 0;
-						rightDeltaSZ = 0;
-						trucking = false;
-				}
-			}		
+				rightDeltaSX = 0;
+				rightDeltaSY = 0;
+				rightDeltaSZ = 0;
+			}
 		}
 	}//end of while loop
-	
-	// ************ Render final line *******
-	System.out.println("render final line");
-	renderLine(
-			bigLeftSX, 
-			bigLeftSZ, 
-			leftSY * contextWidth, 
-			
-			bigRightSX,
-			bigRightSZ,
-			
-			context,
-			leftSY,
-			contextPixels,
-			contextZBuffer,
-			contextWidth		
-	);
 }
 
 //*****************************************************************************
@@ -254,34 +198,24 @@ public void render(
 //*****************************************************************************
 //*****************************************************************************
 
-private final void renderLine(
-		int 	bigLeftSX, 
-		long 	bigLeftSZ, 
-		int 	indexOffset,
+private final void renderLine(	
+		final int 				bigLeftSX, 
+		long 					bigLeftSZ, 
+		final int 				indexOffset,
 		
-		int 	bigRightSX,
-		long 	bigRightSZ,
+		final int 				bigRightSX,
+		final long 				bigRightSZ,
 
-		NitrogenContext context,
-		int Y,
-		final int[] contextPixels,
-		final int[] contextZBuffer,
-		final int contextWidth
+		final NitrogenContext 	context,
+		final int[] 			contextZBuffer,
+		final int 				pickX
 		)
 {
-	int contextPickX = context.pickX;
-	int contextPickY = context.pickY;
-	
-	if( Y != contextPickY)return;
-	
 	int lineStart 	= bigLeftSX >> SHIFT;
-	int lineFinish 	= bigRightSX >> SHIFT;	
+	int lineFinish 	= bigRightSX >> SHIFT;
+	if(lineStart > pickX)return;
+	if(lineFinish < pickX)return;
 			
-	if(lineStart  > contextPickX)return;
-	if(lineFinish < contextPickX)return;
-			
-	System.out.println("rendering line " + lineStart + "->" + lineFinish);
-	
 	int lineLength = lineFinish - lineStart;
 	
 	// calculate zDelta
@@ -300,17 +234,13 @@ private final void renderLine(
 		// ***************** RENDER PIXEL ****************
 		int pixelZ = (int)(bigLeftSZ >> ZSHIFT);
 		int index = indexOffset + lineStart;
-		if(lineStart == contextPickX)
+		
+		if(pixelZ > contextZBuffer[index])
 		{
-			System.out.println("FOUND PICKING PIXEL");
-			if(pixelZ > contextZBuffer[index])
-			{
-				contextZBuffer[index] = pixelZ;
-				context.pickedPolygon = context.currentPolygon;
-				context.pickedItem = context.currentItem;
-				context.pickDetected = true;
-				System.out.println("PICKED PIXEL");
-			}
+			contextZBuffer[index] 	= pixelZ;
+			context.pickedPolygon 	= context.currentPolygon;
+			context.pickedItem 		= context.currentItem;
+			context.pickDetected 	= true;			
 		}
 		
 		// ***********************************************
@@ -320,11 +250,6 @@ private final void renderLine(
 	}
 }
 
-//*****************************************************************************
-//*****************************************************************************
-//*****************************************************************************
-//*****************************************************************************
-
 public void renderHLP(
 		final NitrogenContext context,	
 		
@@ -332,7 +257,7 @@ public void renderHLP(
 		final Nitrogen2Vertex leftDestN2V,
 		
 		final Nitrogen2Vertex rightN2V,
-		final Nitrogen2Vertex rightDestN2V,		
+		final Nitrogen2Vertex rightDestN2V,
 		final Nitrogen2Vertex stopN2V,
 		
 		final int[] polyData,
@@ -343,5 +268,4 @@ public void renderHLP(
 public boolean isTextured(){return false;}
 
 public boolean allowsHLP(){return false;}
-
 }
