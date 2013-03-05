@@ -204,10 +204,11 @@ public void render(
 			
 			leftDeltaSY = leftDestSY - leftSY;
 			
+			bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+			bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+			
 			if(leftDeltaSY > 0)
 			{
-				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
-				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
 				leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
 				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;	
 				leftDeltaTX = (leftDestTX - leftTX) / leftDeltaSY;
@@ -225,9 +226,9 @@ public void render(
 		// *********** handle if we reach right destination ******************
 		while(rightDeltaSY <= 0)
 		{
-			rightN2V			= rightDestN2V;
+			rightN2V		= rightDestN2V;
 			bigRightSX		= bigRightDestSX;
-			rightSY 			= rightDestSY;
+			rightSY 		= rightDestSY;
 			bigRightSZ		= bigRightDestSZ;
 			
 			rightTX			= rightDestTX;
@@ -245,10 +246,12 @@ public void render(
 			
 			rightDeltaSY = rightDestSY - rightSY;
 			
+			bigRightDestSX = rightDestN2V.intSX << SHIFT;
+			bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+
+			
 			if(rightDeltaSY > 0)
 			{
-				bigRightDestSX = rightDestN2V.intSX << SHIFT;
-				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
 				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
 				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;	
 				rightDeltaTX = (rightDestTX - rightTX) / rightDeltaSY;

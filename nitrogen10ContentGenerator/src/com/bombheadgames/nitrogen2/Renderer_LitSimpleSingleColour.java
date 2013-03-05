@@ -52,6 +52,11 @@ public void render(
 	final int[] contextZBuffer = context.zbuff;
 	final int contextWidth = context.w;
 	
+	System.out.println("******* renderer called *******");
+	System.out.println("left = " + leftN2V);
+	System.out.println("leftDest = " + leftDestN2V);
+	System.out.println("right = " + rightN2V);
+	System.out.println("rightDest = " + rightDestN2V);
 	
 	// **************** Initialise Left start position and calculate delta ***********
 	int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
@@ -71,12 +76,14 @@ public void render(
 	
 	if(leftDeltaSY > 0)
 	{
+			System.out.println("leftDeltaSY = " + leftDeltaSY);
 			leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
 			leftDeltaSY = (leftDestSY - leftSY);	// down counter
 			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
 	}
 	else
 	{
+			System.out.println("leftDeltaSY = " + leftDeltaSY);
 			leftDeltaSX = 0;
 			leftDeltaSY = 0;
 			leftDeltaSZ = 0;
@@ -100,6 +107,7 @@ public void render(
 	
 	if(rightDeltaSY > 0)
 	{
+
 			rightDeltaSX = (bigRightDestSX - bigRightSX) / rightDeltaSY;
 			rightDeltaSY = (rightDestSY - rightSY);	// down counter
 			rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
@@ -110,13 +118,15 @@ public void render(
 			rightDeltaSY = 0;
 			rightDeltaSZ = 0;
 	}
+	System.out.println("rightDeltaSY = " + rightDeltaSY);
+
 	
 	boolean trucking = true;
 	
 	while(trucking)
 	{
 		// ************ Render a line *******
-		
+		System.out.println("rendering line Y = " + leftSY);
 		renderLine(
 				bigLeftSX, 
 				bigLeftSZ, 
@@ -147,6 +157,7 @@ public void render(
 		// *********** handle if we reach left destination ******************
 		while(leftDeltaSY <= 0)
 		{
+			System.out.println("leftDeltaSY <= 0");
 			leftN2V			= leftDestN2V;
 			if(leftN2V == stopN2V)return;
 			
@@ -156,7 +167,7 @@ public void render(
 			
 			// find a new destination
 			leftDestN2V = leftDestN2V.anticlockwise;
-			
+			System.out.println("new leftDest:" + leftDestN2V);
 			leftDestSY 			= leftDestN2V.intSY;
 			
 			leftDeltaSY 		= leftDestSY - leftSY;
@@ -170,15 +181,21 @@ public void render(
 			}
 			else
 			{
+				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
 				leftDeltaSZ = 0;
 			}
+			System.out.println("leftDeltaSY = " + leftDeltaSY);
+
 		}
 		
 		// *********** handle if we reach right destination ******************
 		while(rightDeltaSY <= 0)
 		{
+			System.out.println("rightDeltaSY <= 0");
+
 			rightN2V		= rightDestN2V;
 
 			bigRightSX		= bigRightDestSX;
@@ -187,14 +204,16 @@ public void render(
 			
 			// find a new destination
 			rightDestN2V = rightDestN2V.clockwise;
+			System.out.println("new rightDest:" + rightDestN2V);
 			
 			rightDestSY = rightDestN2V.intSY;
 			rightDeltaSY = rightDestSY - rightSY;
+
+			bigRightDestSX = rightDestN2V.intSX << SHIFT;
+			bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
 			
 			if(rightDeltaSY > 0)
 			{
-				bigRightDestSX = rightDestN2V.intSX << SHIFT;
-				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
 				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
 				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;	
 			}
@@ -204,6 +223,7 @@ public void render(
 				rightDeltaSY = 0;
 				rightDeltaSZ = 0;
 			}
+			System.out.println("rightDeltaSY = " + rightDeltaSY);
 		}
 	}//end of while loop
 }
@@ -230,7 +250,7 @@ private final void renderLine(
 {
 	int lineStart 	= bigLeftSX >> SHIFT;
 	int lineFinish 	= bigRightSX >> SHIFT;	
-			
+	System.out.println("rendering line X = " + lineStart + "->" + lineFinish);		
 	
 	int lineLength = lineFinish - lineStart;
 	
