@@ -18,7 +18,6 @@ private static final long serialVersionUID = -7435141406825586043L;
 private static final int ALPHA = 0xFF000000;
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;
-private static final int NUM = 1 << SHIFT;
 
 public void render(
 		
@@ -36,7 +35,6 @@ public void render(
 		final float lightingValue	
 		)
 {
-	
 	// **************** initialise colour ********************************************
 	int colour = -1; // white
 	if(polyData != null)colour = polyData[0] | ALPHA;
@@ -48,13 +46,12 @@ public void render(
 	
 	
 	// **************** Initialise Left start position and calculate delta ***********
-	int		leftSX			= leftN2V.intSX;
 	int 	bigLeftSX 		= leftN2V.intSX << SHIFT;
 	int 	leftSY			= leftN2V.intSY;
 	int 	leftSZ			= leftN2V.intSZ;
 	long 	bigLeftSZ		= ((long)leftSZ) << ZSHIFT;
 
-	int 	leftDestSX 		= leftDestN2V.intSX;
+	int 	bigLeftDestSX 	= leftDestN2V.intSX << SHIFT;
 	int 	leftDestSY 		= leftDestN2V.intSY;
 	long 	bigLeftDestSZ	= ((long)leftDestN2V.intSZ) << ZSHIFT;
 		
@@ -66,8 +63,7 @@ public void render(
 	
 	if(leftDeltaSY > 0)
 	{
-			int rec 	= NUM / leftDeltaSY;
-			leftDeltaSX = (leftDestSX - leftSX)	* rec;
+			leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
 			leftDeltaSY = (leftDestSY - leftSY);	// down counter
 			leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;		
 	}
@@ -79,13 +75,12 @@ public void render(
 	}
 	
 	// **************** Initialise Right start position and calculate delta ***********
-	int		rightSX			= rightN2V.intSX;
 	int 	bigRightSX 		= rightN2V.intSX << SHIFT;
 	int 	rightSY			= rightN2V.intSY;
 	int 	rightSZ			= rightN2V.intSZ;
 	long 	bigRightSZ		= ((long)rightSZ) << SHIFT;
 
-	int 	rightDestSX 	= rightDestN2V.intSX;
+	int 	bigRightDestSX 	= rightDestN2V.intSX << SHIFT;
 	int 	rightDestSY 	= rightDestN2V.intSY;
 	long 	bigRightDestSZ	= ((long)rightDestN2V.intSZ) << ZSHIFT;
 		
@@ -97,8 +92,8 @@ public void render(
 	
 	if(rightDeltaSY > 0)
 	{
-			int rec 	= NUM / rightDeltaSY;
-			rightDeltaSX = (rightDestSX - rightSX)	* rec;
+
+			rightDeltaSX = (bigRightDestSX - bigRightSX) / rightDeltaSY;
 			rightDeltaSY = (rightDestSY - rightSY);	// down counter
 			rightDeltaSZ = (bigRightDestSZ - bigRightSZ) / rightDeltaSY;		
 	}
@@ -108,6 +103,7 @@ public void render(
 			rightDeltaSY = 0;
 			rightDeltaSZ = 0;
 	}
+
 	
 	boolean trucking = true;
 	
@@ -142,108 +138,69 @@ public void render(
 		rightDeltaSY--;
 		
 		// *********** handle if we reach left destination ******************
-		if(leftDeltaSY <= 0)
+		while(leftDeltaSY <= 0)
 		{
-			leftN2V 		= leftDestN2V;
+			leftN2V			= leftDestN2V;
+			if(leftN2V == stopN2V)return;
 			
-			// now update left to eliminate rounding errors
-			leftSX			= leftN2V.intSX;
-			bigLeftSX 		= leftN2V.intSX << SHIFT;
-			leftSY			= leftN2V.intSY;
-			leftSZ			= leftN2V.intSZ;
-			bigLeftSZ		= ((long)leftSZ) << SHIFT;
+			bigLeftSX		= bigLeftDestSX;
+			leftSY 			= leftDestSY;
+			bigLeftSZ		= bigLeftDestSZ;			
 			
 			// find a new destination
-//			leftDestN2V = Nitrogen2UntexturedRenderer.findLeftDestN2V(leftDestN2V);
+			leftDestN2V = leftDestN2V.anticlockwise;
+			leftDestSY 			= leftDestN2V.intSY;
 			
-			if(leftDestN2V == null)
+			leftDeltaSY 		= leftDestSY - leftSY;
+			
+			if(leftDeltaSY > 0)
 			{
-				leftDeltaSX = 0;
-				leftDeltaSY = 0;
-				leftDeltaSZ = 0;
-				trucking = false;
+				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+				leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
+				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;	
 			}
 			else
 			{
-				leftDeltaSY = leftDestN2V.intSY - leftSY;
-				if(leftDeltaSY > 0)
-				{
-						int rec 	= NUM / leftDeltaSY;
-						leftDeltaSX = (leftDestN2V.intSX - leftSX)	* rec;
-						leftDeltaSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-						leftDeltaSZ -= bigLeftSZ;
-						leftDeltaSZ = leftDeltaSZ / leftDeltaSY;
-				}
-				else
-				{
-						leftDeltaSX = 0;
-						leftDeltaSY = 0;
-						leftDeltaSZ = 0;
-						trucking = false;
-				}
-			}		
+				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+				leftDeltaSX = 0;
+				leftDeltaSY = 0;
+				leftDeltaSZ = 0;
+			}
 		}
 		
 		// *********** handle if we reach right destination ******************
-		if(rightDeltaSY <= 0)
+		while(rightDeltaSY <= 0)
 		{
-			rightN2V 		= rightDestN2V;
-			
-			// now update right to eliminate rounding errors
-			rightSX			= rightN2V.intSX;
-			bigRightSX 		= rightN2V.intSX << SHIFT;
-			rightSY			= rightN2V.intSY;
-			rightSZ			= rightN2V.intSZ;
-			bigRightSZ		= ((long)rightSZ) << SHIFT;
+			rightN2V		= rightDestN2V;
+
+			bigRightSX		= bigRightDestSX;
+			rightSY 		= rightDestSY;
+			bigRightSZ		= bigRightDestSZ;			
 			
 			// find a new destination
-//			rightDestN2V = Nitrogen2UntexturedRenderer.findRightDestN2V(rightDestN2V);
+			rightDestN2V = rightDestN2V.clockwise;
 			
-			if(rightDestN2V == null)
+			rightDestSY = rightDestN2V.intSY;
+			rightDeltaSY = rightDestSY - rightSY;
+
+			bigRightDestSX = rightDestN2V.intSX << SHIFT;
+			bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+			
+			if(rightDeltaSY > 0)
+			{
+				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
+				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;	
+			}
+			else
 			{
 				rightDeltaSX = 0;
 				rightDeltaSY = 0;
 				rightDeltaSZ = 0;
-				trucking = false;
 			}
-			else
-			{
-				rightDeltaSY = rightDestN2V.intSY - rightSY;
-				if(rightDeltaSY > 0)
-				{
-						int rec 	= NUM / rightDeltaSY;
-						rightDeltaSX = (rightDestN2V.intSX - rightSX)	* rec;
-						rightDeltaSZ = (rightDestN2V.intSZ - rightSZ)	* rec;
-						
-						rightDeltaSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-						rightDeltaSZ -= bigRightSZ;
-						rightDeltaSZ = rightDeltaSZ / rightDeltaSY;
-				}
-				else
-				{
-						rightDeltaSX = 0;
-						rightDeltaSY = 0;
-						rightDeltaSZ = 0;
-						trucking = false;
-				}
-			}		
 		}
 	}//end of while loop
-	
-	// ************ Render final line *******
-	renderLine(
-			bigLeftSX, 
-			bigLeftSZ, 
-			leftSY * contextWidth, 
-			
-			bigRightSX,
-			bigRightSZ,
-			
-			colour,
-			contextPixels,
-			contextZBuffer,
-			contextWidth		
-	);
 }
 
 //*****************************************************************************
@@ -254,7 +211,7 @@ public void render(
 
 private final void renderLine(
 		final int 	bigLeftSX, 
-		long 	bigLeftSZ, 
+		long 		bigLeftSZ, 
 		final int 	indexOffset,
 		
 		final int 	bigRightSX,
@@ -268,7 +225,7 @@ private final void renderLine(
 {
 	int lineStart 	= bigLeftSX >> SHIFT;
 	int lineFinish 	= bigRightSX >> SHIFT;	
-			
+	
 	int lineLength = lineFinish - lineStart;
 	
 	// calculate zDelta
@@ -305,6 +262,10 @@ private final void renderLine(
 //*****************************************************************************
 //*****************************************************************************
 //*****************************************************************************
+
+
+
+
 public void renderHLP(
 		final NitrogenContext context,	
 		
@@ -312,7 +273,7 @@ public void renderHLP(
 		final Nitrogen2Vertex leftDestN2V,
 		
 		final Nitrogen2Vertex rightN2V,
-		final Nitrogen2Vertex rightDestN2V,	
+		final Nitrogen2Vertex rightDestN2V,
 		final Nitrogen2Vertex stopN2V,
 		
 		final int[] polyData,
