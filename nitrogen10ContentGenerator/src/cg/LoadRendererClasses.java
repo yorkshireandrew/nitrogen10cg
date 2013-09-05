@@ -4,6 +4,7 @@ import com.bombheadgames.nitrogen2.RendererHelper;
 import com.bombheadgames.nitrogen2.RendererTriplet;
 import com.bombheadgames.nitrogen2.Renderer_AffineTexture;
 import com.bombheadgames.nitrogen2.Renderer_LitAffineTexture;
+import com.bombheadgames.nitrogen2.Renderer_LitAffineTextureHoley;
 import com.bombheadgames.nitrogen2.Renderer_LitQuake;
 import com.bombheadgames.nitrogen2.Renderer_LitSimpleSingleColour;
 import com.bombheadgames.nitrogen2.Renderer_Quake;
@@ -50,6 +51,8 @@ public class LoadRendererClasses {
         Renderer_LitQuake litQuakeTextureRenderer = new Renderer_LitQuake();           
         RendererTriplet litQuakeTextureRendererTriplet = new RendererTriplet(litQuakeTextureRenderer);
         
+        Renderer_LitAffineTextureHoley litAffineTextureHoleyRenderer = new Renderer_LitAffineTextureHoley();
+        RendererTriplet litAffineTextureHoleyTriplet = new RendererTriplet(litAffineTextureHoleyRenderer);
         try
         {
         	RendererHelper.addRendererTriplet("simpleSingleColour",simpleSingleColourTriplet);
@@ -59,6 +62,7 @@ public class LoadRendererClasses {
         	RendererHelper.addRendererTriplet("litAffineTexture",litAffineTextureTriplet);
         	RendererHelper.addRendererTriplet("quakeTexture",quakeTextureRendererTriplet);
         	RendererHelper.addRendererTriplet("litQuakeTexture",litQuakeTextureRendererTriplet);
+        	RendererHelper.addRendererTriplet("litAffineTextureHoley",litAffineTextureHoleyTriplet);
         }
         catch(Exception e)
         {

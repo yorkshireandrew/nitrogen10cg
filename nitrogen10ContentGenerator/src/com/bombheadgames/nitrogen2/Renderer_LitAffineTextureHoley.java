@@ -1,16 +1,14 @@
 package com.bombheadgames.nitrogen2;
 
-import java.io.Serializable;
+public class Renderer_LitAffineTextureHoley implements Renderer{
 
-public class Renderer_AffineTexture implements Renderer, Serializable{
-private static final long serialVersionUID = 1L;
 private static final int SHIFT = 20;
 private static final int ZSHIFT = 20;
 private static final int TEXTURE_SHIFT = 20; // align with Nitrogen2Vertex
 
-//private static final int LIGHT_SHIFT = 10;
-//private static final int LIGHT_NUM = 1 << LIGHT_SHIFT;
-//private static final int ALPHA = 0xFF000000;
+private static final int LIGHT_SHIFT = 10;
+private static final int LIGHT_NUM = 1 << LIGHT_SHIFT;
+private static final int ALPHA = 0xFF000000;
 
 public void render(
 		
@@ -31,7 +29,7 @@ public void render(
 {
 	
 	// **************** initialise colour ********************************************
-
+	final int lightVal = (int)(lightingValue * LIGHT_NUM);
 
 	// **************** initialise nitrogen context references ***********************
 	final int[] contextPixels = context.pix;
@@ -160,7 +158,8 @@ public void render(
 				
 				contextPixels,
 				contextZBuffer,
-				contextWidth
+				contextWidth,
+				lightVal
 		);
 		
 		// *********** move by delta *******
@@ -203,11 +202,10 @@ public void render(
 			
 			leftDeltaSY = leftDestSY - leftSY;
 			
-			bigLeftDestSX = leftDestN2V.intSX << SHIFT;
-			bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
-			
 			if(leftDeltaSY > 0)
 			{
+				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
 				leftDeltaSX = (bigLeftDestSX - bigLeftSX)/leftDeltaSY;
 				leftDeltaSZ = (bigLeftDestSZ - bigLeftSZ)/leftDeltaSY;	
 				leftDeltaTX = (leftDestTX - leftTX) / leftDeltaSY;
@@ -225,9 +223,9 @@ public void render(
 		// *********** handle if we reach right destination ******************
 		while(rightDeltaSY <= 0)
 		{
-			rightN2V		= rightDestN2V;
+			rightN2V			= rightDestN2V;
 			bigRightSX		= bigRightDestSX;
-			rightSY 		= rightDestSY;
+			rightSY 			= rightDestSY;
 			bigRightSZ		= bigRightDestSZ;
 			
 			rightTX			= rightDestTX;
@@ -245,12 +243,10 @@ public void render(
 			
 			rightDeltaSY = rightDestSY - rightSY;
 			
-			bigRightDestSX = rightDestN2V.intSX << SHIFT;
-			bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
-
-			
 			if(rightDeltaSY > 0)
 			{
+				bigRightDestSX = rightDestN2V.intSX << SHIFT;
+				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
 				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
 				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;	
 				rightDeltaTX = (rightDestTX - rightTX) / rightDeltaSY;
@@ -294,7 +290,8 @@ private final void renderLine(
 		
 		final int[] contextPixels,
 		final int[] contextZBuffer,
-		final int contextWidth
+		final int contextWidth,
+		final int lightVal
 		)
 {
 	int lineStart 	= bigLeftSX >> SHIFT;
@@ -329,9 +326,12 @@ private final void renderLine(
 		
 		if(pixelZ > contextZBuffer[index])
 		{
-			contextZBuffer[index] = pixelZ;
 			int texPix = tex[(leftTY >> TEXTURE_SHIFT) * textureWidth + (leftTX >> TEXTURE_SHIFT)];
-			contextPixels[index] = texPix;
+			if(texPix != 0xFFFFFFFF)
+			{
+				contextPixels[index] = litPixelValue( lightVal, texPix);
+				contextZBuffer[index] = pixelZ;
+			}
 		}
 		
 		// ***********************************************
@@ -348,7 +348,25 @@ private final void renderLine(
 //*****************************************************************************
 //*****************************************************************************
 //*****************************************************************************
-
+final private int litPixelValue(int lightVal, int colour)
+{
+	// convert to RGB
+	int red = (colour 	& 0xFF0000) >> 16;
+	int green = (colour & 0x00FF00) >> 8;
+	int blue = (colour & 0x0000FF);
+	
+	// calculate lit RGB
+	red = (red * lightVal) >> LIGHT_SHIFT;
+	green = (green * lightVal) >> LIGHT_SHIFT;
+	blue = (blue * lightVal) >> LIGHT_SHIFT;
+	
+	// clamp
+	if(red > 255)		red = 255;
+	if(green > green)	green = 255;
+	if(blue > 255)		blue = 255;
+	
+	return (ALPHA | (red << 16) | (green << 8) | blue);
+}
 
 //*****************************************************************************
 //*****************************************************************************
