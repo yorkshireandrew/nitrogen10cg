@@ -62,6 +62,8 @@ public class LoadRendererClasses {
  
         Renderer_AffineTextureHoley affineTextureHoleyRenderer = new Renderer_AffineTextureHoley();
         RendererTriplet affineTextureHoleyTriplet = new RendererTriplet(affineTextureHoleyRenderer);
+  
+        RendererTriplet quakePlusSingleTriplet = new RendererTriplet(quakeTextureRenderer, quakeTextureRenderer, sscr);
        
         try
         {
@@ -76,6 +78,7 @@ public class LoadRendererClasses {
         	RendererHelper.addRendererTriplet("litQuakeHoley",litQuakeHoleyTriplet);
         	RendererHelper.addRendererTriplet("quakeHoley",quakeHoleyTriplet);
         	RendererHelper.addRendererTriplet("affineTextureHoley",affineTextureHoleyTriplet);
+        	RendererHelper.addRendererTriplet("quakePlusSingle",quakePlusSingleTriplet);
         }
         catch(Exception e)
         {
