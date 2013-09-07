@@ -11,7 +11,7 @@ public class Renderer_QuakeHoley implements Renderer, Serializable{
 		private static final int TEXTURE_SHIFT = 20; // align with Nitrogen2Vertex
 
 		private static final int QUAKE_STEP = 16;
-			
+		
 		public void renderHLP(
 				
 				final NitrogenContext context,	
@@ -28,7 +28,9 @@ public class Renderer_QuakeHoley implements Renderer, Serializable{
 				final float lightingValue	
 				)
 		{
-						
+			
+			// **************** initialise colour ********************************************
+			
 			// **************** stuff for texture coordinate calc ****************************
 			final float contextMag = context.magnification;
 			final float invContextMag = 1f / contextMag;
@@ -772,11 +774,6 @@ public class Renderer_QuakeHoley implements Renderer, Serializable{
 //*****************************************************************************
 //*****************************************************************************
 		
-//*****************************************************************************
-//*****************************************************************************
-//*****************************************************************************
-//*****************************************************************************
-		
 		public void render(
 				final NitrogenContext context,	
 				
@@ -814,4 +811,3 @@ public class Renderer_QuakeHoley implements Renderer, Serializable{
 
 
 }	
-

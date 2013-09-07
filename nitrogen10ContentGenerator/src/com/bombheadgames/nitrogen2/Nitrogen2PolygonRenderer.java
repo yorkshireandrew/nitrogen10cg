@@ -46,6 +46,11 @@ public class Nitrogen2PolygonRenderer {
 			if (	useHLP 
 					&& renderer.allowsHLP()
 					&& isHLP(start, context.qualityOfHLP))polygonIsHLP = true;
+			
+			if(useHLP)System.out.println("polygon is useHLP" );
+			if(renderer.allowsHLP())System.out.println("renderer allows HLP" );
+			if(isHLP(start, context.qualityOfHLP))System.out.println("polygon requires HLP" );
+			if(polygonIsHLP)System.out.println("polygon is HLP !!!" );
 		}
 		
 		// ********* create LLL of appropriate N2Vs ******************

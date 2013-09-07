@@ -162,8 +162,8 @@ public void render(
 			}
 			else
 			{
-				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
-				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
+//				bigLeftDestSX = leftDestN2V.intSX << SHIFT;
+//				bigLeftDestSZ = ((long)leftDestN2V.intSZ) << ZSHIFT;
 				leftDeltaSX = 0;
 				leftDeltaSY = 0;
 				leftDeltaSZ = 0;
@@ -185,11 +185,14 @@ public void render(
 			rightDestSY = rightDestN2V.intSY;
 			rightDeltaSY = rightDestSY - rightSY;
 
-			bigRightDestSX = rightDestN2V.intSX << SHIFT;
-			bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+//			bigRightDestSX = rightDestN2V.intSX << SHIFT;
+//			bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
 			
 			if(rightDeltaSY > 0)
 			{
+				bigRightDestSX = rightDestN2V.intSX << SHIFT;
+				bigRightDestSZ = ((long)rightDestN2V.intSZ) << ZSHIFT;
+
 				rightDeltaSX = (bigRightDestSX - bigRightSX)/rightDeltaSY;
 				rightDeltaSZ = (bigRightDestSZ - bigRightSZ)/rightDeltaSY;	
 			}

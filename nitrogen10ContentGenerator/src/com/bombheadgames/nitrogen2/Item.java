@@ -633,6 +633,7 @@ final public class Item implements Serializable{
 		if(isUsingHLP)
 		{
 			if(itemDist > sisi.hlpBreakingDistPlus)isUsingHLP = false;
+
 		}
 		else
 		{
