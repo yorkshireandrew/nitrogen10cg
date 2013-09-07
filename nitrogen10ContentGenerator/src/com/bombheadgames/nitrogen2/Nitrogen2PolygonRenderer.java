@@ -151,7 +151,7 @@ public class Nitrogen2PolygonRenderer {
 		Nitrogen2Vertex testN2V = in.anticlockwise;
 		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
-			if(testN2V.intSX < retval.intSX)retval = testN2V;
+			if(testN2V.intSX <= retval.intSX)retval = testN2V;
 			testN2V = testN2V.anticlockwise;
 		}
 		return retval;	
@@ -165,7 +165,7 @@ public class Nitrogen2PolygonRenderer {
 		Nitrogen2Vertex testN2V = in.clockwise;
 		while((testN2V.intSY == inSY)&&(testN2V != in))
 		{
-			if(testN2V.intSX > retval.intSX)retval = testN2V;
+			if(testN2V.intSX >= retval.intSX)retval = testN2V;
 			testN2V = testN2V.clockwise;
 		}
 		return retval;	

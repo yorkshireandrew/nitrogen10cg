@@ -879,6 +879,7 @@ public class ContentGeneratorController extends AbstractAction implements Change
 	private void handleFarRendererDistanceButton()
 	{
 		cg.contentGeneratorSISI.farRendererDist = distFromSlider();
+		System.out.println("Far Renderer Dist " + cg.contentGeneratorSISI.farRendererDist);
 		cg.cgc.updateGeneratedItemAndEditArea();
 	}
 	
