@@ -9,6 +9,7 @@ import com.bombheadgames.nitrogen2.Renderer_LitAffineTextureHoley;
 import com.bombheadgames.nitrogen2.Renderer_LitQuake;
 import com.bombheadgames.nitrogen2.Renderer_LitQuakeHoley;
 import com.bombheadgames.nitrogen2.Renderer_LitSimpleSingleColour;
+import com.bombheadgames.nitrogen2.Renderer_Outline3;
 import com.bombheadgames.nitrogen2.Renderer_Quake;
 import com.bombheadgames.nitrogen2.Renderer_Outline;
 import com.bombheadgames.nitrogen2.Renderer_QuakeHoley;
@@ -32,7 +33,7 @@ public class LoadRendererClasses {
         RendererTriplet litSimpleSingleColourTriplet = new RendererTriplet(litSSCR);
         
         // RendererTriplet using just the outline renderer 
-        Renderer_Outline ro = new Renderer_Outline();           
+        Renderer_Outline3 ro = new Renderer_Outline3();           
         RendererTriplet outlineTriplet = new RendererTriplet(ro);
  
         // RendererTriplet for affine texture

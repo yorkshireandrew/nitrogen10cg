@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import com.bombheadgames.nitrogen2.NitrogenContext;
 import com.bombheadgames.nitrogen2.RendererTriplet;
 import com.bombheadgames.nitrogen2.Renderer_Outline;
+import com.bombheadgames.nitrogen2.Renderer_Outline3;
 
 
 class BacksideCulledWireFrameToolbarAction extends AbstractAction
@@ -24,7 +25,7 @@ class BacksideCulledWireFrameToolbarAction extends AbstractAction
 		cg.viewDetail = ContentGenerator.BACKSIDE_CULLED_WIREFRAME;
 		NitrogenContext nc = cg.nc;
 		nc.isPicking = true;
-		RendererTriplet.setPickingRenderer( new Renderer_Outline());	
+		RendererTriplet.setPickingRenderer( new Renderer_Outline3());	
 		nc.contentGeneratorForcesNoCulling = false;
 		cg.renderEditArea();		
 	}	
