@@ -83,6 +83,11 @@ public class ContentGenerator extends JFrame{
 	FixedSizeButton pickXYZVertexButton;
 	FixedSizeIconToggleButton pickVertexSizeButton;	
 	
+	/** buttons used for picking vertexes in perspective view */
+	FixedSizeButton pickFrontVertexPerspectiveButton;
+	FixedSizeButton pickBackVertexPerspectiveButton;
+	FixedSizeIconToggleButton pickVertexSizePerspectiveButton;	
+	
 	FixedSizeButton pickPolygonButton;
 	
 	/** buttons for selecting view detail */
@@ -427,6 +432,28 @@ public class ContentGenerator extends JFrame{
 		
 		outerBox.add(Box.createHorizontalGlue());
 		
+		container.add(outerBox);
+	}
+	
+	/** As createPickingButtons but for perspective page */
+	void createPickingPerspectiveButtons(Container container)
+	{
+		Box outerBox = new Box(BoxLayout.X_AXIS);
+		
+		pickFrontVertexPerspectiveButton = new FixedSizeButton("/res/pickFrontVertexButton.PNG");
+		pickFrontVertexPerspectiveButton.addActionListener(cgc);
+		pickFrontVertexPerspectiveButton.setToolTipText("Pick the for-most vertex under the cursor");
+		outerBox.add(pickFrontVertexPerspectiveButton);
+		
+		pickBackVertexPerspectiveButton = new FixedSizeButton("/res/pickBackVertexButton.PNG");
+		pickBackVertexPerspectiveButton.addActionListener(cgc);
+		pickBackVertexPerspectiveButton.setToolTipText("Pick the rear-most vertex under the cursor");
+		outerBox.add(pickBackVertexPerspectiveButton);
+		
+		pickVertexSizePerspectiveButton = new FixedSizeIconToggleButton(this, "/res/smallVertexSizeButton.PNG","/res/largeVertexSizeButton.PNG");
+		pickVertexSizePerspectiveButton.setToolTipText("Alters the selection area used for front and back picking");
+		outerBox.add(pickVertexSizePerspectiveButton);		
+		outerBox.add(Box.createHorizontalGlue());		
 		container.add(outerBox);
 	}
 	
@@ -1081,7 +1108,7 @@ public class ContentGenerator extends JFrame{
 		Box farBox = Box.createHorizontalBox();
 		farBox.add(setFarPlaneDistanceButton);
 		farBox.add(Box.createHorizontalGlue());
-		
+				
 		// add the buttons
 		perspectiveViewTypeControls.add(nearRenderBox);
 		perspectiveViewTypeControls.add(farRenderBox);
@@ -1089,6 +1116,7 @@ public class ContentGenerator extends JFrame{
 		perspectiveViewTypeControls.add(hlpBox);
 		perspectiveViewTypeControls.add(billboardBox);
 		perspectiveViewTypeControls.add(farBox);
+		createPickingPerspectiveButtons(perspectiveViewTypeControls);
 		perspectiveViewTypeControls.add(Box.createVerticalGlue());		
 	}
 	

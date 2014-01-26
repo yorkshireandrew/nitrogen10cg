@@ -102,6 +102,21 @@ public class ContentGeneratorController extends AbstractAction implements Change
 			pickXYZVertex();
 		}
 		
+		// handle pick perspective buttons
+		// handle pick buttons
+		if(source == cgL.pickFrontVertexPerspectiveButton)
+		{
+			System.out.println("pickFrontVertexPerspectiveButton pressed");
+			pickFrontVertexPerspective();
+		}
+		
+		if(source == cgL.pickBackVertexPerspectiveButton)
+		{
+			System.out.println("pickBackVertexPerspectiveButton pressed");
+			pickBackVertexPerspective();
+		}
+		
+		
 		if(source == cgL.orthogonalProjectionButton)
 		{
 			System.out.println("orthogonalProjectionButton pressed");
@@ -483,11 +498,45 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		updateCursorFromWorkingVertex();
 	}
 	
+	void pickFrontVertexPerspective()
+	{
+		ContentGenerator cgL = cg;
+		// this button only responds in perspecive view
+		if(cgL.viewType != ContentGenerator.PERSPECTIVE)return;
+
+		// force the Item to recalculate its 
+		// vertexes view screen coordinates
+		// it renders them as a side effect
+		Item gi = cg.generatedItem;
+		gi.calculateVertexes();
+		gi.renderVertexes(cgL.nc);
+		float nearClip = cgL.nc.nearClip;
+		int size = 1;
+		// use size button on perspective page
+		if(cg.pickVertexSizePerspectiveButton.isSelected())size = 3;
+		int i = gi.findNearestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip, size);
+		
+		// return if we did not find a vertex
+		if(i == -1)return;
+		
+		Vertex v = gi.getVertex(i);
+		
+		WorkingVertexModel wvm = cgL.workingVertexModel;
+		wvm.pickedVertex = cg.contentGeneratorSISI.immutableVertexList.get(i);
+
+		wvm.x = (int)v.getX();
+		wvm.y = (int)v.getY();
+		wvm.z = (int)v.getZ();
+		wvm.computeDistances();
+		cgL.workingVertexView.updateFromModel();
+		cg.renderEditArea();
+	}
+	
 	void pickBackVertex()
 	{
 		ContentGenerator cgL = cg;
-		// this button only responds in orthogonal view
-		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
+		if((cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)&&(cgL.viewType != ContentGenerator.PERSPECTIVE))return;
+//		if(cgL.viewType != ContentGenerator.ORTHOGONAL_PROJECTION)return;
 
 		// force the Item to recalculate its 
 		// vertexes view screen coordinates
@@ -512,6 +561,36 @@ public class ContentGeneratorController extends AbstractAction implements Change
 		wvm.computeDistances();
 		cgL.workingVertexView.updateFromModel();	
 		updateCursorFromWorkingVertex();
+	}
+	
+	void pickBackVertexPerspective()
+	{
+		ContentGenerator cgL = cg;
+		if(cgL.viewType != ContentGenerator.PERSPECTIVE)return;
+
+		// force the Item to recalculate its 
+		// vertexes view screen coordinates
+		// it renders them as a side effect
+		Item gi = cg.generatedItem;
+		gi.calculateVertexes();
+		gi.renderVertexes(cgL.nc);
+		float nearClip = cgL.nc.nearClip;
+		int size = 1;
+		if(cg.pickVertexSizePerspectiveButton.isSelected())size = 3;
+		int i = gi.findFurthestVertexAt(cgL.cursor_x,cgL.cursor_y,nearClip, size);
+		
+		// return if we did not find a vertex
+		if(i == -1)return;
+		Vertex v = gi.getVertex(i);
+		WorkingVertexModel wvm = cgL.workingVertexModel;
+		wvm.pickedVertex = cg.contentGeneratorSISI.immutableVertexList.get(i);
+
+		wvm.x = (int)v.getX();
+		wvm.y = (int)v.getY();
+		wvm.z = (int)v.getZ();
+		wvm.computeDistances();
+		cgL.workingVertexView.updateFromModel();	
+		cg.renderEditArea();
 	}
 	
 	void pickXYZVertex()
