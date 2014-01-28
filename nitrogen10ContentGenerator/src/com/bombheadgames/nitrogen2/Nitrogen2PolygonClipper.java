@@ -8,7 +8,8 @@ public class Nitrogen2PolygonClipper {
 	static int workingVertexIndex;
 	
 	/** slight tweek required to cure invalid intersects due to floating arithmetic */
-	final static float TWEEK = -0.001f;
+//	final static float TWEEK = -0.001f;
+	final static float TWEEK = -0.00001f;
 	
 	static{
 		workingVertexes = new Vertex[NUMBER_OF_WORKING_VERTEXES];
